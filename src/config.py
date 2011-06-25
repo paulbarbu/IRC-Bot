@@ -1,3 +1,5 @@
+import os
+
 #internals
 owner = [
         'paullik',
@@ -16,4 +18,7 @@ channel = '#botwar'
 
 #messages
 quit_msg = 'Bye bye'
+
+#log file
+log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 
