@@ -1,3 +1,4 @@
+#Functions fro IRC Bot
 import datetime
 
 def get_sender(msg):

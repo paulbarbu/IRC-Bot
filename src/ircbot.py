@@ -1,3 +1,5 @@
+#Main file for IRC Bot
+
 from config import *
 from functions import *
 import socket

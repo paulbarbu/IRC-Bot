@@ -1,3 +1,4 @@
+#Configuration file for IRC Bot
 import os
 
 #internals
