@@ -4,7 +4,7 @@ A simple IRC Bot written in Python
 
 Commands
 ========
-* `!search <nick>` - tells \<nick\> to search (see Config: search)
+* `!search <nick>` - tells \<nick\> to use a search engine (see Config: search)
 * `!wiki <search term>` - replies a wikipedia link for \<search term\>
 * `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
 * `!answer` or `!42` - you'll find the answer through these commands
