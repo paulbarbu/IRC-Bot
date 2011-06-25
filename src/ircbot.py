@@ -1,16 +1,6 @@
+from config import *
+from functions import *
 import socket
-
-#Config {
-server = 'chat.freenode.net'
-port = 6667
-
-nick = 'PPyBot'
-realName = 'Paul Python Bot'
-
-channel = '#botwar'
-
-quit_msg = 'Bye bye'
-#}
 
 #Preparing standard messages{
 nick_auth = 'NICK ' + nick + '\r\n'
@@ -55,14 +45,14 @@ else:
                 if -1 != command.find('PING'): #PING PONG between server and client
                     irc.send('PONG ' + command.split()[1] + '\r\n')
 
-                elif -1 != command.find('!google'): # !google <nick>
+                elif -1 != command.find('!search'): # !google <nick>
                     command = command.split()
 
                     if 4 == len(command): #no nick given
-                        irc.send(privmsg + 'Usage: !google <nick>\r\n')
+                        irc.send(privmsg + 'Usage: !search <nick>\r\n')
                     else:
                         irc.send(privmsg + str(command[-1]) +
-                            ', please search on google: http://google.ro\r\n')
+                            ', please search on: ' + search + '\r\n')
 
                 elif -1 != command.find('!wiki'): # !wiki <search term>
                     command = command.split('!wiki ')
@@ -74,8 +64,13 @@ else:
                             + '\r\n')
 
                 elif -1 != command.find('!quit'): # !quit
-                    irc.send(channel_part)
-                    break;
+                    sender = get_sender(command)
+                    if sender in owner:
+                        irc.send(channel_part)
+                        break;
+                    else:
+                        irc.send(privmsg + 'This command can be run only by the'
+                                + ' owner(s)!\r\n')
 
                 else:
                     buff = ""
@@ -85,4 +80,4 @@ else:
 
         irc.close()
 
-        print "Exitied with message: {0}".format(quit_msg)
+        print "Exited with message: {0}".format(quit_msg)
