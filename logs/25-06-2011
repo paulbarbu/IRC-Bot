@@ -1,0 +1,38 @@
+22:35 <> Started on chat.freenode.net:6667, channel: #botwar, with nick: PPyBot
+22:35 <> Connected to chat.freenode.net:6667
+22:35 <> Joined: #botwar
+22:35 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!search
+22:35 <> PRIVMSG #botwar :Usage: !search <nick>
+22:36 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!search foo
+22:36 <> PRIVMSG #botwar :foo, please search on: http://google.ro
+22:36 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!wiki
+22:36 <> PRIVMSG #botwar :Usage: !wiki <search term>
+22:36 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!wiki foo
+22:36 <> PRIVMSG #botwar :http://en.wikipedia.org/wiki/foo
+22:37 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!wiki
+22:37 <> PRIVMSG #botwar :Usage: !wiki <search term>
+22:38 <> QUIT
+22:38 <> Exited with message: Bye bye
+22:39 <> Started on chat.freenode.net:6667, channel: #botwar, with nick: PPyBot
+22:39 <> Connected to chat.freenode.net:6667
+22:39 <> Joined: #botwar
+22:40 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!search
+22:40 <> PRIVMSG #botwar :Usage: !search <nick>
+22:40 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!wiki
+22:40 <> PRIVMSG #botwar :Usage: !wiki <search term>
+22:40 <> QUIT
+22:40 <> Exited with message: Bye bye
+22:42 <> Started on chat.freenode.net:6667, channel: #botwar, with nick: PPyBot
+22:42 <> Connected to chat.freenode.net:6667
+22:42 <> Joined: #botwar
+22:44 <> :paullik!~paullik@unaffiliated/paullik PRIVMSG #botwar :!quit
+22:44 <> PART #botwar :Bye bye
+22:44 <> QUIT
+22:44 <> Exited with message: Bye bye
+22:53 <> Started on chat.freenode.net:6667, channel: #botwar, with nick: PPyBot
+22:53 <> Connected to chat.freenode.net:6667
+22:53 <> Joined: #botwar
+22:56 <> PING :card.freenode.net
+22:56 <> PONG :card.freenode.net
+22:58 <> PING :card.freenode.net
+22:58 <> PONG :card.freenode.net
