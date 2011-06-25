@@ -11,7 +11,7 @@ Commands
 Config
 ======
 * `search` - specifies the reply link for `!search <nick>`
-* `owner` - the user who is allowed to `!quit` the bot
+* `owner` - the user(s) who are allowed to `!quit` the bot(_list_ data type)
 
 License
 =======
