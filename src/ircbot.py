@@ -109,6 +109,10 @@ else:
                         log_write(logfile, dt['time'], ' <> ', command + '\n')
                         log_write(logfile, dt['time'], ' <> ', response)
 
+                elif -1 != command.find('!answer') or -1 != command.find('!42'): # !answer
+                    response = privmsg + 'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42\r\n'
+                    irc.send(response)
+
                 else:
                     buff = ""
 
