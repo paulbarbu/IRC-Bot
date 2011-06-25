@@ -19,6 +19,6 @@ channel = '#botwar'
 #messages
 quit_msg = 'Bye bye'
 
-#log file
+#log directory
 log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 
