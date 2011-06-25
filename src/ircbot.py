@@ -7,9 +7,9 @@ port = 6667
 nick = 'PPyBot'
 realName = 'Paul Python Bot'
 
-quit_msg = 'QUIT :Bye!\r\n'
+channel = '#botwar'
 
-channel = '#yet-another-project'
+quit_msg = 'Bye bye'
 #}
 
 #Preparing standard messages{
@@ -17,7 +17,9 @@ nick_auth = 'NICK ' + nick + '\r\n'
 user_auth = 'USER ' + nick + ' ' + nick + ' ' + nick + ' :' + realName + '\r\n'
 
 channel_join = 'JOIN ' + channel + '\r\n'
-channel_part = 'PART ' + channel + '\r\n'
+channel_part = 'PART ' + channel + ' :' + quit_msg + '\r\n'
+
+privmsg = 'PRIVMSG ' + channel + ' :'
 #}
 
 try:
@@ -42,8 +44,6 @@ else:
         irc.send(channel_join)
         print 'Joined: {0}'.format(channel)
 
-        irc.send('PRIVMSG ' + channel + ' :Hello world!\r\n')
-
         while True:
             response = irc.recv(4096)
             buff = buff + response
@@ -52,28 +52,37 @@ else:
                 command = buff[0 : buff.find('\n')]
                 buff = buff[buff.find('\n')+1:]
 
-                print 'C: {0}'.format(command)
-                print 'B: {0}'.format(buff)
-
                 if -1 != command.find('PING'): #PING PONG between server and client
                     irc.send('PONG ' + command.split()[1] + '\r\n')
 
                 elif -1 != command.find('!google'): # !google <nick>
-                    irc.send('PRIVMSG ' + channel + ' :' + str(command.split()[-1])
-                            + ', cauta te rog pe Google: http://google.ro\r\n')
+                    command = command.split()
+
+                    if 4 == len(command): #no nick given
+                        irc.send(privmsg + 'Usage: !google <nick>\r\n')
+                    else:
+                        irc.send(privmsg + str(command[-1]) +
+                            ', please search on google: http://google.ro\r\n')
 
                 elif -1 != command.find('!wiki'): # !wiki <search term>
-                    irc.send('PRIVMSG ' + channel + ' :http://en.wikipedia.org/wiki/'
-                            + command.split('!wiki')[1].lstrip().replace(' ', '_')
+                    command = command.split('!wiki ')
+                    if 1 == len(command): #no search term given
+                        irc.send(privmsg + 'Usage: !wiki <search term>\r\n')
+                    else:
+                        irc.send(privmsg + 'http://en.wikipedia.org/wiki/' +
+                            command[1].lstrip().replace(' ', '_')
                             + '\r\n')
 
                 elif -1 != command.find('!quit'): # !quit
-                    irc.send(quit_msg)
+                    irc.send(channel_part)
                     break;
+
                 else:
                     buff = ""
 
         #Leave(part) channel
-        irc.send(channel_part)
+        irc.send('QUIT\r\n')
 
         irc.close()
+
+        print "Exitied with message: {0}".format(quit_msg)
