@@ -15,7 +15,7 @@ quit = 'QUIT\r\n'
 
 dt = get_datetime()
 
-logfile = log + dt['date']
+logfile = log + dt['date'] + '.log'
 content = 'Started on {0}:{1}, channel: {2}, with nick: {3}'.format(server,
         port, channel, nick)
 
