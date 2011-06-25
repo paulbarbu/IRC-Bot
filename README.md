@@ -4,13 +4,13 @@ A simple IRC Bot written in Python
 
 Commands
 ========
-* `!google <nick>` - tells \<nick\> to search on Google (see Config: glink)
+* `!search <nick>` - tells \<nick\> to search (see Config: search)
 * `!wiki <search term>` - replies a wikipedia link for \<search term\>
 * `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
 
 Config
 ======
-* `glink` - specifies the reply link for `!google <nick>`
+* `search` - specifies the reply link for `!search <nick>`
 * `owner` - the user who is allowed to `!quit` the bot
 
 License
