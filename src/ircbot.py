@@ -2,29 +2,29 @@
 
 from config import *
 from functions import *
+import err
 import socket
+import sys
 
-#Preparing standard messages{
-nick_auth = 'NICK ' + nick + '\r\n'
-user_auth = 'USER ' + nick + ' ' + nick + ' ' + nick + ' :' + realName + '\r\n'
+cfg = check_cfg(owner, search, server, nick, realName, channel,
+        log, c_lst, quit)
 
-channel_join = 'JOIN ' + channel + '\r\n'
-channel_part = 'PART ' + channel + ' :' + quit_msg + '\r\n'
+if not cfg:
+    sys.exit('Config error!')
 
-privmsg = 'PRIVMSG ' + channel + ' :'
+if not check_channel(channel):
+    sys.exit('Invalid channel!')
 
-quit = 'QUIT\r\n'
-alive = True
-#}
-
+#name the log file to write into
 dt = get_datetime()
-
 logfile = log + dt['date'] + '.log'
+
 content = 'Started on {0}:{1}, channel: {2}, with nick: {3}'.format(server,
         port, channel, nick)
 
 log_write(logfile, dt['time'], ' <> ', content + '\n')
 
+#Start connecting
 try:
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.socket:
@@ -36,14 +36,24 @@ else:
         irc.connect((server, port))
         receive = irc.recv(4096) #TODO debug with this line commented and remove buff = ""
     except IOError:
-        content = 'Could not connect to {0}{1}'.format(server, port)
-        log_write(logfile, dt['time'], ' <> ', content + '\n')
+        content = 'Could not connect to {0}:{1}'.format(server, port)
+
+        try:
+            log_write(logfile, dt['time'], ' <> ', content + '\n')
+        except IOError:
+            print err.log_failure
+
         print content
+
     else:
         buff = ""
 
         content = 'Connected to {0}:{1}'.format(server, port)
-        log_write(logfile, dt['time'], ' <> ', content + '\n')
+        try:
+            log_write(logfile, dt['time'], ' <> ', content + '\n')
+        except IOError:
+            print err.log_failure
+
         print content
 
         #Join server & authenticate
@@ -53,7 +63,12 @@ else:
         #Join channel
         irc.send(channel_join)
         content = 'Joined: {0}'.format(channel)
-        log_write(logfile, dt['time'], ' <> ', content + '\n')
+
+        try:
+            log_write(logfile, dt['time'], ' <> ', content + '\n')
+        except IOError:
+            print err.log_failure
+
         print content
 
         while alive:
@@ -92,7 +107,7 @@ else:
                         response = privmsg + 'This command can be run only by the' + ' owner(s)!\r\n'
 
                 elif -1 != command.find('!answer') or -1 != command.find('!42'): # !answer
-                    response = privmsg + 'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42\r\n'
+                    response = privmsg + 'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42!\r\n'
 
                 else:
                     buff = ""
@@ -100,18 +115,28 @@ else:
                 if len(response):
                     irc.send(response)
 
-                    dt = get_datetime()
-                    log_write(logfile, dt['time'], ' <> ', command + '\n')
-                    log_write(logfile, dt['time'], ' <> ', response)
+                    try:
+                        dt = get_datetime()
+                        log_write(logfile, dt['time'], ' <> ', command + '\n')
+                        log_write(logfile, dt['time'], ' <> ', response)
+                    except IOError:
+                        print err.log_failure
 
         #Quit server
         irc.send(quit)
         dt = get_datetime()
-        log_write(logfile, dt['time'], ' <> ', quit)
+        try:
+            log_write(logfile, dt['time'], ' <> ', quit)
+        except IOError:
+            print err.log_failure
 
         irc.close()
 
         content = 'Exited with message: {0}'.format(quit_msg)
-        log_write(logfile, dt['time'], ' <> ', content + '\n')
+        try:
+            log_write(logfile, dt['time'], ' <> ', content + '\n')
+        except IOError:
+            print err.log_failure
+
         print content
 
