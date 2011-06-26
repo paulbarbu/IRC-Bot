@@ -7,7 +7,7 @@ Commands
 * `!search <nick>` - tells \<nick\> to use a search engine (see Config: search)
 * `!wiki <search term>` - replies a wikipedia link for \<search term\>
 * `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
-* `!answer` or `!42` - you'll find the answer through these commands
+* `!answer` - you'll find the answer through these commands
 
 Adding commands
 ===============
@@ -20,7 +20,9 @@ Adding commands
    the message to be sent on the channel
 
 E.g:
+
 You want to create a command `!dance` so you follow these steps:
+
 1. Add 'dance' to the `cmds_list` in `config.py`
 2. Create `cmds/dance.py`
 3. In `cmds/dance.py` define `def dance(param):`, `param` will hold the users
