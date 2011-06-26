@@ -12,7 +12,9 @@ channel_join = 'JOIN ' + channel + '\r\n'
 channel_part = 'PART ' + channel + ' :' + quit_msg + '\r\n'
 
 privmsg = 'PRIVMSG ' + channel + ' :'
+
 quit = 'QUIT\r\n'
+alive = True
 #}
 
 dt = get_datetime()
@@ -39,6 +41,7 @@ else:
         print content
     else:
         buff = ""
+
         content = 'Connected to {0}:{1}'.format(server, port)
         log_write(logfile, dt['time'], ' <> ', content + '\n')
         print content
@@ -53,21 +56,17 @@ else:
         log_write(logfile, dt['time'], ' <> ', content + '\n')
         print content
 
-        while True:
+        while alive:
             receive = irc.recv(4096)
             buff = buff + receive
+            response = ""
 
             if -1 != buff.find('\n'):
                 command = buff[0 : buff.find('\n')]
-                buff = buff[buff.find('\n')+1:]
+                buff = buff[buff.find('\n')+1 : ]
 
                 if -1 != command.find('PING'): #PING PONG between server and client
                     response = 'PONG ' + command.split()[1] + '\r\n'
-                    irc.send(response)
-
-                    dt = get_datetime()
-                    log_write(logfile, dt['time'], ' <> ', command + '\n')
-                    log_write(logfile, dt['time'], ' <> ', response)
 
                 elif -1 != command.find('!search'): # !google <nick>
                     nick = command.split()
@@ -77,12 +76,6 @@ else:
                     else:
                         response = privmsg + str(nick[-1]) + ', please search on: ' + search + '\r\n'
 
-                    irc.send(response)
-
-                    dt = get_datetime()
-                    log_write(logfile, dt['time'], ' <> ', command + '\n')
-                    log_write(logfile, dt['time'], ' <> ', response)
-
                 elif -1 != command.find('!wiki'): # !wiki <search term>
                     wlink = command.split('!wiki ')
                     if 1 == len(wlink): #no search term given
@@ -90,35 +83,28 @@ else:
                     else:
                         response = privmsg + 'http://en.wikipedia.org/wiki/' + wlink[1].lstrip().replace(' ', '_') + '\r\n'
 
+                elif -1 != command.find('!quit'): # !quit -> PART #channel
+                    sender = get_sender(command)
+                    if sender in owner:
+                        response = channel_part
+                        alive = False
+                    else:
+                        response = privmsg + 'This command can be run only by the' + ' owner(s)!\r\n'
+
+                elif -1 != command.find('!answer') or -1 != command.find('!42'): # !answer
+                    response = privmsg + 'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42\r\n'
+
+                else:
+                    buff = ""
+
+                if len(response):
                     irc.send(response)
 
                     dt = get_datetime()
                     log_write(logfile, dt['time'], ' <> ', command + '\n')
                     log_write(logfile, dt['time'], ' <> ', response)
 
-                elif -1 != command.find('!quit'): # !quit
-                    dt = get_datetime()
-                    sender = get_sender(command)
-                    if sender in owner:
-                        response = channel_part
-                        irc.send(response)
-                        log_write(logfile, dt['time'], ' <> ', command + '\n')
-                        log_write(logfile, dt['time'], ' <> ', response)
-                        break;
-                    else:
-                        response = privmsg + 'This command can be run only by the' + ' owner(s)!\r\n'
-                        irc.send(response)
-                        log_write(logfile, dt['time'], ' <> ', command + '\n')
-                        log_write(logfile, dt['time'], ' <> ', response)
-
-                elif -1 != command.find('!answer') or -1 != command.find('!42'): # !answer
-                    response = privmsg + 'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42\r\n'
-                    irc.send(response)
-
-                else:
-                    buff = ""
-
-        #Leave(part) channel
+        #Quit server
         irc.send(quit)
         dt = get_datetime()
         log_write(logfile, dt['time'], ' <> ', quit)
