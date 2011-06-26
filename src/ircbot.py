@@ -77,7 +77,7 @@ else:
                         response = privmsg + str(nick[-1]) + ', please search on: ' + search + '\r\n'
 
                 elif -1 != command.find('!wiki'): # !wiki <search term>
-                    wlink = command.split('!wiki ')
+                    wlink = command.split('!wiki ') #notice the trailing space
                     if 1 == len(wlink): #no search term given
                         response = privmsg + 'Usage: !wiki <search term>\r\n'
                     else:
