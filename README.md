@@ -7,7 +7,7 @@ Commands
 * `!search <nick>` - tells \<nick\> to use a search engine (see Config: search)
 * `!wiki <search term>` - replies a wikipedia link for \<search term\>
 * `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
-* `!answer` - you'll find the answer through these commands
+* `!answer` - you'll find the answer through this command
 
 Adding commands
 ===============
