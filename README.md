@@ -13,11 +13,19 @@ Adding commands
 ===============
 1. In `config.py` you must add the name of the command to the `cmds_list`'s
    end(without _!_)
-2. In directory `cmds/` you must create a file named after your command(e.g.
-   _newcommand.py_)
+2. In directory `cmds/` you must create a file named after your command
 3. Into the newly created file you must define a function named after your
-   command(e.g. _def newcommand(param):_) that takes one parameter, this
-   parameter will contain the command sent by the user
+   command that takes one parameter, this
+   parameter will contain the command sent by the user, the function must return
+   the message to be sent on the channel
+
+E.g:
+You want to create a command `!dance` so you follow these steps:
+1. Add 'dance' to the `cmds_list` in `config.py`
+2. Create `cmds/dance.py`
+3. In `cmds/dance.py` define `def dance(param):`, `param` will hold the users
+   command in case you must do some checkings or whatever, it must return a
+   message for example `return config.privmsg + 'Dance time!\r\n'`
 
 Config
 ======
