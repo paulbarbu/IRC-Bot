@@ -27,6 +27,7 @@ cmds_list = [
         'quit',
         'answer',
         'about',
+        'help',
         ]
 
 #### Users should NOT modify below!
