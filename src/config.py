@@ -20,9 +20,6 @@ channel = '#ppybot'
 #messages
 quit_msg = 'Bye bye'
 
-#log directory
-log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
-
 #commands list
 c_lst = [
         'search',
@@ -30,6 +27,10 @@ c_lst = [
         'quit',
         'answer',
         ]
+
+#### Users should NOT modify below!
+#log directory
+log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 
 #standard messages
 nick_auth = 'NICK ' + nick + '\r\n'
@@ -44,4 +45,3 @@ quit = 'QUIT\r\n'
 
 #connection should stay alive
 alive = True
-
