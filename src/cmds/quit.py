@@ -5,7 +5,12 @@ try:
 except ImportError:
     sys.exit(err.load_module)
 
-def quit(command):# !quit -> PART #channel
+def quit(command): # !quit -> PART #channel
+    """Quits the bot
+
+    If the user is found in the owners list then the bot is closed, otherwise a
+    message is sent to the channel
+    """
     sender = get_sender(command)
     if sender in config.owner:
         response = config.channel_part
