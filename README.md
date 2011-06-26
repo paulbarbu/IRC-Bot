@@ -9,6 +9,16 @@ Commands
 * `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
 * `!answer` or `!42` - you'll find the answer through these commands
 
+Adding commands
+===============
+1. In `config.py` you must add the name of the command to the `cmds_list`'s
+   end(without _!_)
+2. In directory `cmds/` you must create a file named after your command(e.g.
+   _newcommand.py_)
+3. Into the newly created file you must define a function named after your
+   command(e.g. _def newcommand(param):_) that takes one parameter, this
+   parameter will contain the command sent by the user
+
 Config
 ======
 * `search` - specifies the reply link for `!search <nick>`
