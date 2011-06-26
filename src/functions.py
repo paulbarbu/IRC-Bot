@@ -36,3 +36,22 @@ def get_datetime():
 
     return dt
 
+def check_cfg(*items):
+    """Checks configuration directives to be set
+
+    Return True if configuration directives are not empty, else returns False
+    """
+    for arg in items:
+        if not len(arg):
+            return False
+
+    return True
+
+def check_channel(channel):
+    """Check channel name to start with a '#'
+
+    """
+    if not ('#' == channel[0]):
+        return False
+
+    return True
