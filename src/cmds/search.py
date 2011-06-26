@@ -1,7 +1,8 @@
 try:
     import config
+    import err
 except ImportError:
-    sys.exit('Could not load all modules!')
+    sys.exit(err.load_module)
 
 def search(command): # !google <nick>
     nick = command.split()

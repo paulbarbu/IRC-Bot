@@ -1,8 +1,9 @@
 try:
     import config
+    import err
     from functions import *
 except ImportError:
-    sys.exit('Could not load all modules!')
+    sys.exit(err.load_module)
 
 def quit(command):# !quit -> PART #channel
     sender = get_sender(command)
