@@ -21,7 +21,7 @@ channel = '#ppybot'
 quit_msg = 'Bye bye'
 
 #commands list
-c_lst = [
+cmds_list = [
         'search',
         'wiki',
         'quit',
