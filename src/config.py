@@ -26,6 +26,7 @@ cmds_list = [
         'wiki',
         'quit',
         'answer',
+        'about',
         ]
 
 #### Users should NOT modify below!
