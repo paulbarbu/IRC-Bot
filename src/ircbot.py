@@ -97,12 +97,16 @@ else:
                 if -1 != command.find('PING'): #PING PONG
                     response = 'PONG ' + command.split()[1] + '\r\n'
 
-                elif 1 < len(re.findall('!', command)):
+                elif 1 < len(re.findall('!', command)) and \
+                    ':' == command[command.rfind('!') - 1] and \
+                    ' ' == command[command.rfind('!') - 2]:
                     #search in commands list only if the message from server
                     #contains two '!'(exclamation marks) in it
                     #one from command, the other from the user's nick
                     for k in config.cmds_list:
-                        if -1 != command.find('!' + k):
+                        if -1 != command.find('!' + k) and \
+                            (' ' == command[command.rfind('!' + k) + len(k) + 1] \
+                            or '\r' == command[command.rfind('!' + k) + len(k) +1]):
                             try:
                                 mod = 'cmds.' + k
                                 mod = __import__(mod, globals(), locals(), [k])
