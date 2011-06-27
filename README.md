@@ -5,7 +5,8 @@ A simple IRC Bot written in Python
 Commands
 ========
 * `!search <nick>` - tells \<nick\> to use a search engine (see Config: search)
-* `!wiki <search term>` - replies a wikipedia link for \<search term\>
+* `!wiki <search term>` - replies a wikipedia link for \<search term\> along
+  with the first paragraph from the page
 * `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
 * `!answer` - you'll find the answer through this command
 
@@ -40,6 +41,11 @@ Config
 * `channel` - channel to connect to
 * `nick` - bot's name
 * `realName` - bot's "real name"
+
+Dependencies
+============
+* The `!wiki` module depends on
+  [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "BeautifulSoup")
 
 License
 =======
