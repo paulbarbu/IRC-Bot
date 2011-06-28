@@ -37,4 +37,8 @@ def get_para(wlink):
         soup = BeautifulSoup(page)
         msg = ''.join(soup.find('div', { 'id' : 'bodyContent'}).p.findAll(text=True))
 
+        while 400 < len(msg):
+            pos = msg.rfind('.')
+            msg = msg[:pos]
+
     return msg
