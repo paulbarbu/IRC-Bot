@@ -1,6 +1,8 @@
 IRC Bot
 =======
 A simple IRC Bot written in Python
+To start it just `cd` to the `src` directory and type `./ircbot.py`, although
+before using the bot it's recommended to check the config first.
 
 Commands
 ========
@@ -12,9 +14,9 @@ Commands
 
 Adding commands
 ===============
-1. In `config.py` you must add the name of the command to the `cmds_list`'s
+1. In `src/config.py` you must add the name of the command to the `cmds_list`'s
    end(without _!_)
-2. In directory `cmds/` you must create a file named after your command
+2. In directory `src/cmds/` you must create a file named after your command
 3. Into the newly created file you must define a function named after your
    command that takes one parameter, this
    parameter will contain the command sent by the user, the function must return
@@ -24,14 +26,15 @@ E.g:
 
 You want to create a command `!dance` so you follow these steps:
 
-1. Add 'dance' to the `cmds_list` in `config.py`
-2. Create `cmds/dance.py`
-3. In `cmds/dance.py` define `def dance(param):`, `param` will hold the users
+1. Add 'dance' to the `cmds_list` in `src/config.py`
+2. Create `src/cmds/dance.py`
+3. In `src/cmds/dance.py` define `def dance(param):`, `param` will hold the users
    command in case you must do some checkings or whatever, it must return a
    message for example `return config.privmsg + 'Dance time!\r\n'`
 
 Config
 ======
+See `src/config.py`:
 * `search` - specifies the reply link for `!search <nick>`
 * `owner` - the user(s) who are allowed to `!quit` the bot(_list_ data type)
 * `log` - path to the logging directory, all logs are stored here
