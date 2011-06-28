@@ -28,6 +28,7 @@ cmds_list = [
         'answer',
         'about',
         'help',
+        'weather',
         ]
 
 #### Users should NOT modify below!
