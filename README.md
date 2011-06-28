@@ -11,6 +11,7 @@ Commands
   with the first paragraph from the page
 * `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
 * `!answer` - you'll find the answer through this command
+* `!weather Sibiu` or `!weather Sibiu, Romania`(work in progress)
 
 Adding commands
 ===============
@@ -47,7 +48,7 @@ See `src/config.py`:
 
 Dependencies
 ============
-* The `!wiki` module depends on
+* `!weather` and `!wiki` module depends on
   [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "BeautifulSoup")
 
 License
