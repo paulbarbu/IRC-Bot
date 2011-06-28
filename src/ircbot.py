@@ -1,3 +1,4 @@
+#! /usr/bin/env python2.7
 #Main file for IRC Bot
 
 import socket
