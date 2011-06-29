@@ -36,6 +36,7 @@ You want to create a command `!dance` so you follow these steps:
 Config
 ======
 See `src/config.py`:
+
 * `search` - specifies the reply link for `!search <nick>`
 * `owner` - the user(s) who are allowed to `!quit` the bot(_list_ data type)
 * `log` - path to the logging directory, all logs are stored here
