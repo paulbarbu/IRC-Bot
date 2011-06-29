@@ -38,21 +38,13 @@ Config
 See `src/config.py`:
 
 * `search` - specifies the reply link for `!search <nick>`
-
 * `owner` - the user(s) who are allowed to `!quit` the bot(_list_ data type)
-
 * `log` - path to the logging directory, all logs are stored here
-
 * `quit_msg` - message to quit with, e.g. PPyBot has left #botwar ("Bye bye")
-
 * `server` - server to connect to(default: chat.freenode.net)
-
 * `port` - port number to use(default: 6667)
-
 * `channel` - channel to connect to
-
 * `nick` - bot's name
-
 * `realName` - bot's "real name"
 
 Dependencies
