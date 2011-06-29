@@ -11,9 +11,8 @@ def weather(command):
 
     A message ready to be sent on IRC containing weather informations
     """
-    response = ""
-    conditions = {}
-
+    response = ''
+    conditions = ''
     try:
         location = command.split('!weather ')[1]
     except:
@@ -21,13 +20,22 @@ def weather(command):
     else:
         location = location.replace(' ', '') # space is removed
         conditions = get_weather(location)
-        #TODO check conditions type to see if there was an error or it contains
-        #temperature and so on
+        if type(conditions) == type(str()):
+            response = conditions
+        else:
+            response = conditions['location'] + ' - ' + conditions['temp'] + \
+            ' - ' + conditions['weather']
 
 
-    return config.privmsg + response
+    return config.privmsg + response + '\r\n'
 
 def get_weather(location):
+    """Return a dictionary with the <weather>, <full>, <temperature_string> tags
+    from the XML
+
+    The dictionary "conditions" will hold 3 values at the end(location, weather,
+    temperature)
+    """
     conditions = {}
     base_url = 'http://api.wunderground.com/auto/wui/geo/WXCurrentObXML/index.xml?query='
 
@@ -37,13 +45,26 @@ def get_weather(location):
         return 'Could not open the page!'
     else:
         soup = BeautifulStoneSoup(page)
-        # TODO city exists?
+
         conditions['location'] = soup.find('full').contents[0]
 
         if 2 >= len(conditions['location']):
             return 'Inexistent location!'
         else:
-            pass #TODO check the others
+            #weather
+            conditions['weather'] = soup.find('weather').contents[0]
+
+            #temperature
+            conditions['temp'] = soup.find('temperature_string').contents[0]
+            conditions['temp'] = conditions['temp'].encode("latin-1")
+
+            #pos = conditions['temp'].find(' ')
+            #conditions['temp'] = conditions['temp'][:pos] + '°' + \
+                    #conditions['temp'][pos:]
+
+            #pos = conditions['temp'].rfind(' ')
+            #conditions['temp'] = conditions['temp'][:pos] + '°' + \
+                    #conditions['temp'][pos:]
 
         page.close()
 
