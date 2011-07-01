@@ -27,8 +27,8 @@ if not check_channel(config.channel):
 dt = get_datetime()
 logfile = config.log + dt['date'] + '.log'
 
-content = 'Started on {0}:{1}, channel: {2}, with nick: {3}'.format(config.server,
-        config.port, config.channel, config.nick)
+content = 'Started on {0}:{1}, with nick: {2}'.format(config.server,
+        config.port, config.nick)
 
 try:
     log_write(logfile, dt['time'], ' <> ', content + '\n')
@@ -129,13 +129,19 @@ else:
                 #send the response and log it
                 if len(response):
                     if type(response) == type(str()):
-                        crlf_pos = response[:-2].find('\r\n')+2
-                        if -1 != crlf_pos:
-                            response = response[:crlf_pos] + \
-                                    config.privmsg + response[crlf_pos:]
+                        #the module sent just a string so
+                        #I have to compose the command
 
-                        response = config.privmsg + response
-                    else:
+                        sendto = send_to(command)
+
+                        crlf_pos = response[:-2].find('\r\n')
+                        if -1 != crlf_pos: #a multi response command
+                            crlf_pos = crlf_pos + 2 #jump over '\r\n'
+                            response = response[:crlf_pos] + \
+                                    sendto + response[crlf_pos:]
+
+                        response = sendto + response
+                    else: #the module send a command itself
                         response = ' '.join(response)
 
                     response = response + '\r\n'

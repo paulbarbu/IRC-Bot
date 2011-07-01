@@ -1,5 +1,10 @@
 #Functions fro IRC Bot
-import datetime
+try:
+    import config
+    import err
+    import datetime
+except ImportError:
+    sys.exit(err.load_module)
 
 def get_sender(msg):
     """Returns the user(string) that sent the message
@@ -55,3 +60,22 @@ def check_channel(channel):
         return False
 
     return True
+
+def send_to(command):
+    """Get the location where to send the message back
+
+    This function returns a string containing all the protocol related
+    information needed by the server to send the command back to the
+    user/channel that sent it
+    """
+    sendto = '' #can be a user name(/query) or a channel
+
+    if -1 != command.find(config.privmsg + config.nick + ' :'):
+        #command comes from a query
+        sendto = get_sender(command)
+    else:
+        command = command[command.find(config.privmsg + '#'):]
+        command = command[command.find(' ')+1:]
+        sendto = command[:command.find(' ')]
+
+    return  config.privmsg + sendto + ' :'
