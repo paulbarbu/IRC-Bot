@@ -12,9 +12,9 @@ def search(command): # !google <nick>
     nick = command.split()
 
     if 4 == len(nick) or -1 == str(nick[-2]).find('!search'): #no nick given
-        response = config.privmsg + 'Usage: !search <nick>\r\n'
+        response = 'Usage: !search <nick>'
     else:
-        response = config.privmsg + str(nick[-1]) + ', please search on: ' + config.search + '\r\n'
+        response = str(nick[-1]) + ', please search on: ' + config.search
 
     return response
 

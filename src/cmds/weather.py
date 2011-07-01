@@ -1,3 +1,4 @@
+# coding: latin-1
 try:
     from BeautifulSoup import BeautifulStoneSoup
     import urllib
@@ -27,7 +28,7 @@ def weather(command):
             ' - ' + conditions['weather']
 
 
-    return config.privmsg + response + '\r\n'
+    return str(response)
 
 def get_weather(location):
     """Return a dictionary with the <weather>, <full>, <temperature_string> tags

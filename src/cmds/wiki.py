@@ -14,12 +14,12 @@ def wiki(command):
     """
     wlink = command.split('!wiki ') #notice the trailing space
     if 1 == len(wlink): #no search term given
-        response = 'Usage: !wiki <search term>\r\n'
+        response = 'Usage: !wiki <search term>'
     else:
         response = 'http://en.wikipedia.org/wiki/' + wlink[1].lstrip().replace(' ', '_')
-        response = response + '\r\n' + config.privmsg + get_para(response) + '\r\n'
+        response = response + '\r\n' + get_para(response)
 
-    return config.privmsg + response
+    return str(response)
 
 def get_para(wlink):
     """Gets the first paragraph from a wiki link
