@@ -15,10 +15,11 @@ port = 6667
 nick = 'PPyBot'
 realName = 'Paul Python Bot'
 
-channel = '#ppybot'
-
-#messages
-quit_msg = 'Bye bye'
+channels = [
+    '#ppybot',
+    '#pppybot',
+    '#pybot',
+    ]
 
 #commands list
 cmds_list = [
@@ -39,8 +40,8 @@ log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 nick_auth = 'NICK ' + nick + '\r\n'
 user_auth = 'USER ' + nick + ' ' + nick + ' ' + nick + ' :' + realName + '\r\n'
 
-channel_join = 'JOIN ' + channel + '\r\n'
-channel_part = 'PART ' + channel + ' :'
+channel_join = 'JOIN '#notice the space
+channel_part = 'PART'
 
 privmsg = 'PRIVMSG '
 
@@ -48,3 +49,6 @@ quit = 'QUIT\r\n'
 
 #connection should stay alive
 alive = True
+
+#needed by !quit module
+channels_left = len(channels)

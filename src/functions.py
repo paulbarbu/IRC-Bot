@@ -52,12 +52,13 @@ def check_cfg(*items):
 
     return True
 
-def check_channel(channel):
-    """Check channel name to start with a '#'
+def check_channel(channels):
+    """Check channels name to start with a '#' and not contain any spaces
 
     """
-    if not ('#' == channel[0]):
-        return False
+    for channel in channels:
+        if not ('#' == channel[0]) or -1 != channel.find(' '):
+            return False
 
     return True
 
