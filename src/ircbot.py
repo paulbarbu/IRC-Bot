@@ -15,13 +15,13 @@ except ImportError:
 
 
 cfg = check_cfg(config.owner, config.search, config.server, config.nick,
-        config.realName, config.channel, config.log, config.cmds_list, config.quit)
+        config.realName, config.log, config.cmds_list, config.quit)
 
 if not cfg:
-    sys.exit('Config error!')
+    sys.exit(err.invalid_cfg)
 
-if not check_channel(config.channel):
-    sys.exit('Invalid channel!')
+if not check_channel(config.channels):
+    sys.exit(err.invalid_channels)
 
 #name the log file to write into
 dt = get_datetime()
@@ -39,7 +39,7 @@ except IOError:
 try:
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.socket:
-    content = 'Could not create a socket!'
+    content = err.no_socket
     try:
         log_write(logfile, dt['time'], ' <> ', content + '\n')
     except IOError:
@@ -76,15 +76,16 @@ else:
         irc.send(config.user_auth)
 
         #Join channel
-        irc.send(config.channel_join)
-        content = 'Joined: {0}'.format(config.channel)
+        for channel in config.channels:
+            irc.send(config.channel_join + channel + '\r\n')
+            content = 'Joined: {0}'.format(channel)
 
-        try:
-            log_write(logfile, dt['time'], ' <> ', content + '\n')
-        except IOError:
-            print err.log_failure
+            try:
+                log_write(logfile, dt['time'], ' <> ', content + '\n')
+            except IOError:
+                print err.log_failure
 
-        print content
+            print content
 
         while config.alive:
             receive = irc.recv(4096)
