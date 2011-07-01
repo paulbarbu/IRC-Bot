@@ -40,7 +40,7 @@ nick_auth = 'NICK ' + nick + '\r\n'
 user_auth = 'USER ' + nick + ' ' + nick + ' ' + nick + ' :' + realName + '\r\n'
 
 channel_join = 'JOIN ' + channel + '\r\n'
-channel_part = 'PART ' + channel + ' :' + quit_msg + '\r\n'
+channel_part = 'PART ' + channel + ' :'
 
 privmsg = 'PRIVMSG ' + channel + ' :'
 

@@ -11,11 +11,14 @@ def quit(command): # !quit -> PART #channel
     If the user is found in the owners list then the bot is closed, otherwise a
     message is sent to the channel
     """
+    response = ''
     sender = get_sender(command)
     if sender in config.owner:
-        response = config.channel_part
+        response = []
+        response.append(config.channel_part)
+        response.append(config.quit_msg)
         config.alive = False
     else:
-        response = config.privmsg + 'This command can be run only by the owner(s)!\r\n'
+        response = 'This command can be run only by the owner(s)!'
 
     return response

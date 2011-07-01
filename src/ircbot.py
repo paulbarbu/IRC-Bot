@@ -89,14 +89,16 @@ else:
         while config.alive:
             receive = irc.recv(4096)
             buff = buff + receive
-            response = ""
+            response = ''
 
             if -1 != buff.find('\n'):
                 command = buff[0 : buff.find('\n')]
                 buff = buff[buff.find('\n')+1 : ]
 
                 if -1 != command.find('PING'): #PING PONG
-                    response = 'PONG ' + command.split()[1] + '\r\n'
+                    response = []
+                    response.append('PONG')
+                    response.append(command.split()[1])
 
                 elif 1 < len(re.findall('!', command)) and \
                     ':' == command[command.rfind('!') - 1] and \
@@ -112,13 +114,13 @@ else:
                                 mod = 'cmds.' + k
                                 mod = __import__(mod, globals(), locals(), [k])
                             except ImportError: #inexistent module
-                                response = config.privmsg + err.c_inexistent.format(k)
+                                    response = err.c_inexistent.format(k)
                             else:
 
                                 try:
                                     get_response = getattr(mod, k)
                                 except AttributeError: #function not defined in module
-                                    response = config.privmsg + err.c_invalid.format(k)
+                                    response = err.c_invalid.format(k)
                                 else:
 
                                     response = get_response(command)
@@ -126,6 +128,12 @@ else:
 
                 #send the response and log it
                 if len(response):
+                    if type(response) == type(str()):
+                        response = config.privmsg + response
+                    else:
+                        response = ' '.join(response)
+
+                    response = response + '\r\n'
                     irc.send(response)
 
                     try:
@@ -148,7 +156,7 @@ else:
 
         irc.close()
 
-        content = 'Exited with message: {0}'.format(config.quit_msg)
+        content = 'Disconnected from {0}:{1}'.format(config.server, config.port)
         try:
             log_write(logfile, dt['time'], ' <> ', content + '\n')
         except IOError:
