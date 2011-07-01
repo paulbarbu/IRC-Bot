@@ -5,5 +5,9 @@ except ImportError:
     sys.exit(err.load_module)
 
 def about(command):
+    """Returns a string containing infos about the bot
+
+    """
+
     response = 'Author: Paullik @ http://github.com/paullik'
     return response
