@@ -13,9 +13,9 @@ Commands
 * `!wiki <search term>` - replies a wikipedia link for \<search term\> along
   with the first paragraph from the page
 * `!quit [#channel]+` - disconnects the bot only if the command is given by the owner(see Config: owner)
-If no arguments are given, all connected channels are disconnected, if some
-arguments are provided the bot checks the channel names and disconnects only the
-valid ones(see Config: channels), if no channel is "alive" then the bot closes
+    * If no arguments are given, all connected channels are disconnected
+    * if some arguments are provided the bot checks the channel names and disconnects only the valid ones(see Config: channels)
+    * if no channel is "alive" then the bot closes
 * `!answer` - you'll find the answer through this command
 * `!weather <city>` or `!weather <city>, <state or country>`
 
