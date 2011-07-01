@@ -4,12 +4,18 @@ A simple IRC Bot written in Python
 To start it just `cd` to the `src` directory and type `./ircbot.py`, although
 before using the bot it's recommended to check the config first.
 
+The bot can handle multiple channels at a time, also it can be queried(`/query
+PPyBot`) if you want to have a _private_ discussion
+
 Commands
 ========
 * `!search <nick>` - tells \<nick\> to use a search engine (see Config: search)
 * `!wiki <search term>` - replies a wikipedia link for \<search term\> along
   with the first paragraph from the page
-* `!quit` - disconects the bot only if the command is given by the owner(see Config: owner)
+* `!quit [#channel]+` - disconnects the bot only if the command is given by the owner(see Config: owner)
+If no arguments are given, all connected channels are disconnected, if some
+arguments are provided the bot checks the channel names and disconnects only the
+valid ones(see Config: channels), if no channel is "alive" then the bot closes
 * `!answer` - you'll find the answer through this command
 * `!weather <city>` or `!weather <city>, <state or country>`
 
@@ -38,12 +44,11 @@ Config
 See `src/config.py`:
 
 * `search` - specifies the reply link for `!search <nick>`
-* `owner` - the user(s) who are allowed to `!quit` the bot(_list_ data type)
+* `owner` - the user(s) who are allowed to send a specific command to the bot(e.g. `!quit`) the bot(_list_ data type)
 * `log` - path to the logging directory, all logs are stored here
-* `quit_msg` - message to quit with, e.g. PPyBot has left #botwar ("Bye bye")
 * `server` - server to connect to(default: chat.freenode.net)
 * `port` - port number to use(default: 6667)
-* `channel` - channel to connect to
+* `channels` - a list of channel(s) to connect to
 * `nick` - bot's name
 * `realName` - bot's "real name"
 
