@@ -12,6 +12,7 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
     If the user is found in the owners list then the bot is closed, otherwise a
     message is sent to the channel
     If an argument is an invalid channel name it is simply ignored
+    If there are no more channels active the bot closes
     """
     response = ''
     leave = []
