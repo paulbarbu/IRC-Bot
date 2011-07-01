@@ -4,8 +4,8 @@ A simple IRC Bot written in Python
 To start it just `cd` to the `src` directory and type `./ircbot.py`, although
 before using the bot it's recommended to check the config first.
 
-The bot can handle multiple channels at a time, also it can be queried(`/query
-PPyBot`) if you want to have a _private_ discussion
+The bot can handle multiple channels at a time, also if you want to have a _private_ discussion it can be queried (`/query
+PPyBot`).
 
 Commands
 ========
