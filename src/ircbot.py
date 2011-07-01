@@ -129,6 +129,11 @@ else:
                 #send the response and log it
                 if len(response):
                     if type(response) == type(str()):
+                        crlf_pos = response[:-2].find('\r\n')+2
+                        if -1 != crlf_pos:
+                            response = response[:crlf_pos] + \
+                                    config.privmsg + response[crlf_pos:]
+
                         response = config.privmsg + response
                     else:
                         response = ' '.join(response)
