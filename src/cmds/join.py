@@ -18,7 +18,7 @@ def join(command): # !join <#channel>+
     if -1 != pos: #notice the space
         sender = get_sender(command)
 
-        if sender in config.owner:
+        if sender in config.owner: #this command can be run only by the owner(s)
             response = []
             join_chans = []
             response.append(config.channel_join)
