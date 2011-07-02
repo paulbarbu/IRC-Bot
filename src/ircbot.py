@@ -93,6 +93,7 @@ else:
             buff = buff + receive
             response = ''
 
+            print receive
             if -1 != buff.find('\n'):
                 command = buff[0 : buff.find('\n')]
                 buff = buff[buff.find('\n')+1 : ]
@@ -131,6 +132,9 @@ else:
 
                                     response = get_response(command)
                                     break
+
+                elif 0 == command.find(config.close_link):# Ping timeout
+                    config.alive = False
 
                 #send the response and log it
                 if len(response):

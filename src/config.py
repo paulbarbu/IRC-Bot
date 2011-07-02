@@ -53,6 +53,8 @@ privmsg = 'PRIVMSG ' #notice the space
 
 quit = 'QUIT\r\n'
 
+close_link = 'ERROR :Closing Link: ' #notice the space
+
 #connection should stay alive
 alive = True
 
