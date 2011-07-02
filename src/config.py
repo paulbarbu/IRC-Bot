@@ -37,6 +37,7 @@ cmds_list = [
         'help',
         'weather',
         'join',
+        'channels',
         ]
 
 #### Users should NOT modify below!
