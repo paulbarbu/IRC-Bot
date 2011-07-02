@@ -63,7 +63,7 @@ Config
 See `src/config.py`:
 
 * `search` - specifies the reply link for `!search <nick>`
-* `owner` - the user(s) who are allowed to send a specific command to the bot(e.g. `!quit`) the bot(_list_ data type)
+* `owner` - the user(s) who are allowed to send a specific command to the bot(e.g. `!quit`)
 * `log` - path to the logging directory, all logs are stored here
 * `server` - server to connect to(default: chat.freenode.net)
 * `port` - port number to use(default: 6667)
