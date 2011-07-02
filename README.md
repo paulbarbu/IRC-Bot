@@ -56,6 +56,8 @@ Dependencies
 ============
 * `!weather` and `!wiki` module depends on
   [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "BeautifulSoup")
+    * `!weather` depends on _BeautifulStoneSoup_ (XML)
+    * `!wiki` depends on _BeautifulSoup_ (HTML)
 
 License
 =======
