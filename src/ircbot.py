@@ -91,7 +91,7 @@ else:
 
         print content
 
-        while config.channels_left:
+        while len(config.channels):
             receive = irc.recv(4096)
             buff = buff + receive
             response = ''
@@ -145,10 +145,9 @@ else:
                         if -1 != bot_kick.find(' ' + config.nick + ' '):
                             #a valid KICK command
                             config.channels.remove(channel)
-                            config.channels_left = config.channels_left - 1#TODO remove
 
                 elif 0 == command.find(config.close_link): #Ping timeout
-                    config.channels_left = 0
+                    config.channels = []
 
                 if len(response): #send the response and log it
                     if type(response) == type(str()):
@@ -184,7 +183,7 @@ else:
 
 
                 buff = ""
-        #}while config.channels_left
+        #}while len(config.channels)
 
         #Quit server
         irc.send(config.quit)
