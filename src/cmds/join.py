@@ -27,19 +27,20 @@ def join(command): # !join <#channel>+
 
             for channel in arg_channels[1:]:
                 channel = channel.strip('\r')
-                if len(channel) and '#' == channel[0] and -1 == channel.find(' '):
+                if not in config.channels and len(channel) and '#' == channel[0] \
+                        and -1 == channel.find(' '): # valid channel name
                     join_chans.append(channel)
                     config.channels.append(channel)
 
             if len(join_chans):
                 response.append(','.join(join_chans))
-                config.channels_left = config.channels_left + len(join_chans)
+                config.channels_left = config.channels_left + len(join_chans)#TODO remove this
             else:
-                response = 'Usage: !join <#channel>+'
+                response = 'Usage: !join <#channel >+'
 
         else:
             response = 'This command can be run only by the owner(s)!'
     else:
-        response = 'Usage: !join <#channel>+'
+        response = 'Usage: !join <#channel >+'
 
     return response

@@ -20,6 +20,9 @@ cfg = check_cfg(config.owner, config.search, config.server, config.nick,
 if not cfg: #Some config-directives were empty
     sys.exit(err.INVALID_CFG)
 
+#No duplicates in channels list
+config.channels = list(set(config.channels))
+
 #Any valid channel starts with a '#' character and has no spaces
 if not check_channel(config.channels):
     sys.exit(err.INVALID_CHANNELS)
@@ -132,13 +135,17 @@ else:
                                     response = get_response(command)
                                     break
 
-                elif -1 != command.find(config.kick): #kick command issued
+                elif -1 != command.find(config.kick): #KICK command issued
                     bot_kick = command[command.find(config.kick) + len(config.kick):]
 
                     if '#' == bot_kick[0]:
+                        chan_pos = bot_kick.find(' ')
+                        channel = bot_kick[:chan_pos]
+
                         if -1 != bot_kick.find(' ' + config.nick + ' '):
                             #a valid KICK command
-                            config.channels_left = config.channels_left - 1
+                            config.channels.remove(channel)
+                            config.channels_left = config.channels_left - 1#TODO remove
 
                 elif 0 == command.find(config.close_link): #Ping timeout
                     config.channels_left = 0

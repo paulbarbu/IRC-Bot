@@ -32,7 +32,7 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
                 chan = chan.strip('\r')
                 if chan in config.channels: #valid channel
                     leave.append(chan)
-                    config.channels_left = config.channels_left - 1
+                    config.channels_left = config.channels_left - 1#TODO remove
                     config.channels.remove(chan)
 
             if len(leave):
@@ -42,7 +42,7 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
 
         else: #no arguments supplied, quitting all channels
             response.append(','.join(config.channels))
-            config.channels_left = 0
+            config.channels_left = 0#TODO replace: config.channels = []
 
     else:
         response = 'This command can be run only by the owner(s)!'
