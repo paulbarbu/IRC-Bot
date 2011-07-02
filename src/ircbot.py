@@ -88,12 +88,11 @@ else:
 
             print content
 
-        while config.alive:
+        while config.alive and config.channels_left:
             receive = irc.recv(4096)
             buff = buff + receive
             response = ''
 
-            print receive
             if -1 != buff.find('\n'):
                 command = buff[0 : buff.find('\n')]
                 buff = buff[buff.find('\n')+1 : ]
@@ -133,7 +132,15 @@ else:
                                     response = get_response(command)
                                     break
 
-                elif 0 == command.find(config.close_link):# Ping timeout
+                elif -1 != command.find(config.kick): #the bot was kicked
+                    command = command[command.find(config.kick) + len(config.kick):]
+
+                    if '#' == command[0]:
+                        if -1 != command.find(' ' + config.nick + ' '):
+                            #a valid KICK command
+                            config.channels_left = config.channels_left - 1
+
+                elif 0 == command.find(config.close_link): #Ping timeout
                     config.alive = False
 
                 #send the response and log it

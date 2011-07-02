@@ -24,7 +24,7 @@ realName = 'Paul Python Bot'
 channels = [
     '#ppybot',
     '#pppybot',
-    '#pybot',
+    '#pybbot',
     ]
 
 #commands list
@@ -42,7 +42,7 @@ cmds_list = [
 #log directory, logs will be stored at this location
 log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 
-#protocol-required messages
+#protocol-required messages/signals
 nick_auth = 'NICK ' + nick + '\r\n'
 user_auth = 'USER ' + nick + ' ' + nick + ' ' + nick + ' :' + realName + '\r\n'
 
@@ -54,6 +54,8 @@ privmsg = 'PRIVMSG ' #notice the space
 quit = 'QUIT\r\n'
 
 close_link = 'ERROR :Closing Link: ' #notice the space
+
+kick = ' KICK ' #notice the spaces
 
 #connection should stay alive
 alive = True
