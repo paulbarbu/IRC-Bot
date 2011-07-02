@@ -77,16 +77,16 @@ else:
         irc.send(config.user_auth)
 
         #Join channel(s)
-        for channel in config.channels:
-            irc.send(config.channel_join + channel + '\r\n')
-            content = 'Joined: {0}'.format(channel)
+        channel_list = ','.join(config.channels)
+        irc.send(config.channel_join + channel_list + '\r\n')
+        content = 'Joined: {0}'.format(channel_list)
 
-            try:
-                log_write(logfile, dt['time'], ' <> ', content + '\n')
-            except IOError:
-                print err.log_failure
+        try:
+            log_write(logfile, dt['time'], ' <> ', content + '\n')
+        except IOError:
+            print err.log_failure
 
-            print content
+        print content
 
         while config.channels_left:
             receive = irc.recv(4096)
