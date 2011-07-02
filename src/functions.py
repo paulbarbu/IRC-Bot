@@ -1,4 +1,4 @@
-#Functions fro IRC Bot
+#Functions for IRC Bot
 try:
     import config
     import err
@@ -14,9 +14,10 @@ def get_sender(msg):
     return msg.split(":")[1].split('!')[0]
 
 def log_write(log, pre, separator, content):
-    """Writes 'pre separator content' in 'log'
+    """Writes a log line into the logs
 
-    Opens file 'log' in 'a' mode and appends the 'pre separator content'
+    Opens file 'log' in append mode and appends the 'content' preceded by 'pre'
+    and 'separator'
     """
 
 
@@ -42,9 +43,9 @@ def get_datetime():
     return dt
 
 def check_cfg(*items):
-    """Checks configuration directives to be set
+    """Checks configuration directives to be non-empty
 
-    Return True if configuration directives are not empty, else returns False
+    Return True if all configuration directives are not empty, else returns False
     """
     for arg in items:
         if not len(arg):

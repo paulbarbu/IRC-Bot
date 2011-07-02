@@ -4,7 +4,7 @@ try:
 except ImportError:
     sys.exit(err.load_module)
 
-def search(command): # !google <nick>
+def search(command): # !search <nick>
     """Tells <nick> to use a search engine
 
     Uses config.search to give the user an URL representing the search engine

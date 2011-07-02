@@ -4,7 +4,7 @@ try:
 except ImportError:
     sys.exit(err.load_module)
 
-def help(command):
+def help(command): # !help
     """Returns a string containing all the available commands
 
     """

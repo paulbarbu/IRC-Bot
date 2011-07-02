@@ -27,6 +27,7 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
 
         if -1 != pos: #argument(s) supplied
             arg_channels = command[pos:].split(' ')
+
             for chan in arg_channels[1:]:
                 chan = chan.strip('\r')
                 if chan in config.channels: #valid channel
@@ -37,6 +38,7 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
                 response.append(','.join(leave))
             else:
                 response = 'Invalid channel name(s)!'
+
         else: #no arguments supplied, quitting all channels
             response.append(','.join(config.channels))
             config.channels_left = 0

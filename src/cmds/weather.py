@@ -7,10 +7,9 @@ try:
 except ImportError:
     sys.exit(err.load_module)
 
-def weather(command):
+def weather(command): # !weather <city> or !weather <city>, <state or country>
     """Returns a message containing the weather conditions from a location
 
-    A message ready to be sent on IRC containing weather informations
     """
     response = ''
     conditions = ''
@@ -25,16 +24,17 @@ def weather(command):
             response = conditions
         else:
             response = conditions['location'] + ' - ' + conditions['temp'] + \
-            ' - ' + conditions['weather']
+                    ' - ' + conditions['weather'] + ' - Provided by: ' + \
+                    'Weather Underground, Inc.'
 
 
     return str(response)
 
 def get_weather(location):
     """Return a dictionary with the <weather>, <full>, <temperature_string> tags
-    from the XML
+    from the XML provided by http://api.wunderground.com
 
-    The dictionary "conditions" will hold 3 values at the end(location, weather,
+    The dictionary 'conditions' will hold 3 values at the end(location, weather,
     temperature)
     """
     conditions = {}

@@ -1,4 +1,4 @@
-#errors
+#Errors fot the IRC Bot
 log_failure = 'Could not write to logs!'
 c_inexistent = 'Command "{0}" unavailable!'
 c_invalid = 'Command "{0}" has not a valid function to call!'

@@ -4,7 +4,7 @@ try:
 except ImportError:
     sys.exit(err.load_module)
 
-def answer(command):
+def answer(command): # !answer
     """Replies the ultimate answer to the user
 
     """

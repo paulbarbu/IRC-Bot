@@ -1,25 +1,26 @@
 #! /usr/bin/env python2.7
+
 #Main file for IRC Bot
 
-import socket
-import sys
-import re
-
-#these modules must exist in cwd
 try:
+    import socket
+    import sys
+    import re
+
     import config
     from functions import *
     import err
 except ImportError:
     sys.exit(err.load_module)
 
-
+#None of these configuration directives can be empty, so they are checked
 cfg = check_cfg(config.owner, config.search, config.server, config.nick,
         config.realName, config.log, config.cmds_list, config.quit)
 
-if not cfg:
+if not cfg: #Some config-directives were empty
     sys.exit(err.invalid_cfg)
 
+#Any valid channel starts with a '#' character and has no spaces
 if not check_channel(config.channels):
     sys.exit(err.invalid_channels)
 
@@ -49,7 +50,7 @@ except socket.socket:
 else:
     try:
         irc.connect((config.server, config.port))
-        receive = irc.recv(4096) #TODO debug with this line commented and remove buff = ""
+        receive = irc.recv(4096)
     except IOError:
         content = 'Could not connect to {0}:{1}'.format(config.server, config.port)
 
@@ -71,11 +72,11 @@ else:
 
         print content
 
-        #Join server & authenticate
+        #Authenticate
         irc.send(config.nick_auth)
         irc.send(config.user_auth)
 
-        #Join channel
+        #Join channel(s)
         for channel in config.channels:
             irc.send(config.channel_join + channel + '\r\n')
             content = 'Joined: {0}'.format(channel)
@@ -107,18 +108,22 @@ else:
                     #search in commands list only if the message from server
                     #contains two '!'(exclamation marks) in it
                     #one from command, the other from the user's nick
+
                     for k in config.cmds_list:
                         if -1 != command.find('!' + k) and \
                             (' ' == command[command.rfind('!' + k) + len(k) + 1] \
                             or '\r' == command[command.rfind('!' + k) + len(k) +1]):
-                            try:
+                            #a command is valid only if it's at the beginning of
+                            #the message
+
+                            try: #the needed module is imported from 'cmds/'
                                 mod = 'cmds.' + k
                                 mod = __import__(mod, globals(), locals(), [k])
                             except ImportError: #inexistent module
                                     response = err.c_inexistent.format(k)
                             else:
 
-                                try:
+                                try: #the module is 'executed'
                                     get_response = getattr(mod, k)
                                 except AttributeError: #function not defined in module
                                     response = err.c_invalid.format(k)

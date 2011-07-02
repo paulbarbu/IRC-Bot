@@ -4,7 +4,7 @@ try:
 except ImportError:
     sys.exit(err.load_module)
 
-def about(command):
+def about(command): # !about
     """Returns a string containing infos about the bot
 
     """
