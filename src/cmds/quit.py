@@ -3,7 +3,7 @@ try:
     import err
     from functions import *
 except ImportError:
-    sys.exit(err.load_module)
+    sys.exit(err.LOAD_MODULE)
 
 def quit(command): # !quit [chan_name]+ -> PART #channel
     """Quits the bot from a channel(or more) or from all channels if no

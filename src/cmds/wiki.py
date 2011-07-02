@@ -4,7 +4,7 @@ try:
     import config
     import err
 except ImportError:
-    sys.exit(err.load_module)
+    sys.exit(err.LOAD_MODULE)
 
 def wiki(command): # !wiki <search term>
     """Returns a wiki link and the first paragraph of the page

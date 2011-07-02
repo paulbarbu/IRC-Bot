@@ -2,7 +2,7 @@ try:
     import config
     import err
 except ImportError:
-    sys.exit(err.load_module)
+    sys.exit(err.LOAD_MODULE)
 
 def help(command): # !help
     """Returns a string containing all the available commands

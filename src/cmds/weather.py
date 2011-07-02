@@ -5,7 +5,7 @@ try:
     import config
     import err
 except ImportError:
-    sys.exit(err.load_module)
+    sys.exit(err.LOAD_MODULE)
 
 def weather(command): # !weather <city> or !weather <city>, <state or country>
     """Returns a message containing the weather conditions from a location

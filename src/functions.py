@@ -4,7 +4,7 @@ try:
     import err
     import datetime
 except ImportError:
-    sys.exit(err.load_module)
+    sys.exit(err.LOAD_MODULE)
 
 def get_sender(msg):
     """Returns the user(string) that sent the message
