@@ -27,6 +27,7 @@ Commands
     * see Config: _owner_
 * `!channels`
     * replies a list containing the channels the bot is connected to
+    * see Config: _owner_
 * `!help`
     * list all available commands
 * `!answer`
