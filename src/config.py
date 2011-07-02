@@ -36,6 +36,7 @@ cmds_list = [
         'about',
         'help',
         'weather',
+        'join',
         ]
 
 #### Users should NOT modify below!

@@ -33,6 +33,7 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
                 if chan in config.channels: #valid channel
                     leave.append(chan)
                     config.channels_left = config.channels_left - 1
+                    config.channels.remove(chan)
 
             if len(leave):
                 response.append(','.join(leave))
