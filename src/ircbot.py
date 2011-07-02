@@ -88,7 +88,7 @@ else:
 
             print content
 
-        while config.alive and config.channels_left:
+        while config.channels_left:
             receive = irc.recv(4096)
             buff = buff + receive
             response = ''
@@ -132,19 +132,18 @@ else:
                                     response = get_response(command)
                                     break
 
-                elif -1 != command.find(config.kick): #the bot was kicked
-                    command = command[command.find(config.kick) + len(config.kick):]
+                elif -1 != command.find(config.kick): #kick command issued
+                    bot_kick = command[command.find(config.kick) + len(config.kick):]
 
-                    if '#' == command[0]:
-                        if -1 != command.find(' ' + config.nick + ' '):
+                    if '#' == bot_kick[0]:
+                        if -1 != bot_kick.find(' ' + config.nick + ' '):
                             #a valid KICK command
                             config.channels_left = config.channels_left - 1
 
                 elif 0 == command.find(config.close_link): #Ping timeout
-                    config.alive = False
+                    config.channels_left = 0
 
-                #send the response and log it
-                if len(response):
+                if len(response): #send the response and log it
                     if type(response) == type(str()):
                         #the module sent just a string so
                         #I have to compose the command
@@ -166,13 +165,19 @@ else:
 
                     try:
                         dt = get_datetime()
-                        log_write(logfile, dt['time'], ' <> ', command + '\n')
                         log_write(logfile, dt['time'], ' <> ', response)
                     except IOError:
                         print err.log_failure
 
+                try: #log the command
+                    dt = get_datetime()
+                    log_write(logfile, dt['time'], ' <> ', command + '\n')
+                except IOError:
+                    print err.log_failure
+
+
                 buff = ""
-        #}while config.alive
+        #}while config.channels_left
 
         #Quit server
         irc.send(config.quit)

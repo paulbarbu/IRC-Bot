@@ -57,8 +57,5 @@ close_link = 'ERROR :Closing Link: ' #notice the space
 
 kick = ' KICK ' #notice the spaces
 
-#connection should stay alive
-alive = True
-
 #needed by !quit module, if the bot is not connected to any channel it closes
 channels_left = len(channels)

@@ -43,10 +43,6 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
             response.append(','.join(config.channels))
             config.channels_left = 0
 
-        if 0 >= config.channels_left:
-            config.alive = False
-
-
     else:
         response = 'This command can be run only by the owner(s)!'
 
