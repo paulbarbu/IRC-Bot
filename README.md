@@ -9,15 +9,31 @@ PPyBot`).
 
 Commands
 ========
-* `!search <nick>` - tells \<nick\> to use a search engine (see Config: search)
-* `!wiki <search term>` - replies a wikipedia link for \<search term\> along
-  with the first paragraph from the page
-* `!quit [#channel]+` - disconnects the bot only if the command is given by the owner(see Config: owner)
+* `!search <nick>`
+    * tells \<nick\> to use a search engine
+    * see Config: _search_
+* `!wiki <search term>`
+    * replies a wikipedia link for \<search term\> along with the first 
+    paragraph from the page
+* `!quit [#channel ]+`
+    * disconnects the bot from the given list of channels
     * if no arguments are given, all connected channels are disconnected
-    * if some arguments are provided the bot checks the channel names and disconnects only the valid ones(see Config: channels)
+    * if some arguments are provided the bot checks the channel names and disconnects only the valid ones
     * if no channel is "alive" then the bot closes
-* `!answer` - you'll find the answer through this command
+    * Example: `!quit #foo #bar` - quits from #foo and #bar
+    * see Config: _owner_, _channels_
+* `!join <#channel >+`
+    * the bot joins the given channels, minimum one channel name must be supplied
+    * see Config: _owner_
+* `!help`
+    * list all available commands
+* `!answer`
+    * you'll find the answer through this command
 * `!weather <city>` or `!weather <city>, <state or country>`
+    * replies some info related to the current weather conditions from the
+      given location
+* `!about`
+    * a few words about this software
 
 Adding commands
 ===============
