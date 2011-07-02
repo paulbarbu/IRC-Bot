@@ -15,6 +15,7 @@ def channels(command): # !channels
 
     if sender in config.owner: #command can be run only by the owner(s)
         response = ', '.join(config.channels)
+        response = config.nick + ' is connected to: ' + response
     else:
         response = 'This command can be run only by the owner(s)!'
 
