@@ -25,6 +25,8 @@ Commands
 * `!join <#channel >+`
     * the bot joins the given channels, minimum one channel name must be supplied
     * see Config: _owner_
+* `!channels`
+    * replies a list containing the channels the bot is connected to
 * `!help`
     * list all available commands
 * `!answer`
