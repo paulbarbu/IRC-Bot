@@ -28,8 +28,8 @@ if not check_channel(config.channels):
 dt = get_datetime()
 logfile = config.log + dt['date'] + '.log'
 
-content = 'Started on {0}:{1}, with nick: {2}'.format(config.server,
-        config.port, config.nick)
+content = 'Started on {0}:{1}, with nick: {2}'.format(config.server, config.port,
+        config.nick)
 
 try:
     log_write(logfile, dt['time'], ' <> ', content + '\n')
