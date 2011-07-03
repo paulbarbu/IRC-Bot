@@ -12,6 +12,9 @@ Commands
 * `!search <nick>`
     * tells \<nick\> to use a search engine
     * see Config: _search_
+* `!google <search term>`
+    * returns a link and a short description of the first Google search result
+    * see Dependencies: _!google_
 * `!wiki <search term>`
     * replies a wikipedia link for \<search term\> along with the first 
     paragraph from the page
@@ -77,6 +80,10 @@ Dependencies
   [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "BeautifulSoup")
     * `!weather` depends on _BeautifulStoneSoup_ (XML)
     * `!wiki` depends on _BeautifulSoup_ (HTML)
+* `!google` module depends on 
+[Google Custom Search API](http://code.google.com/p/google-api-python-client/ "Custom Search API")
+    * before using the bot please see the 
+[installation page](http://code.google.com/p/google-api-python-client/wiki/Installation "Custom Search API Installation")
 
 License
 =======
