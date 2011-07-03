@@ -41,6 +41,8 @@ Commands
 * `!about`
     * a few words about this software
 
+Total: _10_ commands
+
 Adding commands
 ===============
 1. In `src/config.py` you must add the name of the command to the `cmds_list`'s
