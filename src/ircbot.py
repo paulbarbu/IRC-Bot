@@ -20,8 +20,9 @@ cfg = check_cfg(config.owner, config.search, config.server, config.nick,
 if not cfg: #Some config-directives were empty
     sys.exit(err.INVALID_CFG)
 
-#No duplicates in channels list
+#No duplicates in channels and commands list
 config.channels = list(set(config.channels))
+config.cmds_list = list(set(config.cmds_list))
 
 #Any valid channel starts with a '#' character and has no spaces
 if not check_channel(config.channels):
