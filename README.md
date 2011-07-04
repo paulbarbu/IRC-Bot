@@ -42,8 +42,10 @@ Commands
     * a few words about this software
 * `!mball`
     * the famous Magic Ball
+* `!uptime`
+    * shows current uptime of the bot
 
-Total: _11_ commands
+Total: _12_ commands
 
 Adding commands
 ===============

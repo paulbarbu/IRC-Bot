@@ -1,6 +1,7 @@
 #Configuration file for IRC Bot
 try:
     import os
+    import time
 except ImportError:
     sys.exit(err.load_module)
 
@@ -40,6 +41,7 @@ cmds_list = [
         'channels',
         'google',
         'mball',
+        'uptime',
         ]
 
 #### Users should NOT modify below!
@@ -60,3 +62,5 @@ quit = 'QUIT\r\n'
 close_link = 'ERROR :Closing Link: ' #notice the space
 
 kick = ' KICK ' #notice the spaces
+
+start_time = time.time()
