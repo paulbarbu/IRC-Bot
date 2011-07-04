@@ -39,6 +39,7 @@ cmds_list = [
         'join',
         'channels',
         'google',
+        'mball',
         ]
 
 #### Users should NOT modify below!
