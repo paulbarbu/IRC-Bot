@@ -40,8 +40,10 @@ Commands
       given location
 * `!about`
     * a few words about this software
+* `!mball`
+    * the famous Magic Ball
 
-Total: _10_ commands
+Total: _11_ commands
 
 Adding commands
 ===============
