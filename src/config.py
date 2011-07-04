@@ -42,6 +42,7 @@ cmds_list = [
         'google',
         'mball',
         'uptime',
+        'so',
         ]
 
 #### Users should NOT modify below!

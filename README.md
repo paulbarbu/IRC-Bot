@@ -44,8 +44,11 @@ Commands
     * the famous Magic Ball
 * `!uptime`
     * shows current uptime of the bot
+* `!so <search term>`
+    * replies the first question's title and URL from the search result
+    * see Dependencies: _!so_
 
-Total: _12_ commands
+Total: _13_ commands
 
 Adding commands
 ===============
@@ -90,6 +93,8 @@ Dependencies
 [Google Custom Search API](http://code.google.com/p/google-api-python-client/ "Custom Search API")
     * before using the bot please see the 
 [installation page](http://code.google.com/p/google-api-python-client/wiki/Installation "Custom Search API Installation")
+* `!so` module depends on 
+[StackExchange API](http://stackapps.com/questions/198/py-stackexchange-an-api-wrapper-for-python "Py-StackExchange")
 
 License
 =======
