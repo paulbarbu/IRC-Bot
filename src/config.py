@@ -61,3 +61,4 @@ close_link = 'ERROR :Closing Link: ' #notice the space
 
 kick = ' KICK ' #notice the spaces
 
+start_time = time.time()

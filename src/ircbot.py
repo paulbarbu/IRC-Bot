@@ -10,8 +10,6 @@ import config
 from functions import *
 import err
 
-start_time = time.time()
-
 #None of these configuration directives can be empty, so they are checked
 cfg = check_cfg(config.owner, config.search, config.server, config.nick,
         config.realName, config.log, config.cmds_list, config.quit)
