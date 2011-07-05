@@ -9,9 +9,6 @@ PPyBot`).
 
 Commands
 ========
-* `!search <nick>`
-    * tells \<nick\> to use a search engine
-    * see Config: _search_
 * `!google <search term>`
     * returns a link and a short description of the first Google search result
     * see Dependencies: _!google_
@@ -48,7 +45,7 @@ Commands
     * replies the first question's title and URL from the search result
     * see Dependencies: _!so_
 
-Total: _13_ commands
+Total: _12_ commands
 
 Adding commands
 ===============

@@ -27,7 +27,6 @@ channels = [
 
 #commands list
 cmds_list = [
-        'search',
         'wiki',
         'quit',
         'answer',
