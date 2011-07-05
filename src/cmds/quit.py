@@ -18,7 +18,7 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
 
     if sender in config.owner: #only the owner(s) can run this command
         response = []
-        response.append(config.channel_part)
+        response.append('PART')
 
         pos = command.find('!quit ')
 

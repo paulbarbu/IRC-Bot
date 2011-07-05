@@ -18,7 +18,7 @@ def join(command): # !join <#channel>+
         if sender in config.owner: #this command can be run only by the owner(s)
             response = []
             join_chans = []
-            response.append(config.channel_join)
+            response.append('JOIN ')
 
             arg_channels = command[pos:].split(' ')
 

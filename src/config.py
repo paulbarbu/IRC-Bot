@@ -41,15 +41,4 @@ cmds_list = [
 #log directory, logs will be stored at this location
 log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 
-#protocol-required messages/signals
-nick_auth = 'NICK ' + nick + '\r\n' #TODO remove
-user_auth = 'USER ' + nick + ' ' + nick + ' ' + nick + ' :' + realName + '\r\n'
-#TODO remove
-
-channel_join = 'JOIN ' #notice the space #TODO remove
-channel_part = 'PART' #TODO remove
-
-privmsg = 'PRIVMSG ' #notice the space TODO remove
-quit = 'QUIT\r\n' #TODO remove
-
 start_time = time.time()

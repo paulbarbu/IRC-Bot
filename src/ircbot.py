@@ -13,7 +13,7 @@ import err
 
 #None of these configuration directives can be empty, so they are checked
 cfg = check_cfg(config.owner, config.server, config.nick,
-        config.realName, config.log, config.cmds_list, config.quit)
+        config.realName, config.log, config.cmds_list)
 
 if not cfg: #Some config-directives were empty
     sys.exit(err.INVALID_CFG)
@@ -75,12 +75,13 @@ else:
         print content
 
         #Authenticate
-        irc.send(config.nick_auth)
-        irc.send(config.user_auth)
+        irc.send('NICK ' + config.nick + '\r\n')
+        irc.send('USER ' + config.nick + ' ' + config.nick + ' ' + config.nick + ' :' + \
+                config.realName + '\r\n')
 
         #Join channel(s)
         channel_list = ','.join(config.channels)
-        irc.send(config.channel_join + channel_list + '\r\n')
+        irc.send('JOIN ' + channel_list + '\r\n')
         content = 'Joined: {0}'.format(channel_list)
 
         try:
@@ -181,10 +182,10 @@ else:
         #}while len(config.channels)
 
         #Quit server
-        irc.send(config.quit)
+        irc.send('QUIT\r\n')
         dt = get_datetime()
         try:
-            log_write(logfile, dt['time'], ' <> ', config.quit)
+            log_write(logfile, dt['time'], ' <> ', 'QUIT\r\n')
         except IOError:
             print err.LOG_FAILURE
 

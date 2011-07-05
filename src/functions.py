@@ -70,12 +70,12 @@ def send_to(command):
     """
     sendto = '' #can be a user name(/query) or a channel
 
-    if -1 != command.find(config.privmsg + config.nick + ' :'):
+    if -1 != command.find('PRIVMSG ' + config.nick + ' :'):
         #command comes from a query
         sendto = get_sender(command)
     else:
-        command = command[command.find(config.privmsg + '#'):]
+        command = command[command.find('PRIVMSG #'):]
         command = command[command.find(' ')+1:]
         sendto = command[:command.find(' ')]
 
-    return  config.privmsg + sendto + ' :'
+    return 'PRIVMSG ' + sendto + ' :'

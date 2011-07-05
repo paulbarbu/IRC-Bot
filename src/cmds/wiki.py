@@ -37,7 +37,7 @@ def get_para(wlink):
         soup = BeautifulSoup(page)
         msg = ''.join(soup.find('div', { 'id' : 'bodyContent'}).p.findAll(text=True))
 
-        while (500 - len(config.privmsg)) < len(msg): #the paragraph cannot be
+        while 460 < len(msg): #the paragraph cannot be
             #longer than 510 characters including the protocol command
             pos = msg.rfind('.')
             msg = msg[:pos]
