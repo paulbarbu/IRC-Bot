@@ -137,7 +137,6 @@ else:
 
                 elif 'KICK' == components['action']: #KICK command issued
                     if config.nick == components['optional_args'][1]:
-                        print '<KICKED>'
                         config.channels.remove(components['optional_args'][0])
 
                 elif 'QUIT' == components['action'] and \
