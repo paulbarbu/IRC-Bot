@@ -1,10 +1,8 @@
 #Functions for IRC Bot
-try:
-    import config
-    import err
-    import datetime
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+
+import config
+import err
+import datetime
 
 def get_sender(msg):
     """Returns the user(string) that sent the message

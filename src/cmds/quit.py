@@ -1,9 +1,6 @@
-try:
-    import config
-    import err
-    from functions import *
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+import err
+from functions import *
 
 def quit(command): # !quit [chan_name]+ -> PART #channel
     """Quits the bot from a channel(or more) or from all channels if no

@@ -1,8 +1,5 @@
-try:
-    import config
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+import err
 
 def search(command): # !search <nick>
     """Tells <nick> to use a search engine

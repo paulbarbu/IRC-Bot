@@ -1,8 +1,5 @@
-try:
-    import config
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+import err
 
 def answer(command): # !answer
     """Replies the ultimate answer to the user

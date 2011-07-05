@@ -1,9 +1,6 @@
-try:
-    import err
-    import config
-    import random
-except ImportError:
-    sys.exit(err.load_module)
+import err
+import config
+import random
 
 def mball(command):
     """Tells you what your future is

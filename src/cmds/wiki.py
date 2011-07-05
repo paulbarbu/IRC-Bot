@@ -1,10 +1,7 @@
-try:
-    from BeautifulSoup import BeautifulSoup
-    import urllib2
-    import config
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+from BeautifulSoup import BeautifulSoup
+import urllib2
+import config
+import err
 
 def wiki(command): # !wiki <search term>
     """Returns a wiki link and the first paragraph of the page

@@ -1,9 +1,6 @@
-try:
-    import config
-    from functions import *
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+from functions import *
+import err
 
 def channels(command): # !channels
     """Returns a string containing the channels the bot is currently connected to

@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-try:
-    import config
-    import err
-    from apiclient.discovery import build
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+import err
+from apiclient.discovery import build
 
 def google(command): # !google <search term>
     """Gets the first result from a google search

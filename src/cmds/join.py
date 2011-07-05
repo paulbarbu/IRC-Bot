@@ -1,9 +1,6 @@
-try:
-    import config
-    from functions import *
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+from functions import *
+import err
 
 def join(command): # !join <#channel>+
     """Joins the given channel(s)

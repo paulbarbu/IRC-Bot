@@ -1,10 +1,7 @@
-try:
-    import err
-    import config
-    import time
-    import datetime
-except ImportError:
-    sys.exit(err.load_module)
+import err
+import config
+import time
+import datetime
 
 def uptime(command):
     """computes the uptime of the bot

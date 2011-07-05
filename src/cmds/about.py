@@ -1,8 +1,5 @@
-try:
-    import config
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+import err
 
 def about(command): # !about
     """Returns a string containing infos about the bot

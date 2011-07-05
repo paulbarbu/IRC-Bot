@@ -1,11 +1,9 @@
 # coding: latin-1
-try:
-    from BeautifulSoup import BeautifulStoneSoup
-    import urllib
-    import config
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+
+from BeautifulSoup import BeautifulStoneSoup
+import urllib
+import config
+import err
 
 def weather(command): # !weather <city> or !weather <city>, <state or country>
     """Returns a message containing the weather conditions from a location

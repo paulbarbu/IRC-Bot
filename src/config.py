@@ -1,9 +1,6 @@
 #Configuration file for IRC Bot
-try:
-    import os
-    import time
-except ImportError:
-    sys.exit(err.load_module)
+import os
+import time
 
 #some commands can be executed only if the user's nick is found in this list
 owner = [
@@ -64,4 +61,3 @@ close_link = 'ERROR :Closing Link: ' #notice the space
 
 kick = ' KICK ' #notice the spaces
 
-start_time = time.time()

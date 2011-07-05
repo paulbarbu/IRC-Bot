@@ -2,16 +2,15 @@
 
 #Main file for IRC Bot
 
-try:
-    import socket
-    import sys
-    import re
+import socket
+import sys
+import re
 
-    import config
-    from functions import *
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+from functions import *
+import err
+
+start_time = time.time()
 
 #None of these configuration directives can be empty, so they are checked
 cfg = check_cfg(config.owner, config.search, config.server, config.nick,

@@ -1,8 +1,5 @@
-try:
-    import config
-    import err
-except ImportError:
-    sys.exit(err.LOAD_MODULE)
+import config
+import err
 
 def help(command): # !help
     """Returns a string containing all the available commands
