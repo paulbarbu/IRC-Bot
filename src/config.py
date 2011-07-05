@@ -18,8 +18,6 @@ realName = 'Paul Python Bot'
 
 channels = [
     '#ppybot',
-    '#pppybot',
-    '#pybbot',
     ]
 
 #commands list

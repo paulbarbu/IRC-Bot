@@ -11,7 +11,7 @@ from functions import *
 import err
 
 #None of these configuration directives can be empty, so they are checked
-cfg = check_cfg(config.owner, config.search, config.server, config.nick,
+cfg = check_cfg(config.owner, config.server, config.nick,
         config.realName, config.log, config.cmds_list, config.quit)
 
 if not cfg: #Some config-directives were empty
