@@ -42,18 +42,14 @@ cmds_list = [
 log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 
 #protocol-required messages/signals
-nick_auth = 'NICK ' + nick + '\r\n'
+nick_auth = 'NICK ' + nick + '\r\n' #TODO remove
 user_auth = 'USER ' + nick + ' ' + nick + ' ' + nick + ' :' + realName + '\r\n'
+#TODO remove
 
-channel_join = 'JOIN ' #notice the space
-channel_part = 'PART'
+channel_join = 'JOIN ' #notice the space #TODO remove
+channel_part = 'PART' #TODO remove
 
-privmsg = 'PRIVMSG ' #notice the space
-
-quit = 'QUIT\r\n'
-
-close_link = 'ERROR :Closing Link: ' #notice the space
-
-kick = ' KICK ' #notice the spaces
+privmsg = 'PRIVMSG ' #notice the space TODO remove
+quit = 'QUIT\r\n' #TODO remove
 
 start_time = time.time()
