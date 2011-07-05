@@ -7,6 +7,7 @@ import sys
 import re
 
 import config
+import parser
 from functions import *
 import err
 
@@ -98,22 +99,22 @@ else:
                 command = buff[0 : buff.find('\n')]
                 buff = buff[buff.find('\n')+1 : ]
 
-                if -1 != command.find('PING'): #PING PONG
+                components = parser.parse_command(command)
+
+                if 'PING' == components['action']: #PING PONG
                     response = []
                     response.append('PONG')
-                    response.append(command.split()[1])
+                    response.append(components['arguments'])
 
-                elif 1 < len(re.findall('!', command)) and \
-                    ':' == command[command.rfind('!') - 1] and \
-                    ' ' == command[command.rfind('!') - 2]:
-                    #search in commands list only if the message from server
-                    #contains two '!'(exclamation marks) in it
-                    #one from command, the other from the user's nick
+                elif 'PRIVMSG' == components['action'] and \
+                        '!' == components['arguments'][0]:
+                    #search in commands list only if the message from the user
+                    #starts with an exclamation mark
 
                     for k in config.cmds_list:
-                        if -1 != command.find('!' + k) and \
-                            (' ' == command[command.rfind('!' + k) + len(k) + 1] \
-                            or '\r' == command[command.rfind('!' + k) + len(k) +1]):
+                        if 0 == components['arguments'].find('!' + k) and \
+                            (' ' == components['arguments'][len(k) + 1] \
+                            or '\r' == components['arguments'][len(k) + 1]):
                             #a command is valid only if it's at the beginning of
                             #the message
 
@@ -130,21 +131,17 @@ else:
                                     response = err.C_INVALID.format(k)
                                 else:
 
-                                    response = get_response(command)
+                                    response = get_response(command) #TODO send the
+                                    #whole dict
                                     break
 
-                elif -1 != command.find(config.kick): #KICK command issued
-                    bot_kick = command[command.find(config.kick) + len(config.kick):]
+                elif 'KICK' == components['action']: #KICK command issued
+                    if config.nick == components['optional_args'][1]:
+                        print '<KICKED>'
+                        config.channels.remove(components['optional_args'][0])
 
-                    if '#' == bot_kick[0]:
-                        chan_pos = bot_kick.find(' ')
-                        channel = bot_kick[:chan_pos]
-
-                        if -1 != bot_kick.find(' ' + config.nick + ' '):
-                            #a valid KICK command
-                            config.channels.remove(channel)
-
-                elif 0 == command.find(config.close_link): #Ping timeout
+                elif 'QUIT' == components['action'] and \
+                        -1 != components['arguments'].find('Ping timeout: '): #Ping timeout
                     config.channels = []
 
                 if len(response): #send the response and log it
@@ -165,6 +162,7 @@ else:
                         response = ' '.join(response)
 
                     response = response + '\r\n'
+                    print 'RASPONSE:<'+response+'>'
                     irc.send(response)
 
                     try:
