@@ -8,9 +8,6 @@ owner = [
         'foobarfoo',
         ]
 
-#the link provided on !search
-search = "http://google.ro"
-
 #connection and authentication
 server = 'chat.freenode.net'
 port = 6667
