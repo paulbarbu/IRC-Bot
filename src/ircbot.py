@@ -159,7 +159,6 @@ else:
                         response = ' '.join(response)
 
                     response = response + '\r\n'
-                    print 'RASPONSE:<'+response+'>'
                     irc.send(response)
 
                     try:
