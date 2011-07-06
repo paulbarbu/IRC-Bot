@@ -60,12 +60,5 @@ def parse_command(command):
         components['action'] = command[:space_pos]
         components['arguments'] = command[space_pos+1:]
 
-    components['arguments'] = command.rstrip('\r')
-    print components #TODO remove
+    components['arguments'] = components['arguments'].rstrip('\r')
     return components
-
-#TODO remove
-#parse_command(':Shumi!~chatzilla@93.122.243.190 JOIN :#yet-another-project')
-#parse_command(':Stevethepirate!~LOLCATS@clam.leg.uct.ac.za PRIVMSG #archlinux :Which is like 350 euro')
-#parse_command(':paullik!~paullik@unaffiliated/paullik KICK #ppybot foopaul :foopaul')
-#parse_command('ERROR :Closing Link: 188.24.237.32 (Ping timeout: 240 seconds)')
