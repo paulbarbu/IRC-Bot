@@ -1,5 +1,3 @@
-import err
-import config
 from functions import *
 
 def parse_command(command):
@@ -62,6 +60,7 @@ def parse_command(command):
         components['action'] = command[:space_pos]
         components['arguments'] = command[space_pos+1:]
 
+    components['arguments'] = command.rstrip('\r')
     print components #TODO remove
     return components
 
