@@ -5,18 +5,27 @@ from functions import *
 def parse_command(command):
     """Returns an IRC command's components
 
-    A dictionary will be filled by the data of the command
-    :sender ACTION [optional_args] :args
+    A dictionary will be filled by the data of the command, the command is as
+    follows:
+    :sender ACTION [optional_args] :arguments
 
-    sender is the user who sent the command
+    sender(string) is the user who sent the command
 
-    ACTION can be one of the following: PING, KICK, PRIVMSG, QUIT, JOIN, etc.
+    ACTION(string) can be one of the following: PING, KICK, PRIVMSG, QUIT, JOIN, etc.
+    For more info on this check: http://www.irchelp.org/irchelp/rfc/chapter4.html#c4_2
 
-    optional_args depends on the ACTION, they are usually the channel or the
-    user whom is the command for(see KICK or PRIVMSG), this will be a list
+    optional_args(list of strings) depends on the ACTION, they are usually the
+    channel or the user whom is the command for(see KICK, PRIVMSG, etc.), this
+    will be a list and the items in the list will be the words that form the
+    optional arguments
 
-    arguments again depends on the ACTION(for PRIVMSG here will be stored the
-    message sent by sender)
+    arguments(string) depends on the ACTION
+
+    eg: ':foo KICK #chan user :reason'
+        sender: ':foo'
+        ACTION: 'KICK'
+        optional_args: ['#chan', 'user']
+        arguments: 'reason'
     """
 
     components = {
