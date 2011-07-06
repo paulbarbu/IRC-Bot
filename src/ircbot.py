@@ -113,9 +113,7 @@ else:
                     #starts with an exclamation mark
 
                     for k in config.cmds_list:
-                        if 0 == components['arguments'].find('!' + k) and \
-                            (' ' == components['arguments'][len(k) + 1] \
-                            or '\r' == components['arguments'][len(k) + 1]):
+                        if 0 == components['arguments'].find('!' + k):
                             #a command is valid only if it's at the beginning of
                             #the message
 
@@ -132,8 +130,7 @@ else:
                                     response = err.C_INVALID.format(k)
                                 else:
 
-                                    response = get_response(command) #TODO send the
-                                    #whole dict
+                                    response = get_response(components)
                                     break
 
                 elif 'KICK' == components['action']: #KICK command issued
