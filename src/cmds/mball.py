@@ -1,8 +1,6 @@
-import err
-import config
 import random
 
-def mball(command):
+def mball(components):
     """Tells you what your future is
 
     Shuffles the answers list and then randomly picks one
@@ -12,10 +10,15 @@ def mball(command):
             'Most likely', 'Outlook good', 'Signs point to yes', 'Yes', \
             'Reply hazy, try again', 'Ask again later', 'Better not tell you now', \
             'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', \
-            'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful']
+            'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful', \
+            ]
+    response = ''
 
-    random.shuffle(answers)
-    response = 'Magic Ball says: ' + random.choice(answers)
+
+    if components['arguments'] == '!mball':
+        #the user sent just the command, no garbage
+        random.shuffle(answers)
+        response = 'Magic Ball says: ' + random.choice(answers)
 
     return response
 

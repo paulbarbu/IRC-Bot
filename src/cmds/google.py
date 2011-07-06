@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import config
-import err
 from apiclient.discovery import build
+import pprint
 
-def google(command): # !google <search term>
+def google(components): # !google <search term>
     """Gets the first result from a google search
 
     Is dependant on Google API(custom search)
@@ -12,10 +11,9 @@ def google(command): # !google <search term>
 
     response = ''
 
-    terms = command.split('!google ') #notice the trailing space
-    if 1 == len(terms): #no search term given
-        response = 'Usage: !google <search term>'
-    else:
+    terms = components['arguments'].split('!google ') #notice the trailing space
+
+    if 2 == len(terms) and 1 < terms[1].lstrip():
         service = build("customsearch", "v1",
                 developerKey="AIzaSyCy6tveUHlfNQDUtH0TJrF6PtU0h894S2I")
 
@@ -24,8 +22,16 @@ def google(command): # !google <search term>
             cx = '005983647730461686104:qfayqkczxfg',
         ).execute()
 
-        result = res['items'][0]
+        pprint.pprint(res)
 
-        response = result['link'] + '\r\n' + result['snippet']
+        if 1 <= res['queries']['request'][0]['totalResults']:
+            result = res['items'][0]
+            response = result['link'] + '\r\n' + result['snippet']
+
+        else:
+            response = 'Not found: ' + terms[1]
+
+    else:
+        response = 'Usage: !google <search term>'
 
     return str(response)

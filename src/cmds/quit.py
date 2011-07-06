@@ -1,8 +1,7 @@
 import config
-import err
 from functions import *
 
-def quit(command): # !quit [chan_name]+ -> PART #channel
+def quit(components): # !quit [chan_name]+ -> PART #channel
     """Quits the bot from a channel(or more) or from all channels if no
     argument(s) supplied
 
@@ -14,18 +13,16 @@ def quit(command): # !quit [chan_name]+ -> PART #channel
     response = ''
     leave = []
 
-    sender = get_sender(command)
-
-    if sender in config.owner: #only the owner(s) can run this command
+    if components['sender'] in config.owner: #only the owner(s) can run this command
         response = []
         response.append('PART')
 
-        pos = command.find('!quit ')
+        quit_command = components['arguments'].split('!quit ')
 
-        if -1 != pos: #argument(s) supplied
-            arg_channels = command[pos:].split(' ')
+        if 2 == len(quit_command): #argument(s) supplied
+            arg_channels = quit_command[1].lstrip().split(' ')
 
-            for chan in arg_channels[1:]:
+            for chan in arg_channels:
                 chan = chan.strip('\r')
                 if chan in config.channels: #valid channel
                     leave.append(chan)

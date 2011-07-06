@@ -1,8 +1,6 @@
 import config
-from functions import *
-import err
 
-def join(command): # !join <#channel>+
+def join(components): # !join <#channel>+
     """Joins the given channel(s)
 
     Joins a list of channels, only if the sender is an owner
@@ -10,19 +8,18 @@ def join(command): # !join <#channel>+
 
     response = ''
 
-    pos = command.find('!join ')
+    join_command = components['arguments'].split('!join ')
 
-    if -1 != pos: #notice the space
-        sender = get_sender(command)
+    if 2 == len(join_command): #notice the space
 
-        if sender in config.owner: #this command can be run only by the owner(s)
+        if components['sender'] in config.owner: #this command can be run only by the owner(s)
             response = []
             join_chans = []
             response.append('JOIN ')
 
-            arg_channels = command[pos:].split(' ')
+            arg_channels = join_command[1].lstrip().split(' ')
 
-            for channel in arg_channels[1:]:
+            for channel in arg_channels:
                 channel = channel.strip('\r')
                 if channel not in config.channels and len(channel) and '#' == channel[0] \
                         and -1 == channel.find(' '): # valid channel name

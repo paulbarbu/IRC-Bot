@@ -1,22 +1,21 @@
 from BeautifulSoup import BeautifulSoup
 import urllib2
-import config
-import err
 
-def wiki(command): # !wiki <search term>
+def wiki(components): # !wiki <search term>
     """Returns a wiki link and the first paragraph of the page
 
     Tries to return a link to the wiki page for the <search term> and the first
     paragraph of the page
     """
 
-    wlink = command.split('!wiki ') #notice the trailing space
-    if 1 == len(wlink): #no search term given
-        response = 'Usage: !wiki <search term>'
+    wlink = components['arguments'].split('!wiki ') #notice the trailing space
+    if 1 == len(wlink): #no search term given, the Main_Page is "displayed"
+        response = 'http://en.wikipedia.org/wiki/Main_Page'
     else:
         response = 'http://en.wikipedia.org/wiki/' + \
                 wlink[1].lstrip().replace(' ', '_')
-        response = response + '\r\n' + get_para(response)
+
+    response = response + '\r\n' + get_para(response)
 
     return str(response)
 

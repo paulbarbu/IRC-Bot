@@ -1,10 +1,11 @@
-import config
-import err
-
-def about(command): # !about
+def about(components): # !about
     """Returns a string containing infos about the bot
 
     """
+    response = ''
 
-    response = 'Author: Paullik @ http://github.com/paullik'
+    if components['arguments'] == '!about':
+        #the user sent just the command, no garbage
+        response = 'Author: Paullik @ http://github.com/paullik'
+
     return response

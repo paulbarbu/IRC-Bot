@@ -2,17 +2,17 @@
 
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
-import config
-import err
 
-def weather(command): # !weather <city> or !weather <city>, <state or country>
+def weather(components): # !weather <city> or !weather <city>, <state or country>
     """Returns a message containing the weather conditions from a location
 
     """
+
     response = ''
     conditions = ''
+
     try:
-        location = command.split('!weather ')[1]
+        location = components['arguments'].split('!weather ')[1]
     except:
         response = 'Usage: !weather <city>, <state>'
     else:
@@ -48,7 +48,7 @@ def get_weather(location):
         conditions['location'] = soup.find('full').contents[0]
 
         if 2 >= len(conditions['location']):
-            return 'Inexistent location!'
+            return 'Inexistent location: ' + location
         else:
             #weather
             conditions['weather'] = soup.find('weather').contents[0]
