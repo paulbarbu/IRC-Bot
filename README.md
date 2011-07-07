@@ -10,6 +10,11 @@ PPyBot`).
 IRC Protocol reference: [RFC 1459](http://www.irchelp.org/irchelp/rfc/rfc.html
 "IRC Protocol")
 
+Documentation & Doxygen configuration
+=====================================
+Auto-generated documentation using Doxygen can be found at [IRC-Bot Doc-Site](http://paullik.github.com/IRC-Bot/index.html)
+Doxygen configuration can be found in `/ircbot_docs.cfg`
+
 Commands
 ========
 * `!google <search term>`
