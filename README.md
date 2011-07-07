@@ -7,6 +7,9 @@ before using the bot it's recommended to check the config first.
 The bot can handle multiple channels at a time, also if you want to have a _private_ discussion it can be queried (`/query
 PPyBot`).
 
+IRC Protocol reference: [RFC 1459](http://www.irchelp.org/irchelp/rfc/rfc.html
+"IRC Protocol")
+
 Commands
 ========
 * `!google <search term>`
