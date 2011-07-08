@@ -4,15 +4,16 @@ A simple IRC Bot written in Python
 To start it just `cd` to the `src` directory and type `./ircbot.py`, although
 before using the bot it's recommended to check the config first.
 
-The bot can handle multiple channels at a time, also if you want to have a _private_ discussion it can be queried (`/query
-PPyBot`).
+The bot can handle multiple channels at a time, also if you want to have a 
+_private_ discussion it can be queried (`/query PPyBot`).
 
 IRC Protocol reference: [RFC 1459](http://www.irchelp.org/irchelp/rfc/rfc.html
 "IRC Protocol")
 
 Documentation & Doxygen configuration
 =====================================
-Auto-generated documentation using Doxygen can be found at [IRC-Bot Doc-Site](http://paullik.github.com/IRC-Bot/index.html)
+Auto-generated documentation using Doxygen can be found at 
+[IRC-Bot Doc-Site](http://paullik.github.com/IRC-Bot/index.html)
 
 Doxygen configuration can be found in `/ircbot_docs.cfg`
 
@@ -27,7 +28,8 @@ Commands
 * `!quit [#channel ]+`
     * disconnects the bot from the given list of channels
     * if no arguments are given, all connected channels are disconnected
-    * if some arguments are provided the bot checks the channel names and disconnects only the valid ones
+    * if some arguments are provided the bot checks the channel names and 
+    disconnects only the valid ones
     * if no channel is "alive" then the bot closes
     * Example: `!quit #foo #bar` - quits from #foo and #bar
     * see Config: _owner_, _channels_
@@ -60,28 +62,34 @@ Adding commands
 ===============
 1. In `src/config.py` you must add the name of the command to the `cmds_list`'s
    end(without _!_)
-2. In directory `src/cmds/` you must create a file named after your command
+2. In `src/cmds/` directory you must create a file named after your command
 3. Into the newly created file you must define a function named after your
-   command that takes one parameter, this
-   parameter will contain the command sent by the user, the function must return
-   the message to be sent on the channel
+   command that takes one parameter, this parameter will contain the command
+   components sent by the user, the function must return either a 
+   message(string) to be sent on the channel, either a list, first item being a
+   command(other than PRIVMSG which is added automatically if needed) and the 
+   second being the command's arguments.
 
 E.g:
 
-You want to create a command `!dance` so you follow these steps:
+If you want to create a command `!ncmd`, you must follow these steps:
 
-1. Add 'dance' to the `cmds_list` in `src/config.py`
-2. Create `src/cmds/dance.py`
-3. In `src/cmds/dance.py` define `def dance(param):`, `param` will hold the users
-   command in case you must do some checkings or whatever, it must return a
-   message for example `return config.privmsg + 'Dance time!\r\n'`
+1. Add 'ncmd' to the `cmds_list` in `src/config.py`
+2. Create `src/cmds/ncmd.py`
+3. In `src/cmds/ncmd.py` define `def dance(param):`, `param` will hold the users
+   command components(see `src/parser.py`) in case you must do some checkings, 
+   it must return a message(eg. `return 'Dance time!'`, in this
+   case `src/ircbot.py` will automatically add `PRIVMSG` at the beginning and 
+   `\r\n` at the end) or a list(eg. `return ['JOIN ', '#chan1,#chan2']`, in this
+   case the list will be joined and `\r\n` added at the end)
 
 Config
 ======
 See `src/config.py`:
 
 * `search` - specifies the reply link for `!search <nick>`
-* `owner` - the user(s) who are allowed to send a specific command to the bot(e.g. `!quit`)
+* `owner` - the user(s) who are allowed to send a specific command to the bot
+(e.g. `!quit`)
 * `log` - path to the logging directory, all logs are stored here
 * `server` - server to connect to(default: chat.freenode.net)
 * `port` - port number to use(default: 6667)
@@ -107,8 +115,13 @@ License
 
 (C) Copyright 2011 PauLLiK
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under 
+the terms of the GNU General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+You should have received a copy of the GNU General Public License along with 
+this program. If not, see http://www.gnu.org/licenses/.
