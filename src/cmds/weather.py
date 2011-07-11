@@ -1,12 +1,15 @@
 # coding: latin-1
 
+##@file weather.py
+#@brief !weather \<city\> or !weather \<city\>, \<state or country\>
+#@author paullik
+#@ingroup moduleFiles
+
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
 
 def weather(components): # !weather <city> or !weather <city>, <state or country>
-    """Returns a message containing the weather conditions from a location
-
-    """
+    """Returns a string containing the weather conditions from a location"""
 
     response = ''
     conditions = ''
@@ -34,6 +37,7 @@ def get_weather(location):
 
     The dictionary 'conditions' will hold 3 values at the end(location, weather,
     temperature)
+    Depends on BeautifulStoneSoup
     """
     conditions = {}
     base_url = 'http://api.wunderground.com/auto/wui/geo/WXCurrentObXML/index.xml?query='

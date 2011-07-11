@@ -1,3 +1,8 @@
+##@file wiki.py
+#@brief !wiki \<search term\>
+#@author paullik
+#@ingroup moduleFiles
+
 from BeautifulSoup import BeautifulSoup
 import urllib2
 
@@ -22,6 +27,7 @@ def wiki(components): # !wiki <search term>
 def get_para(wlink):
     """Gets the first paragraph from a wiki link
 
+    Depends on BeautifulSoup
     """
 
     msg = ''

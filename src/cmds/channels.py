@@ -1,8 +1,12 @@
+##@file channels.py
+#@brief !channels
+#@author paullik
+#@ingroup moduleFiles
+
 import config
 
 def channels(components): # !channels
     """Returns a string containing the channels the bot is currently connected to
-
     """
 
     response = ''

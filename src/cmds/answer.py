@@ -1,7 +1,10 @@
-def answer(components): # !answer
-    """Replies the ultimate answer to the user
+##@file answer.py
+#@brief !answer
+#@author paullik
+#@ingroup moduleFiles
 
-    """
+def answer(components): # !answer
+    """Returns the ultimate answer"""
     response = ''
 
     if components['arguments'] == '!answer':

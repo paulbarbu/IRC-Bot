@@ -1,3 +1,8 @@
+##@file uptime.py
+#@brief !uptime
+#@author paullik
+#@ingroup moduleFiles
+
 import config
 import time
 import datetime

@@ -1,7 +1,12 @@
+##@file join.py
+#@brief !join \<#channel\>+
+#@author paullik
+#@ingroup moduleFiles
+
 import config
 
 def join(components): # !join <#channel>+
-    """Joins the given channel(s)
+    """Returns a string for joining the given channel(s)
 
     Joins a list of channels, only if the sender is an owner
     """

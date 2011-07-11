@@ -1,9 +1,14 @@
+##@file quit.py
+#@brief !quit [chan_name]+
+#@author paullik
+#@ingroup moduleFiles
+
 import config
 from functions import *
 
 def quit(components): # !quit [chan_name]+ -> PART #channel
-    """Quits the bot from a channel(or more) or from all channels if no
-    argument(s) supplied
+    """Returns a string for quitting the bot from a channel(or more) or from all
+    channels if no argument(s) supplied
 
     If the user is found in the owners list then the bot is closed, otherwise a
     message is sent to the channel

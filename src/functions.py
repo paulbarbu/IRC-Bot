@@ -1,4 +1,7 @@
-#Functions for IRC Bot
+##@file functions.py
+#@brief Functions file
+#@author paullik
+#@ingroup kernelFiles
 
 import config
 import err
@@ -7,17 +10,17 @@ import datetime
 def get_sender(msg):
     """Returns the user(string) that sent the message
 
-    Searches the string to find the user that sent it
+    Parses the string to find the user that sent a command and returns the
+    user's nickname
     """
+
     return msg.split(":")[1].split('!')[0]
 
 def log_write(log, pre, separator, content):
     """Writes a log line into the logs
 
-    Opens file 'log' in append mode and appends the 'content' preceded by 'pre'
-    and 'separator'
+    Opens file 'log' and appends the 'content' preceded by 'pre' and 'separator'
     """
-
 
     with open(log, 'a') as log_file:
         try:
@@ -27,11 +30,12 @@ def log_write(log, pre, separator, content):
             print 'Error writing to log file!'
 
 def get_datetime():
-    """Returns dictionary containing date and time
+    """Returns a dictionary containing the date and time
 
     dt['time'] - contains current time in hh:mm format(24 hrs)
     dt['date'] - contains current date as dd-mm-yyyy format
     """
+
     dt = {}
 
     now = datetime.datetime.now()
@@ -43,7 +47,7 @@ def get_datetime():
 def check_cfg(*items):
     """Checks configuration directives to be non-empty
 
-    Return True if all configuration directives are not empty, else returns False
+    Returns True if all configuration directives are not empty, else returns False
     """
     for arg in items:
         if not len(arg):
@@ -52,8 +56,9 @@ def check_cfg(*items):
     return True
 
 def check_channel(channels):
-    """Check channels name to start with a '#' and not contain any spaces
+    """Check the channels' name to start with a '#' and not contain any spaces
 
+    Returns True if all channels' name are valid, else False
     """
     for channel in channels:
         if not ('#' == channel[0]) or -1 != channel.find(' '):

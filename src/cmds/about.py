@@ -1,7 +1,10 @@
-def about(components): # !about
-    """Returns a string containing infos about the bot
+##@file about.py
+#@brief !about
+#@author paullik
+#@ingroup moduleFiles
 
-    """
+def about(components): # !about
+    """Returns a string containing infos about the bot"""
     response = ''
 
     if components['arguments'] == '!about':

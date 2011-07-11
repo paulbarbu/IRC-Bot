@@ -1,27 +1,34 @@
-#Configuration file for IRC Bot
+##@file config.py
+#@brief Configuration file
+#@author paullik
+#@ingroup kernelFiles
+
 import os
 import time
 
-#some commands can be executed only if the user's nick is found in this list
+##Some commands can be executed only if the user's nick is found in this list
 owner = [
         'paullik',
         'foobarfoo',
         ]
 
-#connection and authentication
+##Server to connect to
 server = 'chat.freenode.net'
+##Server's port
 port = 6667
 
-#bot's nickname and real name
+##Bot's nickname
 nick = 'PPyBot'
+##Bot's real name
 realName = 'Paul Python Bot'
 
+##Channels to join on startup
 channels = [
     '#ppybot',
     '#ppybbot',
     ]
 
-#commands list
+##Commands list
 cmds_list = [
         'wiki',
         'quit',
@@ -38,7 +45,8 @@ cmds_list = [
         ]
 
 #### Users should NOT modify below!
-#log directory, logs will be stored at this location
+##log directory, logs will be stored in this location
 log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 
+##Time the bot was started
 start_time = time.time()

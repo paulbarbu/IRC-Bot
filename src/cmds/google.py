@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 
+##@file google.py
+#@brief !google \<search term\>
+#@author paullik
+#@ingroup moduleFiles
+
 from apiclient.discovery import build
 import pprint
 
 def google(components): # !google <search term>
-    """Gets the first result from a google search
+    """Returns the link and the description of the first result from a google search
 
-    Is dependant on Google API(custom search)
+    Depends on Google API(custom search)
     """
 
     response = ''

@@ -1,3 +1,8 @@
+##@file parser.py
+#@brief Parser file
+#@author paullik
+#@ingroup kernelFiles
+
 from functions import *
 
 def parse_command(command):
