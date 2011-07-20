@@ -57,6 +57,7 @@ Commands
     * see Dependencies: _!so_
 * `!twitter [username]`
     * replies the latest tweet(along with the tweet date) for the username provided
+    * the date will have the following format: DD/MM/YYYY HH:MM
     * if no username is provided then the bot will try to get the latest tweet
       for the IRC-user who issued the command
 
