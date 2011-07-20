@@ -42,6 +42,7 @@ cmds_list = [
         'mball',
         'uptime',
         'so',
+        'twitter',
         ]
 
 #### Users should NOT modify below!
