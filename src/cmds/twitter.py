@@ -1,5 +1,5 @@
 ##@file twitter.py
-#@brief !twitter [screenname]
+#@brief !twitter [username]
 #@author paullik
 #@ingroup moduleFiles
 
