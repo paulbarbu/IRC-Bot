@@ -55,8 +55,12 @@ Commands
 * `!so <search term>`
     * replies the first question's title and URL from the search result
     * see Dependencies: _!so_
+* `!twitter [username]`
+    * replies the latest tweet(along with the tweet date) for the username provided
+    * if no username is provided then the bot will try to get the latest tweet
+      for the IRC-user who issued the command
 
-Total: _12_ commands
+Total: _13_ commands
 
 Adding commands
 ===============
@@ -99,9 +103,9 @@ See `src/config.py`:
 
 Dependencies
 ============
-* `!weather` and `!wiki` module depends on
+* `!weather`, `!twitter` and `!wiki` module depends on
   [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "BeautifulSoup")
-    * `!weather` depends on _BeautifulStoneSoup_ (XML)
+    * `!weather` and `!twitter` depends on _BeautifulStoneSoup_ (XML)
     * `!wiki` depends on _BeautifulSoup_ (HTML)
 * `!google` module depends on 
 [Google Custom Search API](http://code.google.com/p/google-api-python-client/ "Custom Search API")
