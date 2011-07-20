@@ -5,6 +5,7 @@
 
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
+from datetime import datetime
 
 #TODO: get description, name, screenName, location, etc
 
@@ -39,8 +40,10 @@ def twitter(components):
 def getStatus(apiURL):
     """Gets a user's status(latest tweet) using the XML provided by the API
 
-    status will be a dictionary containing the date and the text of the user's
+    Status will be a dictionary containing the date and the text of the user's
     status
+
+    The date will have the following format: DD/MM/YYYY HH:MM
     """
     status = ''
 
@@ -55,7 +58,19 @@ def getStatus(apiURL):
         soup = BeautifulStoneSoup(xml)
 
         xmlStatus = soup.find('user').find('status')
-        status['date'] = xmlStatus.find('created_at').contents[0]
+        date = xmlStatus.find('created_at').contents[0]
+
+        #strip the timezone offset
+        minus = date.find('-')
+        plus = date.find('+')
+        if -1 != minus:
+            date = date[:minus] + date[minus+6:]
+        else:
+            date = date[:plus] + date[plus+6:]
+
+        date = datetime.strptime(date, '%a %b %d %H:%M:%S %Y')
+
+        status['date'] = date.strftime('%d/%m/%Y %H:%S')
         status['text'] = xmlStatus.find('text').contents[0]
 
     return status
