@@ -70,7 +70,7 @@ Adding commands
    command(other than PRIVMSG which is added automatically if needed) and the 
    second being the command's arguments.
 
-E.g:
+E.g.:
 
 If you want to create a command `!ncmd`, you must follow these steps:
 
@@ -113,7 +113,7 @@ Dependencies
 License
 =======
 
-(C) Copyright 2011 PauLLiK
+(C) Copyright 2011 Paul Barbu
 
 This program is free software: you can redistribute it and/or modify it under 
 the terms of the GNU General Public License as published by the Free Software 
