@@ -152,7 +152,7 @@ else:
 
                             try: #the needed module is imported from 'cmds/'
 
-                                ##Module that needs to be loaded after finind a
+                                ##Module that needs to be loaded after finding a
                                 #valid user command
                                 mod = 'cmds.' + k
                                 mod = __import__(mod, globals(), locals(), [k])
