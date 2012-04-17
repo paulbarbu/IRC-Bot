@@ -22,7 +22,7 @@ def wiki(components): # !wiki <search term>
 
     response = response + '\r\n' + get_para(response)
 
-    return str(response)
+    return response.encode('utf8')
 
 def get_para(wlink):
     """Gets the first paragraph from a wiki link
