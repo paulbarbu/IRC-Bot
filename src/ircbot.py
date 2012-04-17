@@ -196,7 +196,7 @@ else:
                                     sendto + response[crlf_pos:]
 
                         response = sendto + response
-                    else: #the module send a command itself
+                    else: #the module sent a command
                         response = ' '.join(response)
 
                     response = response + '\r\n'

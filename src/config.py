@@ -26,6 +26,8 @@ realName = 'Paul Python Bot'
 channels = [
     '#ppybot',
     '#ppybbot',
+    #'#testchan',
+    #TODO: leave here just one channel -> bug
     ]
 
 ##Commands list

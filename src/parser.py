@@ -66,4 +66,5 @@ def parse_command(command):
         components['arguments'] = command[space_pos+1:]
 
     components['arguments'] = components['arguments'].rstrip('\r')
+
     return components
