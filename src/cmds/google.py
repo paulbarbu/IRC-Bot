@@ -6,7 +6,6 @@
 #@ingroup moduleFiles
 
 from apiclient.discovery import build
-import pprint
 
 def google(components): # !google <search term>
     """Returns the link and the description of the first result from a google search
@@ -26,8 +25,6 @@ def google(components): # !google <search term>
             q = terms[1].lstrip(),
             cx = '005983647730461686104:qfayqkczxfg',
         ).execute()
-
-        pprint.pprint(res)
 
         if 1 <= res['queries']['request'][0]['totalResults']:
             result = res['items'][0]
