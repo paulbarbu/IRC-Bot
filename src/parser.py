@@ -1,12 +1,7 @@
-##@file parser.py
-#@brief Parser file
-#@author paullik
-#@ingroup kernelFiles
-
 from functions import *
 
 def parse_command(command):
-    """Returns an IRC command's components
+    '''Returns an IRC command's components
 
     A dictionary will be filled by the data of the command, the command is as
     follows:
@@ -29,8 +24,7 @@ def parse_command(command):
         ACTION: 'KICK'
         optional_args: ['#chan', 'user']
         arguments: 'reason'
-    """
-
+    '''
     components = {
             'sender' : '',
             'action' : '',
@@ -39,7 +33,7 @@ def parse_command(command):
 
     }
 
-    if ':' == command[0]: #a user sent a command
+    if ':' == command[0]: # a user sent a command
         components['sender'] = get_sender(command)
 
         space_pos = command.find(' ') + 1
@@ -50,17 +44,17 @@ def parse_command(command):
 
         command = command[space_pos + 1:]
 
-        if ':' != command[0]: #optional_args are present
+        if ':' != command[0]: # optional_args are present
             colon_pos = command.find(':')
             components['optional_args'] = command[:colon_pos-1].split()
             command = command[colon_pos + 1:]
 
-        if ':' == command[0]: #no optional_args
+        if ':' == command[0]: # no optional_args
             components['arguments'] = command[1:]
-        else: #optional_args were present
+        else: # optional_args were present
             components['arguments'] = command
 
-    else: #the server sent a command
+    else: # the server sent a command
         space_pos = command.find(' ')
         components['action'] = command[:space_pos]
         components['arguments'] = command[space_pos+1:]

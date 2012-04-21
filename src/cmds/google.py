@@ -1,21 +1,13 @@
-# -*- coding: utf-8 -*-
-
-##@file google.py
-#@brief !google \<search term\>
-#@author paullik
-#@ingroup moduleFiles
-
 from apiclient.discovery import build
 
 def google(components): # !google <search term>
-    """Returns the link and the description of the first result from a google search
-
-    Depends on Google API(custom search)
-    """
-
+    '''Returns the link and the description of the first result from a google
+    search
+    '''
     response = ''
 
-    terms = components['arguments'].split('!google ') #notice the trailing space
+    # notice the trailing space
+    terms = components['arguments'].split('!google ')
 
     if 2 == len(terms) and 1 < terms[1].lstrip():
         service = build("customsearch", "v1",

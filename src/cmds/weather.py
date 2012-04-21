@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-
-##@file weather.py
-#@brief !weather \<city\> or !weather \<city\>, \<state or country\>
-#@author paullik
-#@ingroup moduleFiles
-
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
 
 def weather(components): # !weather <city> or !weather <city>, <state or country>
-    """Returns a string containing the weather conditions from a location"""
+    'Returns a string containing the weather conditions from a location'
 
     response = ''
     conditions = ''
@@ -19,7 +13,7 @@ def weather(components): # !weather <city> or !weather <city>, <state or country
     except:
         response = 'Usage: !weather <city>, <state>'
     else:
-        location = location.replace(' ', '') # space is removed
+        location = location.replace(' ', '')
         conditions = get_weather(location)
         if type(conditions) == type(str()):
             response = conditions
@@ -28,17 +22,15 @@ def weather(components): # !weather <city> or !weather <city>, <state or country
                     ' - ' + conditions['weather'] + ' - Provided by: ' + \
                     'Weather Underground, Inc.'
 
-
     return response.encode('utf8')
 
 def get_weather(location):
-    """Return a dictionary with the <weather>, <full>, <temperature_string> tags
+    '''Return a dictionary with the <weather>, <full>, <temperature_string> tags
     from the XML provided by http://api.wunderground.com
 
-    The dictionary 'conditions' will hold 3 values at the end(location, weather,
-    temperature)
-    Depends on BeautifulStoneSoup
-    """
+    The dictionary 'conditions' will hold 3 values:
+    location, weather, temperature
+    '''
 
     degree = '°'.decode('utf8')
     conditions = {}
@@ -50,16 +42,12 @@ def get_weather(location):
         return 'Could not open the page!'
     else:
         soup = BeautifulStoneSoup(page)
-
         conditions['location'] = soup.find('full').contents[0]
 
         if 2 >= len(conditions['location']):
             return 'Inexistent location: ' + location
         else:
-            #weather
             conditions['weather'] = soup.find('weather').contents[0]
-
-            #temperature
             conditions['temp'] = soup.find('temperature_string').contents[0]
 
             pos = conditions['temp'].find(' ')

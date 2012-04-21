@@ -1,14 +1,9 @@
-##@file about.py
-#@brief !about
-#@author paullik
-#@ingroup moduleFiles
-
 def about(components): # !about
-    """Returns a string containing infos about the bot"""
+    'Returns a string containing info about the bot'
     response = ''
 
     if components['arguments'] == '!about':
-        #the user sent just the command, no garbage
+        # the user sent just the command, no garbage
         response = 'Author: Paullik @ http://github.com/paullik'
 
     return response

@@ -1,27 +1,16 @@
-##@file functions.py
-#@brief Functions file
-#@author paullik
-#@ingroup kernelFiles
-
 import config
 import err
 import datetime
 
 def get_sender(msg):
-    """Returns the user(string) that sent the message
-
-    Parses the string to find the user that sent a command and returns the
-    user's nickname
-    """
-
+    "Returns the user's nick (string) that sent the message"
     return msg.split(":")[1].split('!')[0]
 
 def log_write(log, pre, separator, content):
-    """Writes a log line into the logs
+    '''Writes a log line into the logs
 
     Opens file 'log' and appends the 'content' preceded by 'pre' and 'separator'
-    """
-
+    '''
     with open(log, 'a') as log_file:
         try:
             content = pre + separator + content
@@ -30,12 +19,11 @@ def log_write(log, pre, separator, content):
             print 'Error writing to log file!'
 
 def get_datetime():
-    """Returns a dictionary containing the date and time
+    '''Returns a dictionary containing the date and time
 
     dt['time'] - contains current time in hh:mm format(24 hrs)
     dt['date'] - contains current date as dd-mm-yyyy format
-    """
-
+    '''
     dt = {}
 
     now = datetime.datetime.now()
@@ -45,10 +33,10 @@ def get_datetime():
     return dt
 
 def check_cfg(*items):
-    """Checks configuration directives to be non-empty
+    '''Checks configuration directives to be non-empty
 
     Returns True if all configuration directives are not empty, else returns False
-    """
+    '''
     for arg in items:
         if not len(arg):
             return False
@@ -56,10 +44,10 @@ def check_cfg(*items):
     return True
 
 def check_channel(channels):
-    """Check the channels' name to start with a '#' and not contain any spaces
+    '''Check the channels' name to start with a '#' and not to contain any spaces
 
     Returns True if all channels' name are valid, else False
-    """
+    '''
     for channel in channels:
         if not ('#' == channel[0]) or -1 != channel.find(' '):
             return False
@@ -67,18 +55,18 @@ def check_channel(channels):
     return True
 
 def send_to(command):
-    """Get the location where to send the message back
+    '''Get the location where to send the message back
 
     This function returns a string containing all the protocol related
     information needed by the server to send the command back to the
     user/channel that sent it
-    """
-    sendto = '' #can be a user name(/query) or a channel
+    '''
+    from ircbot import current_nick
 
-    import ircbot
+    sendto = '' # can be a user's nick(/query) or a channel
 
-    if -1 != command.find('PRIVMSG ' + ircbot.current_nick + ' :'):
-        #command comes from a query
+    if -1 != command.find('PRIVMSG ' + current_nick + ' :'):
+        # the command comes from a query
         sendto = get_sender(command)
     else:
         command = command[command.find('PRIVMSG #'):]
@@ -88,17 +76,16 @@ def send_to(command):
     return 'PRIVMSG ' + sendto + ' :'
 
 def is_registered(user_nick):
-    """Creates a client to find if the user issuing the command is registered
-    """
+    'Creates a client to find if the user issuing the command is registered'
+
     import socket
     import random
     import string
 
-    logfile = config.log + get_datetime['date'] + '.log'
+    logfile = config.log + get_datetime()['date'] + '.log'
 
     try:
-        ##The socket to communicate with the server
-        irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        mini_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     except socket.socket:
         try:
             log_write(logfile, get_datetime()['time'], ' <miniclient> ', err.NO_SOCKET + '\n')
@@ -106,10 +93,7 @@ def is_registered(user_nick):
             print err.LOG_FAILURE
     else:
         try:
-            irc.connect((config.server, config.port))
-
-            ##Get some data from the server
-            receive = irc.recv(4096)
+            mini_client.connect((config.server, config.port))
         except IOError:
             content = 'Could not connect to {0}:{1}'.format(config.server, config.port)
 
@@ -118,36 +102,32 @@ def is_registered(user_nick):
             except IOError:
                 print err.LOG_FAILURE
         else:
-            import ircbot
+            from ircbot import current_nick
 
             sample = ''.join(random.sample(string.ascii_lowercase, 5))
-            nick = ircbot.current_nick + sample
+            nick = current_nick + sample
 
-            #Authenticate
-            irc.send('NICK ' + nick + '\r\n')
-            irc.send('USER ' + nick + ' ' + nick + ' ' + nick + ' :' + \
+            mini_client.send('NICK ' + nick + '\r\n')
+            mini_client.send('USER ' + nick + ' ' + nick + ' ' + nick + ' :' + \
                     config.realName + sample + '\r\n')
-            irc.send('PRIVMSG nickserv :info ' + user_nick + '\r\n')
+            mini_client.send('PRIVMSG nickserv :info ' + user_nick + '\r\n')
 
             while True:
-                receive = irc.recv(4095)
+                receive = mini_client.recv(4096)
 
-                if 'NickServ' in receive: #this is the NickServ info response
-                    if 'Last seen  : now' in receive: #user registered and online
+                if 'NickServ' in receive: # this is the NickServ info response
+                    if 'Last seen  : now' in receive: # user registered and online
                         return True
-                    elif 'Information on' in receive: #the response preceding
-                    #the important one that contains the information about the user
+                    elif 'Information on' in receive: # the response preceding
+                    # the important one that contains the information about the user
                         pass
                     else:
                         return False
     finally:
-        irc.close()
+        mini_client.close()
 
     return None
 
 def get_nick():
-    """Circles through the nicknames and yields them
-    """
-
     for nick in config.nicks:
         yield nick

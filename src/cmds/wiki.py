@@ -1,20 +1,11 @@
-##@file wiki.py
-#@brief !wiki \<search term\>
-#@author paullik
-#@ingroup moduleFiles
-
 from BeautifulSoup import BeautifulSoup
 import urllib2
 
 def wiki(components): # !wiki <search term>
-    """Returns a wiki link and the first paragraph of the page
+    'Returns a wiki link and the first paragraph of the page'
 
-    Tries to return a link to the wiki page for the <search term> and the first
-    paragraph of the page
-    """
-
-    wlink = components['arguments'].split('!wiki ') #notice the trailing space
-    if 1 == len(wlink): #no search term given, the Main_Page is "displayed"
+    wlink = components['arguments'].split('!wiki ') # notice the trailing space
+    if 1 == len(wlink): # no search term given, the Main_Page is "displayed"
         response = 'http://en.wikipedia.org/wiki/Main_Page'
     else:
         response = 'http://en.wikipedia.org/wiki/' + \
@@ -25,10 +16,7 @@ def wiki(components): # !wiki <search term>
     return response.encode('utf8')
 
 def get_para(wlink):
-    """Gets the first paragraph from a wiki link
-
-    Depends on BeautifulSoup
-    """
+    'Gets the first paragraph from a wiki link'
 
     msg = ''
     try:
@@ -42,8 +30,8 @@ def get_para(wlink):
         soup = BeautifulSoup(page)
         msg = ''.join(soup.find('div', { 'id' : 'bodyContent'}).p.findAll(text=True))
 
-        while 460 < len(msg): #the paragraph cannot be
-            #longer than 510 characters including the protocol command
+        while 460 < len(msg): # the paragraph cannot be longer than 510
+            # characters including the protocol command
             pos = msg.rfind('.')
             msg = msg[:pos]
 

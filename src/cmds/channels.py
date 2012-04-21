@@ -1,25 +1,19 @@
-##@file channels.py
-#@brief !channels
-#@author paullik
-#@ingroup moduleFiles
-
 import config
 from functions import is_registered
-import ircbot
+from ircbot import current_nick
 
 def channels(components): # !channels
-    """Returns a string containing the channels the bot is currently connected to
-    """
-
+    'Returns a string containing the channels the bot is connected to'
     response = ''
 
     if components['arguments'] == '!channels':
-        #the user sent just the command, no garbage
-        if components['sender'] in config.owner and is_registered(components['sender']):
-            #command can be run only by the owner(s)
+        # the user sent just the command, no garbage
+        if components['sender'] in config.owner and \
+                is_registered(components['sender']):
+            # this command can be run only by the owners
             response = ', '.join(config.channels)
-            response = ircbot.current_nick + ' is connected to: ' + response
+            response = current_nick + ' is connected to: ' + response
         else:
-            response = 'This command can be run only by the owner(s)!'
+            response = 'This command can be run only by the owners!'
 
     return response

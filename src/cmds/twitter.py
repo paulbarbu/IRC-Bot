@@ -1,25 +1,17 @@
-##@file twitter.py
-#@brief !twitter [username]
-#@author paullik
-#@ingroup moduleFiles
-
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
 from datetime import datetime
 
-#TODO: get description, name, location, etc
-
 def twitter(components):
-    """Gets latest tweet from a specified user(via his nickname)
+    'Gets latest tweet from a specified user (via his nickname)'
 
-    """
     apiURL = 'http://api.twitter.com/1/users/show.xml?screen_name='
     response = ''
 
-    screenName = components['arguments'].split('!twitter ')
+    screenName = components['arguments'].split('!twitter ') # notice the space
 
     if 1 == len(screenName):
-        #no screen name specified, getting last tweet for the sender
+        # no screen name specified, getting last tweet for the sender
         apiURL = apiURL + components['sender']
         screenName = components['sender']
 
@@ -38,13 +30,13 @@ def twitter(components):
     return response
 
 def getStatus(apiURL):
-    """Gets a user's status(latest tweet) using the XML provided by the API
+    '''Gets a user's status (latest tweet) using the XML provided by the API
 
     Status will be a dictionary containing the date and the text of the user's
     status
 
     The date will have the following format: DD/MM/YYYY HH:MM
-    """
+    '''
     status = ''
 
     try:
@@ -69,7 +61,7 @@ def getStatus(apiURL):
             else:
                 date = xmlStatus.find('created_at').contents[0]
 
-                #strip the timezone offset
+                # strip the timezone offset
                 minus = date.find('-')
                 plus = date.find('+')
                 if -1 != minus:

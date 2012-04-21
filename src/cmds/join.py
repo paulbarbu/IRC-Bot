@@ -1,24 +1,17 @@
-##@file join.py
-#@brief !join \<#channel\>+
-#@author paullik
-#@ingroup moduleFiles
-
 import config
 from functions import is_registered
 
 def join(components): # !join <#channel>+
-    """Returns a string for joining the given channel(s)
+    '''Returns a string for joining the given channel(s)
 
     Joins a list of channels, only if the sender is an owner
-    """
-
+    '''
     response = ''
 
-    join_command = components['arguments'].split('!join ')
+    join_command = components['arguments'].split('!join ') # notice the space
 
-    if 2 == len(join_command): #notice the space
+    if 2 == len(join_command):
 
-        #this command can be run only by the owner(s)
         if components['sender'] in config.owner and is_registered(components['sender']):
             response = []
             join_chans = []
@@ -39,7 +32,7 @@ def join(components): # !join <#channel>+
                 response = 'Invalid channels names, usage: !join <#channel >+'
 
         else:
-            response = 'This command can be run only by the owner(s)!'
+            response = 'This command can be run only by the owners!'
     else:
         response = 'Usage: !join <#channel >+'
 
