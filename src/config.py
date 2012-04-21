@@ -8,9 +8,9 @@ import time
 
 ##Some commands can be executed only if the user's nick is found in this list
 owner = [
-        'paullik',
-        'foobarfoo',
-        ]
+    'paullik',
+    'foobarfoo',
+    ]
 
 ##Server to connect to
 server = 'chat.freenode.net'
@@ -26,26 +26,25 @@ realName = 'Paul Python Bot'
 channels = [
     '#ppybot',
     '#ppybbot',
-    #'#testchan',
-    #TODO: leave here just one channel -> bug
+    '#test-chan',
     ]
 
 ##Commands list
 cmds_list = [
-        'wiki',
-        'quit',
-        'answer',
-        'about',
-        'help',
-        'weather',
-        'join',
-        'channels',
-        'google',
-        'mball',
-        'uptime',
-        'so',
-        'twitter',
-        ]
+    'wiki',
+    'quit',
+    'answer',
+    'about',
+    'help',
+    'weather',
+    'join',
+    'channels',
+    'google',
+    'mball',
+    'uptime',
+    'so',
+    'twitter',
+    ]
 
 #### Users should NOT modify below!
 ##log directory, logs will be stored in this location
