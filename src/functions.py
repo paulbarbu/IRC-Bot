@@ -84,3 +84,57 @@ def send_to(command):
         sendto = command[:command.find(' ')]
 
     return 'PRIVMSG ' + sendto + ' :'
+
+def is_registered(user_nick):
+    """Creates a client to find if the user issuing the command is registered
+    """
+    import socket
+    import random
+    import string
+
+    try:
+        ##The socket to communicate with the server
+        irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    except socket.socket:
+        try:
+            log_write(logfile, get_datetime()['time'], ' <> ', err.NO_SOCKET + '\n')
+        except IOError:
+            print err.LOG_FAILURE
+    else:
+        try:
+            irc.connect((config.server, config.port))
+
+            ##Get some data from the server
+            receive = irc.recv(4096)
+        except IOError:
+            content = 'Could not connect to {0}:{1}'.format(config.server, config.port)
+
+            try:
+                log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+            except IOError:
+                print err.LOG_FAILURE
+        else:
+            sample = ''.join(random.sample(string.ascii_lowercase, 5))
+            nick = config.nick + sample
+
+            #Authenticate
+            irc.send('NICK ' + nick + '\r\n')
+            irc.send('USER ' + nick + ' ' + nick + ' ' + nick + ' :' + \
+                    config.realName + sample + '\r\n')
+            irc.send('PRIVMSG nickserv :info ' + user_nick + '\r\n')
+
+            while True:
+                receive = irc.recv(4095)
+
+                if 'NickServ' in receive: #this is the NickServ info response
+                    if 'Last seen  : now' in receive: #user registered and online
+                        return True
+                    elif 'Information on' in receive: #the response preceding
+                    #the important one that contains the information about the user
+                        pass
+                    else:
+                        return False
+    finally:
+        irc.close()
+
+    return None
