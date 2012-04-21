@@ -28,10 +28,10 @@ dt = get_datetime()
 logfile = config.log + dt['date'] + '.log'
 
 nick_generator = get_nick()
-current_nick = nick_generator.next()
+config.current_nick = nick_generator.next()
 
 content = 'Started on {0}:{1}, with nick: {2}'.format(config.server, config.port,
-        current_nick)
+        config.current_nick)
 
 try:
     log_write(logfile, dt['time'], ' <> ', content + '\n')
@@ -72,28 +72,28 @@ else:
         print content
 
         # try to authenticate
-        irc.send('NICK ' + current_nick + '\r\n')
-        irc.send('USER ' + current_nick + ' ' + current_nick + ' ' + \
-                current_nick + ' :' + config.realName + '\r\n')
+        irc.send('NICK ' + config.current_nick + '\r\n')
+        irc.send('USER ' + config.current_nick + ' ' + config.current_nick + \
+                ' ' + config.current_nick + ' :' + config.realName + '\r\n')
 
         while True:
             receive = irc.recv(4096)
 
             if 'Nickname is already in use' in receive: # try another nickname
                 try:
-                    current_nick = nick_generator.next()
+                    config.current_nick = nick_generator.next()
                 except StopIteration: # if no nick is available just make one up
-                    current_nick = get_nick().next() + \
+                    config.current_nick = get_nick().next() + \
                             ''.join(random.sample(string.ascii_lowercase, 5))
 
-                irc.send('NICK ' + current_nick + '\r\n')
-                content = 'Changing nick to: ' + current_nick
+                irc.send('NICK ' + config.current_nick + '\r\n')
+                content = 'Changing nick to: ' + config.current_nick
 
                 try:
                     log_write(logfile, dt['time'], ' <> ', content + '\n')
                 except IOError:
                     print err.LOG_FAILURE
-            elif current_nick in receive or 'motd' in receive.lower():
+            elif config.current_nick in receive or 'motd' in receive.lower():
                 # successfully connected
                 break
 
@@ -165,7 +165,7 @@ else:
                                     break
 
                 elif 'KICK' == components['action']:
-                    if current_nick == components['optional_args'][1]:
+                    if config.current_nick == components['optional_args'][1]:
                         config.channels.remove(components['optional_args'][0])
 
                 elif 'QUIT' == components['action'] and \

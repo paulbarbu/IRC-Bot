@@ -1,6 +1,5 @@
 import config
 from functions import is_registered
-from ircbot import current_nick
 
 def channels(components): # !channels
     'Returns a string containing the channels the bot is connected to'
@@ -12,7 +11,7 @@ def channels(components): # !channels
                 is_registered(components['sender']):
             # this command can be run only by the owners
             response = ', '.join(config.channels)
-            response = current_nick + ' is connected to: ' + response
+            response = config.current_nick + ' is connected to: ' + response
         else:
             response = 'This command can be run only by the owners!'
 

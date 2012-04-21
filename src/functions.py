@@ -61,11 +61,9 @@ def send_to(command):
     information needed by the server to send the command back to the
     user/channel that sent it
     '''
-    from ircbot import current_nick
-
     sendto = '' # can be a user's nick(/query) or a channel
 
-    if -1 != command.find('PRIVMSG ' + current_nick + ' :'):
+    if -1 != command.find('PRIVMSG ' + config.current_nick + ' :'):
         # the command comes from a query
         sendto = get_sender(command)
     else:
@@ -102,10 +100,8 @@ def is_registered(user_nick):
             except IOError:
                 print err.LOG_FAILURE
         else:
-            from ircbot import current_nick
-
             sample = ''.join(random.sample(string.ascii_lowercase, 5))
-            nick = current_nick + sample
+            nick = config.current_nick + sample
 
             mini_client.send('NICK ' + nick + '\r\n')
             mini_client.send('USER ' + nick + ' ' + nick + ' ' + nick + ' :' + \

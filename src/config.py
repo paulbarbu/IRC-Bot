@@ -43,3 +43,4 @@ cmds_list = [
 #### Users should NOT modify below!
 log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
 start_time = time.time()
+current_nick = ''
