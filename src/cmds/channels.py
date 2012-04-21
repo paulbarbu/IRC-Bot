@@ -18,7 +18,7 @@ def channels(components): # !channels
         if components['sender'] in config.owner and is_registered(components['sender']):
             #command can be run only by the owner(s)
             response = ', '.join(config.channels)
-            response = config.nick + ' is connected to: ' + response
+            response = ircbot.current_nick + ' is connected to: ' + response
         else:
             response = 'This command can be run only by the owner(s)!'
 

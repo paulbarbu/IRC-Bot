@@ -75,7 +75,9 @@ def send_to(command):
     """
     sendto = '' #can be a user name(/query) or a channel
 
-    if -1 != command.find('PRIVMSG ' + config.nick + ' :'):
+    import ircbot
+
+    if -1 != command.find('PRIVMSG ' + ircbot.current_nick + ' :'):
         #command comes from a query
         sendto = get_sender(command)
     else:
@@ -116,8 +118,10 @@ def is_registered(user_nick):
             except IOError:
                 print err.LOG_FAILURE
         else:
+            import ircbot
+
             sample = ''.join(random.sample(string.ascii_lowercase, 5))
-            nick = config.nick + sample
+            nick = ircbot.current_nick + sample
 
             #Authenticate
             irc.send('NICK ' + nick + '\r\n')
@@ -140,3 +144,10 @@ def is_registered(user_nick):
         irc.close()
 
     return None
+
+def get_nick():
+    """Circles through the nicknames and yields them
+    """
+
+    for nick in config.nicks:
+        yield nick

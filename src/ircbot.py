@@ -20,6 +20,8 @@
 
 import socket
 import sys
+import string
+import random
 
 import config
 import parser
@@ -27,7 +29,7 @@ from functions import *
 import err
 
 ##None of these configuration directives can be empty, so they are checked
-cfg = check_cfg(config.owner, config.server, config.nick,
+cfg = check_cfg(config.owner, config.server, config.nicks,
         config.realName, config.log, config.cmds_list)
 
 if not cfg: #Some config-directives were empty
@@ -49,9 +51,13 @@ dt = get_datetime()
 ##Location of the logfile
 logfile = config.log + dt['date'] + '.log'
 
+##Current nickname
+nick_generator = get_nick()
+current_nick = nick_generator.next()
+
 ##String to log
 content = 'Started on {0}:{1}, with nick: {2}'.format(config.server, config.port,
-        config.nick)
+        current_nick)
 
 try:
     log_write(logfile, dt['time'], ' <> ', content + '\n')
@@ -99,12 +105,32 @@ else:
         print content
 
         #Authenticate
-        irc.send('NICK ' + config.nick + '\r\n')
-        irc.send('USER ' + config.nick + ' ' + config.nick + ' ' + config.nick + ' :' + \
-                config.realName + '\r\n')
+        irc.send('NICK ' + current_nick + '\r\n')
+        irc.send('USER ' + current_nick + ' ' + current_nick + ' ' + \
+                current_nick + ' :' + config.realName + '\r\n')
+
+        while True:
+            receive = irc.recv(4096)
+
+            if 'Nickname is already in use' in receive: # try another nickname
+                try:
+                    current_nick = nick_generator.next()
+                except StopIteration: # if no nick is available just make one up
+                    current_nick = get_nick().next() + \
+                            ''.join(random.sample(string.ascii_lowercase, 5))
+
+                irc.send('NICK ' + current_nick + '\r\n')
+                content = 'Changing nick to: ' + current_nick
+
+                try:
+                    log_write(logfile, dt['time'], ' <> ', content + '\n')
+                except IOError:
+                    print err.LOG_FAILURE
+            elif current_nick in receive or 'motd' in receive.lower():
+                # successfully connected
+                break
 
         #Join channel(s)
-
         ##Channel list joined together
         channel_list = ','.join(config.channels)
 
@@ -172,7 +198,7 @@ else:
                                     break
 
                 elif 'KICK' == components['action']: #KICK command issued
-                    if config.nick == components['optional_args'][1]:
+                    if current_nick == components['optional_args'][1]:
                         config.channels.remove(components['optional_args'][0])
 
                 elif 'QUIT' == components['action'] and \

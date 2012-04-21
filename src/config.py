@@ -17,8 +17,8 @@ server = 'chat.freenode.net'
 ##Server's port
 port = 6667
 
-##Bot's nickname
-nick = 'PPyBot'
+##Bot's nicknames
+nicks = ['PPyBot']
 ##Bot's real name
 realName = 'Paul Python Bot'
 
