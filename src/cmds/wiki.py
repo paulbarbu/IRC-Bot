@@ -47,4 +47,6 @@ def get_para(wlink):
             pos = msg.rfind('.')
             msg = msg[:pos]
 
+        msg = msg + ' ...'
+
     return msg
