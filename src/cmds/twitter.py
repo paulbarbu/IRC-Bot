@@ -57,20 +57,29 @@ def getStatus(apiURL):
                 }
         soup = BeautifulStoneSoup(xml)
 
-        xmlStatus = soup.find('user').find('status')
-        date = xmlStatus.find('created_at').contents[0]
+        user = soup.find('user')
 
-        #strip the timezone offset
-        minus = date.find('-')
-        plus = date.find('+')
-        if -1 != minus:
-            date = date[:minus] + date[minus+6:]
+        if user is None:
+            status = "This user doesn't exist!"
         else:
-            date = date[:plus] + date[plus+6:]
+            xmlStatus = user.find('status')
 
-        date = datetime.strptime(date, '%a %b %d %H:%M:%S %Y')
+            if xmlStatus is None:
+                status = 'This user has no tweets!'
+            else:
+                date = xmlStatus.find('created_at').contents[0]
 
-        status['date'] = date.strftime('%d/%m/%Y %H:%S')
-        status['text'] = xmlStatus.find('text').contents[0]
+                #strip the timezone offset
+                minus = date.find('-')
+                plus = date.find('+')
+                if -1 != minus:
+                    date = date[:minus] + date[minus+6:]
+                else:
+                    date = date[:plus] + date[plus+6:]
+
+                date = datetime.strptime(date, '%a %b %d %H:%M:%S %Y')
+
+                status['date'] = date.strftime('%d/%m/%Y %H:%S')
+                status['text'] = xmlStatus.find('text').contents[0]
 
     return status
