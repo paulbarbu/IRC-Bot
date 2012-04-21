@@ -92,12 +92,14 @@ def is_registered(user_nick):
     import random
     import string
 
+    logfile = config.log + get_datetime['date'] + '.log'
+
     try:
         ##The socket to communicate with the server
         irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     except socket.socket:
         try:
-            log_write(logfile, get_datetime()['time'], ' <> ', err.NO_SOCKET + '\n')
+            log_write(logfile, get_datetime()['time'], ' <miniclient> ', err.NO_SOCKET + '\n')
         except IOError:
             print err.LOG_FAILURE
     else:
@@ -110,7 +112,7 @@ def is_registered(user_nick):
             content = 'Could not connect to {0}:{1}'.format(config.server, config.port)
 
             try:
-                log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+                log_write(logfile, get_datetime()['time'], ' <miniclient> ', content + '\n')
             except IOError:
                 print err.LOG_FAILURE
         else:

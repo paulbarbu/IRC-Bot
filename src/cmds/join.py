@@ -4,6 +4,7 @@
 #@ingroup moduleFiles
 
 import config
+from functions import is_registered
 
 def join(components): # !join <#channel>+
     """Returns a string for joining the given channel(s)
@@ -17,7 +18,8 @@ def join(components): # !join <#channel>+
 
     if 2 == len(join_command): #notice the space
 
-        if components['sender'] in config.owner: #this command can be run only by the owner(s)
+        #this command can be run only by the owner(s)
+        if components['sender'] in config.owner and is_registered(components['sender']):
             response = []
             join_chans = []
             response.append('JOIN ')
