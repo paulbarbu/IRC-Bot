@@ -1,4 +1,4 @@
-# coding: latin-1
+# -*- coding: utf-8 -*-
 
 ##@file weather.py
 #@brief !weather \<city\> or !weather \<city\>, \<state or country\>
@@ -29,7 +29,7 @@ def weather(components): # !weather <city> or !weather <city>, <state or country
                     'Weather Underground, Inc.'
 
 
-    return str(response)
+    return response.encode('utf8')
 
 def get_weather(location):
     """Return a dictionary with the <weather>, <full>, <temperature_string> tags
@@ -39,6 +39,8 @@ def get_weather(location):
     temperature)
     Depends on BeautifulStoneSoup
     """
+
+    degree = '°'.decode('utf8')
     conditions = {}
     base_url = 'http://api.wunderground.com/auto/wui/geo/WXCurrentObXML/index.xml?query='
 
@@ -59,16 +61,15 @@ def get_weather(location):
 
             #temperature
             conditions['temp'] = soup.find('temperature_string').contents[0]
-            conditions['temp'] = conditions['temp'].encode("latin-1")
 
-            #pos = conditions['temp'].find(' ')
-            #conditions['temp'] = conditions['temp'][:pos] + '°' + \
-                    #conditions['temp'][pos:]
+            pos = conditions['temp'].find(' ')
+            conditions['temp'] = conditions['temp'][:pos] + degree + \
+                    conditions['temp'][pos:]
 
-            #pos = conditions['temp'].rfind(' ')
-            #conditions['temp'] = conditions['temp'][:pos] + '°' + \
-                    #conditions['temp'][pos:]
-
+            pos = conditions['temp'].rfind(' ')
+            conditions['temp'] = conditions['temp'][:pos] + degree + \
+                    conditions['temp'][pos:]
+    finally:
         page.close()
 
     return conditions
