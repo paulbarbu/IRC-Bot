@@ -79,9 +79,6 @@ except socket.socket:
 else:
     try:
         irc.connect((config.server, config.port))
-
-        ##Get some data from the server
-        receive = irc.recv(4096)
     except IOError:
         content = 'Could not connect to {0}:{1}'.format(config.server, config.port)
 
@@ -260,4 +257,3 @@ else:
             print err.LOG_FAILURE
 
         print content
-
