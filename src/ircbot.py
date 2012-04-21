@@ -20,7 +20,6 @@
 
 import socket
 import sys
-import re
 
 import config
 import parser

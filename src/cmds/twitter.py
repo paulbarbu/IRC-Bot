@@ -7,7 +7,7 @@ from BeautifulSoup import BeautifulStoneSoup
 import urllib
 from datetime import datetime
 
-#TODO: get description, name, screenName, location, etc
+#TODO: get description, name, location, etc
 
 def twitter(components):
     """Gets latest tweet from a specified user(via his nickname)
