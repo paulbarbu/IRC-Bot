@@ -24,7 +24,6 @@ realName = 'Paul Python Bot'
 
 ##Channels to join on startup
 channels = [
-    '#ppybot',
     '#ppybbot',
     '#test-chan',
     ]
