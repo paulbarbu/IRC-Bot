@@ -10,12 +10,9 @@ _private_ discussion it can be queried (`/query PPyBot`).
 IRC Protocol reference: [RFC 1459](http://www.irchelp.org/irchelp/rfc/rfc.html
 "IRC Protocol")
 
-Documentation & Doxygen configuration
-=====================================
-Auto-generated documentation using Doxygen can be found at 
-[IRC-Bot Doc-Site](http://paullik.github.com/IRC-Bot/index.html)
-
-Doxygen configuration can be found in `/ircbot_docs.cfg`
+Documentation
+=============
+Sphinx docs to come
 
 Commands
 ========
@@ -118,7 +115,7 @@ Dependencies
 License
 =======
 
-(C) Copyright 2011 Paul Barbu
+(C) Copyright 2011, 2012 Paul Barbu Gheorghe
 
 This program is free software: you can redistribute it and/or modify it under 
 the terms of the GNU General Public License as published by the Free Software 
