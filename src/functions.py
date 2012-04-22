@@ -123,3 +123,13 @@ def is_registered(user_nick):
 def get_nick():
     for nick in config.nicks:
         yield nick
+
+def sigint_handler(signalnum, frame):
+    'This function handles the CTRL-c KeyboardInterrupt'
+
+    dt = get_datetime()
+    content = 'Closing: CTRL-c pressed!'
+
+    logfile = config.log + dt['date'] + '.log'
+    log_write(logfile, dt['time'], ' <> ', content + '\n')
+    print '\n' + content

@@ -3,11 +3,14 @@ import socket
 import sys
 import string
 import random
+import signal
 
 import config
 import parser
 import err
 from functions import *
+
+signal.signal(signal.SIGINT, sigint_handler)
 
 # none of these configuration directives can be empty, so they are checked
 valid_cfg = check_cfg(config.owner, config.server, config.nicks,
