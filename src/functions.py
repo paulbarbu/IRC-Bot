@@ -13,10 +13,9 @@ def log_write(log, pre, separator, content):
     '''
     with open(log, 'a') as log_file:
         try:
-            content = pre + separator + content
-            log_file.write(content)
+            log_file.write(pre + separator + content)
         except:
-            print 'Error writing to log file!'
+            print err.LOG_FAILURE
 
 def get_datetime():
     '''Returns a dictionary containing the date and time
@@ -85,20 +84,17 @@ def is_registered(user_nick):
     try:
         mini_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     except socket.socket:
-        try:
-            log_write(logfile, get_datetime()['time'], ' <miniclient> ', err.NO_SOCKET + '\n')
-        except IOError:
-            print err.LOG_FAILURE
+        log_write(logfile, get_datetime()['time'], ' <miniclient> ',
+                err.NO_SOCKET + '\n')
     else:
         try:
             mini_client.connect((config.server, config.port))
         except IOError:
-            content = 'Could not connect to {0}:{1}'.format(config.server, config.port)
+            content = 'Could not connect to {0}:{1}'.format(config.server,
+                    config.port)
 
-            try:
-                log_write(logfile, get_datetime()['time'], ' <miniclient> ', content + '\n')
-            except IOError:
-                print err.LOG_FAILURE
+            log_write(logfile, get_datetime()['time'], ' <miniclient> ',
+                    content + '\n')
         else:
             sample = ''.join(random.sample(string.ascii_lowercase, 5))
             nick = config.current_nick + sample

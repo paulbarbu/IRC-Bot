@@ -30,45 +30,30 @@ logfile = config.log + dt['date'] + '.log'
 nick_generator = get_nick()
 config.current_nick = nick_generator.next()
 
-content = 'Started on {0}:{1}, with nick: {2}'.format(config.server, config.port,
-        config.current_nick)
+content = 'Started on {0}:{1}, with nick: {2}'.format(config.server,
+        config.port, config.current_nick)
 
-try:
-    log_write(logfile, dt['time'], ' <> ', content + '\n')
-except IOError:
-    print err.LOG_FAILURE
+log_write(logfile, dt['time'], ' <> ', content + '\n')
 
 # start connecting
 try:
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.socket:
-    content = err.NO_SOCKET
-    try:
-        log_write(logfile, dt['time'], ' <> ', content + '\n')
-    except IOError:
-        print err.LOG_FAILURE
-
+    log_write(logfile, dt['time'], ' <> ', err.NO_SOCKET + '\n')
     print content
 else:
     try:
         irc.connect((config.server, config.port))
     except IOError:
-        content = 'Could not connect to {0}:{1}'.format(config.server, config.port)
+        content = 'Could not connect to {0}:{1}'.format(config.server,
+                config.port)
 
-        try:
-            log_write(logfile, dt['time'], ' <> ', content + '\n')
-        except IOError:
-            print err.LOG_FAILURE
-
+        log_write(logfile, dt['time'], ' <> ', content + '\n')
         print content
 
     else:
         content = 'Connected to {0}:{1}'.format(config.server, config.port)
-        try:
-            log_write(logfile, dt['time'], ' <> ', content + '\n')
-        except IOError:
-            print err.LOG_FAILURE
-
+        log_write(logfile, dt['time'], ' <> ', content + '\n')
         print content
 
         # try to authenticate
@@ -87,12 +72,9 @@ else:
                             ''.join(random.sample(string.ascii_lowercase, 5))
 
                 irc.send('NICK ' + config.current_nick + '\r\n')
-                content = 'Changing nick to: ' + config.current_nick
 
-                try:
-                    log_write(logfile, dt['time'], ' <> ', content + '\n')
-                except IOError:
-                    print err.LOG_FAILURE
+                content = 'Changing nick to: ' + config.current_nick
+                log_write(logfile, dt['time'], ' <> ', content + '\n')
             elif config.current_nick in receive or 'motd' in receive.lower():
                 # successfully connected
                 break
@@ -100,13 +82,9 @@ else:
         # join the configured channels
         channel_list = ','.join(config.channels)
         irc.send('JOIN ' + channel_list + '\r\n')
+
         content = 'Joined: {0}'.format(channel_list)
-
-        try:
-            log_write(logfile, dt['time'], ' <> ', content + '\n')
-        except IOError:
-            print err.LOG_FAILURE
-
+        log_write(logfile, dt['time'], ' <> ', content + '\n')
         print content
 
         # buffer for some command received
@@ -117,8 +95,10 @@ else:
             buff = buff + receive
             response = ''
 
-            if -1 != buff.find('\n'):
+            log_write(logfile, get_datetime()['time'], ' <> ', receive + \
+                    ('' if '\n' == receive[len(receive)-1] else '\n'))
 
+            if -1 != buff.find('\n'):
                 # get a full command from the buffer
                 command = buff[0 : buff.find('\n')]
                 buff = buff[buff.find('\n')+1 : ]
@@ -194,34 +174,16 @@ else:
                     response = response + '\r\n'
                     irc.send(response)
 
-                    try:
-                        dt = get_datetime()
-                        log_write(logfile, dt['time'], ' <> ', response)
-                    except IOError:
-                        print err.LOG_FAILURE
-
-                try:
-                    dt = get_datetime()
-                    log_write(logfile, dt['time'], ' <> ', command + '\n')
-                except IOError:
-                    print err.LOG_FAILURE
+                    log_write(logfile, get_datetime()['time'], ' <> ', response)
 
                 buff = ''
 
         # quit the server
         irc.send('QUIT\r\n')
-        dt = get_datetime()
-        try:
-            log_write(logfile, dt['time'], ' <> ', 'QUIT\r\n')
-        except IOError:
-            print err.LOG_FAILURE
+        log_write(logfile, get_datetime()['time'], ' <> ', 'QUIT\r\n')
 
         irc.close()
 
         content = 'Disconnected from {0}:{1}'.format(config.server, config.port)
-        try:
-            log_write(logfile, dt['time'], ' <> ', content + '\n')
-        except IOError:
-            print err.LOG_FAILURE
-
+        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
         print content
