@@ -1,7 +1,8 @@
 import os
+import os.path
 import time
 
-# Some commands can be executed only if the user's nick is found in this list
+# some commands can be executed only if the user's nick is found in this list
 owner = [
     'paullik',
     'foobarfoo',
@@ -40,7 +41,7 @@ cmds_list = [
     'twitter',
     ]
 
-#### Users should NOT modify below!
-log = os.getcwd() + os.sep + '..' + os.sep + 'logs' + os.sep
+# users should NOT modify below!
+log = os.path.join(os.getcwd(), '..', 'logs', '')
 start_time = time.time()
 current_nick = ''

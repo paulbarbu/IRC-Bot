@@ -135,7 +135,6 @@ else:
                             else:
 
                                 try: # the module is 'executed'
-
                                     # the name of the command is translated into
                                     # a function's name, then called
                                     get_response = getattr(mod, k)
@@ -143,7 +142,6 @@ else:
                                     # function not defined in module
                                     response = err.C_INVALID.format(k)
                                 else:
-
                                     response = get_response(components)
                                     break
 

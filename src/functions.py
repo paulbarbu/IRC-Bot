@@ -110,8 +110,8 @@ def is_registered(user_nick):
                 if 'NickServ' in receive: # this is the NickServ info response
                     if 'Last seen  : now' in receive: # user registered and online
                         return True
-                    elif 'Information on' in receive: # the response preceding
-                    # the important one that contains the information about the user
+                    elif 'Information on' in receive: # wait for the response
+                    # containing the information about the user
                         pass
                     else:
                         return False
