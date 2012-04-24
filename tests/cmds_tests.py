@@ -3,7 +3,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/')))
 
 import unittest
-from mock import patch
+from mock import patch, MagicMock, Mock
 from contextlib import nested
 
 class CmdsTests(unittest.TestCase):
@@ -52,6 +52,49 @@ class CmdsTests(unittest.TestCase):
             owner.append('baz')
             self.assertEqual(channels({'arguments': '!channels',
                 'sender': 'baz'}), 'test is connected to: #foobar')
+
+    def test_google(self):
+        from cmds.google import google
+
+        result = {
+            'queries': {
+                'request':
+                    [{'totalResults': 0}]
+            },
+            'items': [{
+                'link': 'http://foobar.baz',
+                'snippet': 'Details about foobar',
+            }]
+        }
+
+        def getitem(name):
+            return result[name]
+
+        def setitem(name, val):
+            result[name] = val
+
+        self.assertEqual(google({'arguments': '!google'}),
+                'Usage: !google <search term>')
+
+        self.assertEqual(google({'arguments': '!google   '}),
+                'Usage: !google <search term>')
+
+        with patch('cmds.google.build', create=True) as build:
+            query_result = MagicMock(spec_set=dict)
+            query_result.__setitem__.side_effect = setitem
+            query_result.__getitem__.side_effect = getitem
+
+            service_mock = Mock()
+            service_mock.cse.return_value.list.return_value.execute.return_value = query_result
+
+            build.return_value = service_mock
+
+            self.assertEqual(google({'arguments': '!google foo bar'}),
+                    'Not found: foo bar')
+
+            result['queries']['request'][0]['totalResults'] = 42
+            self.assertEqual(google({'arguments': '!google foo bar'}),
+                    'http://foobar.baz\r\nDetails about foobar')
 
 if __name__ == '__main__':
     unittest.main()
