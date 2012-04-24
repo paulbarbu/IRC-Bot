@@ -9,7 +9,7 @@ def google(components): # !google <search term>
     # notice the trailing space
     terms = components['arguments'].split('!google ')
 
-    if 2 == len(terms) and 1 < terms[1].lstrip():
+    if 2 == len(terms) and 1 <= len(terms[1].lstrip()):
         service = build("customsearch", "v1",
                 developerKey="AIzaSyCy6tveUHlfNQDUtH0TJrF6PtU0h894S2I")
 
