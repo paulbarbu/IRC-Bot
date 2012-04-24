@@ -2,3 +2,4 @@ src/lib/
 logs/
 *.pyc
 *.log
+.coverage
