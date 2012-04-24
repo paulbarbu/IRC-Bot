@@ -20,7 +20,7 @@ def google(components): # !google <search term>
 
         if 1 <= res['queries']['request'][0]['totalResults']:
             result = res['items'][0]
-            response = result['link'] + '\r\n' + result['snippet']
+            response = result['link'] + '\r\n' + result['snippet'].encode('utf8')
 
         else:
             response = 'Not found: ' + terms[1]
