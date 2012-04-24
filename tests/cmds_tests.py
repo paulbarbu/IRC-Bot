@@ -1,6 +1,7 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                '../src/')))
 
 import unittest
 from mock import patch, MagicMock, Mock
@@ -12,14 +13,14 @@ class CmdsTests(unittest.TestCase):
 
         self.assertEqual(about({'arguments': '!about garbage'}), '')
         self.assertEqual(about({'arguments': '!about'}),
-                'Author: Paullik @ http://github.com/paullik')
+            'Author: Paullik @ http://github.com/paullik')
 
     def test_answer(self):
         from cmds.answer import answer
 
         self.assertEqual(answer({'arguments': '!answer garbage'}), '')
         self.assertEqual(answer({'arguments': '!answer'}),
-                'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42!')
+            'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42!')
 
     def test_channels(self):
         from cmds.channels import channels
@@ -27,11 +28,11 @@ class CmdsTests(unittest.TestCase):
         self.assertEqual(channels({'arguments': '!channels garbage'}), '')
 
         with nested(
-                patch('cmds.channels.is_registered', create=True),
-                patch('config.owner', new=[], create=True),
-                patch('config.channels', new=[], create=True),
-                patch('config.current_nick', new='test', create=True),
-            ) as (is_registered, owner, chan, nick):
+            patch('cmds.channels.is_registered', create=True),
+            patch('config.owner', new=[], create=True),
+            patch('config.channels', new=[], create=True),
+            patch('config.current_nick', new='test', create=True),
+        ) as (is_registered, owner, chan, nick):
 
             chan.append('#foobar')
             owner.append('foo')
@@ -74,10 +75,10 @@ class CmdsTests(unittest.TestCase):
             result[name] = val
 
         self.assertEqual(google({'arguments': '!google'}),
-                'Usage: !google <search term>')
+            'Usage: !google <search term>')
 
         self.assertEqual(google({'arguments': '!google   '}),
-                'Usage: !google <search term>')
+            'Usage: !google <search term>')
 
         with patch('cmds.google.build', create=True) as build:
             query_result = MagicMock(spec_set=dict)
@@ -90,11 +91,68 @@ class CmdsTests(unittest.TestCase):
             build.return_value = service_mock
 
             self.assertEqual(google({'arguments': '!google foo bar'}),
-                    'Not found: foo bar')
+                'Not found: foo bar')
 
             result['queries']['request'][0]['totalResults'] = 42
             self.assertEqual(google({'arguments': '!google foo bar'}),
-                    'http://foobar.baz\r\nDetails about foobar')
+                'http://foobar.baz\r\nDetails about foobar')
+
+    def test_help(self):
+        from cmds.help import help
+
+        self.assertEqual(help({'arguments': '!help garbage'}), '')
+
+        with patch('config.cmds_list', new=[], create=True) as config:
+            config.extend(['foo', 'bar'])
+
+            self.assertEqual(help({'arguments': '!help'}),
+                '2 available commands: foo bar ') #notice the space
+
+    def test_join(self):
+        from cmds.join import join
+
+        self.assertEqual(join({'arguments': '!join', 'sender': 'foo'}),
+            'Usage: !join <#channel >+')
+
+        with nested(
+            patch('cmds.join.is_registered', create=True),
+            patch('config.owner', new=[], create=True),
+            patch('config.channels', new=[], create=True),
+        ) as (is_registered, owner, chan):
+
+            is_registered.return_value = False
+            owner.extend(['baz', 'bar'])
+            self.assertEqual(join({'arguments': '!join #chan', 'sender': 'foo'}),
+                'This command can be run only by the owners!')
+
+            is_registered.return_value = True
+            self.assertEqual(join({'arguments': '!join #chan', 'sender': 'foo'}),
+                'This command can be run only by the owners!')
+
+            is_registered.return_value = False
+            owner.append('foo')
+            self.assertEqual(join({'arguments': '!join #chan', 'sender': 'foo'}),
+                'This command can be run only by the owners!')
+
+            is_registered.return_value = True
+            self.assertListEqual(join({'arguments': '!join #chan',
+                'sender': 'foo'}), ['JOIN ', '#chan'])
+
+            self.assertEqual(join({'arguments': '!join chan chan2',
+                'sender': 'foo'}),
+                'Invalid channels names, usage: !join <#channel >+')
+
+            self.assertListEqual(join({'arguments': '!join #chan #c',
+                'sender': 'foo'}), ['JOIN ', '#c'])
+
+            self.assertListEqual(join({'arguments': '!join foobar   #test',
+                'sender': 'foo'}), ['JOIN ', '#test'])
+
+            self.assertEqual(join({'arguments': '!join    ',
+                'sender': 'foo'}),
+                'Invalid channels names, usage: !join <#channel >+')
+
+            self.assertListEqual(['#chan', '#c', '#test'], chan)
 
 if __name__ == '__main__':
     unittest.main()
