@@ -154,5 +154,47 @@ class CmdsTests(unittest.TestCase):
 
             self.assertListEqual(['#chan', '#c', '#test'], chan)
 
+    def test_mball(self):
+        from cmds.mball import mball
+
+        self.assertEqual(mball({'arguments': '!mball garbage'}), '')
+
+        self.assertRegexpMatches(mball({'arguments': '!mball'}),
+            'Magic Ball says: *')
+
+    def test_quit(self):
+        from cmds.quit import quit
+
+        with nested(
+            patch('cmds.quit.is_registered', create=True),
+            patch('config.owner', new=[], create=True),
+            patch('config.channels', new=[], create=True),
+        ) as (is_registered, owner, chan):
+            chan.extend(['#foo', '#bar'])
+
+            is_registered.return_value = None
+            self.assertEqual(quit({'arguments': '!quit', 'sender': 'foobaz'}),
+                'An unexpected error occurred while fetching data!')
+
+            is_registered.return_value = False
+            owner.extend(['foo'])
+            self.assertEqual(quit({'arguments': '!quit', 'sender': 'foobaz'}),
+                'This command can be run only by the owners!')
+
+            is_registered.return_value = True
+            self.assertEqual(quit({'arguments': '!quit', 'sender': 'foobaz'}),
+                'This command can be run only by the owners!')
+
+            self.assertEqual(quit({'arguments': '!quit baz qux',
+                'sender': 'foo'}), 'Invalid channel names!')
+
+            self.assertListEqual(quit({'arguments': '!quit #foo #foobar',
+                'sender': 'foo'}), ['PART', '#foo'])
+
+            self.assertListEqual(quit({'arguments': '!quit', 'sender': 'foo'}),
+                ['PART', '#bar'])
+
+            #self.assertListEqual([], chan)
+
 if __name__ == '__main__':
     unittest.main()
