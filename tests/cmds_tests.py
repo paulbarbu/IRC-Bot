@@ -194,7 +194,7 @@ class CmdsTests(unittest.TestCase):
             self.assertListEqual(quit({'arguments': '!quit', 'sender': 'foo'}),
                 ['PART', '#bar'])
 
-            #self.assertListEqual([], chan)
+            self.assertListEqual([], chan)
 
     def test_so(self):
         from cmds.so import so
