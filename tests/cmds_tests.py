@@ -196,5 +196,34 @@ class CmdsTests(unittest.TestCase):
 
             #self.assertListEqual([], chan)
 
+    def test_so(self):
+        from cmds.so import so
+        import urllib2
+
+        self.assertEqual(so({'arguments': '!so'}), 'Usage: !so <search term>')
+        self.assertEqual(so({'arguments': '!so  '}), 'Usage: !so <search term>')
+
+        with patch('stackexchange.Site', create=True) as s:
+            api = Mock()
+            api.search.side_effect = urllib2.HTTPError(code=42, fp=file,
+                    url='http://foo', msg='FooError', hdrs='headers')
+
+            s.return_value = api
+
+            self.assertEqual(so({'arguments': '!so foo'}),
+                "The server couldn't fulfill the request!" + \
+                        "\r\nReason: FooError\r\nCode: 42")
+
+            api.search.side_effect = None
+            api.search.return_value = []
+            self.assertEqual(so({'arguments': '!so foo'}), 'Not found: foo')
+
+            result = Mock()
+            result.title = 'foo_title'
+            result.url = 'foo_url'
+            api.search.return_value = [result]
+            self.assertEqual(so({'arguments': '!so foo'}),
+                'foo_title\r\nfoo_url')
+
 if __name__ == '__main__':
     unittest.main()
