@@ -225,5 +225,20 @@ class CmdsTests(unittest.TestCase):
             self.assertEqual(so({'arguments': '!so foo'}),
                 'foo_title\r\nfoo_url')
 
+    def test_uptime(self):
+        from cmds.uptime import uptime
+        from datetime import timedelta
+
+        self.assertEqual(uptime({'arguments': '!uptime garbage'}), '')
+
+        with nested(
+            patch('time.time', create=True),
+            patch('config.start_time', new=0, create=True),
+        ) as (time, start_time):
+            time.return_value = 42
+
+            self.assertEqual(uptime({'arguments': '!uptime'}), 'Uptime: ' + \
+                str(timedelta(seconds=time.return_value-start_time)))
+
 if __name__ == '__main__':
     unittest.main()
