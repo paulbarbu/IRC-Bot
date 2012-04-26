@@ -39,7 +39,7 @@ def quit(components): # !quit [chan_name]+ -> PART #channel
 
             else: # no arguments supplied, quitting all channels
                 response.append(','.join(config.channels))
-                config.channels = []
+                config.channels[:] = []
         else:
             response = 'This command can be run only by the owners!'
 
