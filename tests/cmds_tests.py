@@ -28,10 +28,10 @@ class CmdsTests(unittest.TestCase):
         self.assertEqual(channels({'arguments': '!channels garbage'}), '')
 
         with nested(
-            patch('cmds.channels.is_registered', create=True),
-            patch('config.owner', new=[], create=True),
-            patch('config.channels', new=[], create=True),
-            patch('config.current_nick', new='test', create=True),
+            patch('cmds.channels.is_registered'),
+            patch('config.owner', new=[]),
+            patch('config.channels', new=[]),
+            patch('config.current_nick', new='test'),
         ) as (is_registered, owner, chan, nick):
 
             chan.append('#foobar')
@@ -80,7 +80,7 @@ class CmdsTests(unittest.TestCase):
         self.assertEqual(google({'arguments': '!google   '}),
             'Usage: !google <search term>')
 
-        with patch('cmds.google.build', create=True) as build:
+        with patch('cmds.google.build') as build:
             query_result = MagicMock(spec_set=dict)
             query_result.__setitem__.side_effect = setitem
             query_result.__getitem__.side_effect = getitem
@@ -102,7 +102,7 @@ class CmdsTests(unittest.TestCase):
 
         self.assertEqual(help({'arguments': '!help garbage'}), '')
 
-        with patch('config.cmds_list', new=[], create=True) as config:
+        with patch('config.cmds_list', new=[]) as config:
             config.extend(['foo', 'bar'])
 
             self.assertEqual(help({'arguments': '!help'}),
@@ -115,9 +115,9 @@ class CmdsTests(unittest.TestCase):
             'Usage: !join <#channel >+')
 
         with nested(
-            patch('cmds.join.is_registered', create=True),
-            patch('config.owner', new=[], create=True),
-            patch('config.channels', new=[], create=True),
+            patch('cmds.join.is_registered'),
+            patch('config.owner', new=[]),
+            patch('config.channels', new=[]),
         ) as (is_registered, owner, chan):
 
             is_registered.return_value = False
@@ -166,9 +166,9 @@ class CmdsTests(unittest.TestCase):
         from cmds.quit import quit
 
         with nested(
-            patch('cmds.quit.is_registered', create=True),
-            patch('config.owner', new=[], create=True),
-            patch('config.channels', new=[], create=True),
+            patch('cmds.quit.is_registered'),
+            patch('config.owner', new=[]),
+            patch('config.channels', new=[]),
         ) as (is_registered, owner, chan):
             chan.extend(['#foo', '#bar'])
 
@@ -203,7 +203,7 @@ class CmdsTests(unittest.TestCase):
         self.assertEqual(so({'arguments': '!so'}), 'Usage: !so <search term>')
         self.assertEqual(so({'arguments': '!so  '}), 'Usage: !so <search term>')
 
-        with patch('stackexchange.Site', create=True) as s:
+        with patch('stackexchange.Site') as s:
             api = Mock()
             api.search.side_effect = urllib2.HTTPError(code=42, fp=file,
                     url='http://foo', msg='FooError', hdrs='headers')
@@ -232,8 +232,8 @@ class CmdsTests(unittest.TestCase):
         self.assertEqual(uptime({'arguments': '!uptime garbage'}), '')
 
         with nested(
-            patch('time.time', create=True),
-            patch('config.start_time', new=0, create=True),
+            patch('time.time'),
+            patch('config.start_time', new=0),
         ) as (time, start_time):
             time.return_value = 42
 
