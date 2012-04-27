@@ -10,6 +10,10 @@ def weather(components): # !weather <city> or !weather <city>, <state or country
 
     try:
         location = components['arguments'].split('!weather ')[1]
+        location = location.lstrip()
+
+        if len(location) < 1:
+            raise Exception('Empty location!')
     except:
         response = 'Usage: !weather <city>, <state>'
     else:
