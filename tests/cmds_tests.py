@@ -240,5 +240,159 @@ class CmdsTests(unittest.TestCase):
             self.assertEqual(uptime({'arguments': '!uptime'}), 'Uptime: ' + \
                 str(timedelta(seconds=time.return_value-start_time)))
 
+    def test_twitter(self):
+        from cmds.twitter import twitter
+
+        with patch('cmds.twitter.getStatus') as status:
+            status.return_value = {'date': '42', 'text': 'foobar'}
+
+            self.assertEqual(twitter({'arguments': '!twitter',
+                'sender': 'foo'}),
+                "foo's latest tweet was made on: 42\r\nfoobar")
+
+            self.assertEqual(twitter({'arguments': '!twitter baz',
+                'sender': 'foo'}),
+                "baz's latest tweet was made on: 42\r\nfoobar")
+
+            status.return_value = 'FooError'
+            self.assertEqual(twitter({'arguments': '!twitter baz',
+                'sender': 'foo'}), 'FooError')
+
+    def test_twitter_getStatus(self):
+        from cmds.twitter import getStatus
+
+        url = 'http://foo.bar'
+
+        with nested(
+            patch('urllib.urlopen'),
+            patch('cmds.twitter.BeautifulStoneSoup')
+        ) as (urlopen, BeautifulStoneSoup):
+            urlopen.side_effect = Exception()
+            self.assertEqual(getStatus(url), 'Error getting the status!')
+
+            BeautifulStoneSoup.return_value.find.return_value = None
+
+            urlopen.side_effect = None
+            self.assertEqual(getStatus(url), "This user doesn't exist!")
+
+            xmlStatus = Mock()
+            xmlStatus.find.return_value = None
+            BeautifulStoneSoup.return_value.find.return_value = xmlStatus
+            self.assertEqual(getStatus(url), 'This user has no tweets!')
+
+            content = Mock()
+            content.find.return_value.contents = ['Wed Jan 26 15:16:34 +0000 2011']
+            xmlStatus.find.return_value = content
+            BeautifulStoneSoup.return_value.find.return_value = xmlStatus
+            self.assertDictEqual(getStatus(url), {'date': '26/01/2011 15:34',
+                'text': 'Wed Jan 26 15:16:34 +0000 2011'})
+
+            content.find.return_value.contents = ['Wed Jan 26 15:16:34 -0000 2011']
+            xmlStatus.find.return_value = content
+            BeautifulStoneSoup.return_value.find.return_value = xmlStatus
+            self.assertDictEqual(getStatus(url), {'date': '26/01/2011 15:34',
+                'text': 'Wed Jan 26 15:16:34 -0000 2011'})
+
+    def test_weather(self):
+        from cmds.weather import weather
+
+        conditions = {
+            'location': 'foobar',
+            'temp': '42',
+            'weather': 'baz',
+        }
+
+        self.assertEqual(weather({'arguments': '!weather'}),
+            'Usage: !weather <city>, <state>')
+
+        self.assertEqual(weather({'arguments': '!weather  '}),
+            'Usage: !weather <city>, <state>')
+
+        with patch('cmds.weather.get_weather') as get_weather:
+            get_weather.return_value = 'Inexistent location: foo'
+
+            self.assertEqual(weather({'arguments': '!weather foo'}),
+                'Inexistent location: foo')
+
+            get_weather.return_value = conditions
+            self.assertEqual(weather({'arguments': '!weather foo'}),
+                conditions['location'] + ' - ' + conditions['temp'] + ' - ' + \
+                conditions['weather'] + ' - Provided by: ' + \
+                'Weather Underground, Inc.')
+
+    def test_weather_get_weather(self):
+        from cmds.weather import get_weather
+
+        location = 'foobar'
+
+        with nested(
+            patch('urllib.urlopen'),
+            patch('cmds.weather.BeautifulStoneSoup')
+        ) as (urlopen, BeautifulStoneSoup):
+            urlopen.side_effect = Exception()
+
+            self.assertEqual(get_weather(location), 'Could not open the page!')
+
+            urlopen.side_effect = None
+            BeautifulStoneSoup.return_value.find.return_value.contents = [
+                ','
+            ]
+
+            self.assertEqual(get_weather(location), 'Inexistent location: ' + \
+                location)
+
+            BeautifulStoneSoup.return_value.find.return_value.contents = [
+                'foo bar baz'
+            ]
+
+            self.assertDictEqual(get_weather(location), {
+                'weather': 'foo bar baz',
+                'location': 'foo bar baz',
+                'temp': u'foo\xb0 bar\xb0 baz',
+            })
+
+    def test_wiki(self):
+        from cmds.wiki import wiki
+
+        with patch('cmds.wiki.get_para') as get_para:
+            get_para.return_value = 'foobar'
+
+            self.assertEqual(wiki({'arguments': '!wiki'}),
+                'http://en.wikipedia.org/wiki/Main_Page\r\nfoobar')
+
+            self.assertEqual(wiki({'arguments': '!wiki      '}),
+                'http://en.wikipedia.org/wiki/Main_Page\r\nfoobar')
+
+            self.assertEqual(wiki({'arguments': '!wiki foobar'}),
+                'http://en.wikipedia.org/wiki/foobar\r\nfoobar')
+
+    def test_wiki_get_para(self):
+        from cmds.wiki import get_para
+
+        search_term = 'foobar'
+
+        with nested(
+            patch('urllib2.Request'),
+            patch('urllib2.urlopen'),
+            patch('cmds.wiki.BeautifulSoup')
+        ) as (request, urlopen, BeautifulSoup):
+            request.side_effect = IOError()
+            self.assertEqual(get_para(search_term), 'Cannot acces link!')
+
+            request.side_effect = None
+            paragraph = Mock()
+            paragraph.findAll.return_value = ['foobar']
+            BeautifulSoup.return_value.find.return_value.p = paragraph
+
+            self.assertEqual(get_para(search_term), 'foobar')
+
+            paragraph.findAll.return_value = ['foobar', '.'*462]
+            BeautifulSoup.return_value.find.return_value.p = paragraph
+            self.assertEqual(get_para(search_term), 'foobar' + '.'*454)
+
+            paragraph.findAll.return_value = ['foobar', ' '*460]
+            BeautifulSoup.return_value.find.return_value.p = paragraph
+            self.assertEqual(get_para(search_term), 'foobar' + ' '*454)
+
 if __name__ == '__main__':
     unittest.main()
