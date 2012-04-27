@@ -48,7 +48,7 @@ def check_channel(channels):
     Returns True if all channels' name are valid, else False
     '''
     for channel in channels:
-        if not ('#' == channel[0]) or -1 != channel.find(' '):
+        if '#' != channel[0] or -1 != channel.find(' '):
             return False
 
     return True
