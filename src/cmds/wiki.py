@@ -4,12 +4,18 @@ import urllib2
 def wiki(components): # !wiki <search term>
     'Returns a wiki link and the first paragraph of the page'
 
+    main_page = 'http://en.wikipedia.org/wiki/Main_Page'
+
     wlink = components['arguments'].split('!wiki ') # notice the trailing space
     if 1 == len(wlink): # no search term given, the Main_Page is "displayed"
-        response = 'http://en.wikipedia.org/wiki/Main_Page'
+        response = main_page
     else:
-        response = 'http://en.wikipedia.org/wiki/' + \
-                wlink[1].lstrip().replace(' ', '_')
+        search_term = wlink[1].lstrip().replace(' ', '_')
+
+        if len(search_term) < 1:
+            response = main_page
+        else:
+            response = 'http://en.wikipedia.org/wiki/' + search_term
 
     response = response + '\r\n' + get_para(response)
 
