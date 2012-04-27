@@ -57,7 +57,7 @@ def get_weather(location):
             pos = conditions['temp'].rfind(' ')
             conditions['temp'] = conditions['temp'][:pos] + degree + \
                     conditions['temp'][pos:]
-    finally:
+
         page.close()
 
     return conditions

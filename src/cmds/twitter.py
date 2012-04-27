@@ -74,4 +74,6 @@ def getStatus(apiURL):
                 status['date'] = date.strftime('%d/%m/%Y %H:%S')
                 status['text'] = xmlStatus.find('text').contents[0]
 
+        xml.close()
+
     return status
