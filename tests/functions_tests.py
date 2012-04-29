@@ -105,6 +105,14 @@ class FunctionsTests(unittest.TestCase):
 
             frame.f_globals.__getitem__.side_effect = Exception()
             sigint_handler(42, frame)
+            self.assertEqual(stdout.getvalue(),
+                '\nClosing: CTRL-c pressed!\n'*2)
+
+            frame.f_globals.keys.return_value = 'foo'
+            sigint_handler(42, frame)
+            self.assertEqual(stdout.getvalue(),
+                '\nClosing: CTRL-c pressed!\n'*3)
+
 
     def test_send_to(self):
         from functions import send_to
@@ -174,7 +182,7 @@ class FunctionsTests(unittest.TestCase):
             socket.return_value.recv.return_value = 'NickServ'
             self.assertFalse(is_registered(checked_nick))
 
-            response = ['NickServ Information on:', 'NickServ', 'foo']
+            response = ['baz', 'NickServ Information on:', 'NickServ', 'foo']
             # side_effect will return the next item from the list which will be
             # assigned to is_registered.receive this way I'm able to test the
             # pass branch in the function
