@@ -162,11 +162,10 @@ class FunctionsTests(unittest.TestCase):
             self.assertFalse(is_registered(checked_nick))
 
             response = ['NickServ Information on:', 'NickServ', 'foo']
-            # side_effect will call next() internally on the generator object
-            # returned by iter() and so the next item will be assigned to
-            # is_registered.receive this way I'm able to test the pass branch
-            # in the function
-            socket.return_value.recv.side_effect = iter(response)
+            # side_effect will return the next item from the list which will be
+            # assigned to is_registered.receive this way I'm able to test the
+            # pass branch in the function
+            socket.return_value.recv.side_effect = response
 
             self.assertFalse(is_registered(checked_nick))
 
