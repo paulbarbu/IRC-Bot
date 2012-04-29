@@ -65,7 +65,7 @@ def send_to(command):
     if -1 != command.find('PRIVMSG ' + config.current_nick + ' :'):
         # the command comes from a query
         sendto = get_sender(command)
-    else:
+    else: # the command comes from a channel
         command = command[command.find('PRIVMSG #'):]
         command = command[command.find(' ')+1:]
         sendto = command[:command.find(' ')]
