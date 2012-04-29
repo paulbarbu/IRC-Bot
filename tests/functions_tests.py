@@ -81,6 +81,10 @@ class FunctionsTests(unittest.TestCase):
     def test_sigint_handler(self):
         from functions import sigint_handler
 
+        g = {'irc': Mock()}
+        def getitem(name):
+            return g[name]
+
         with nested(
             patch('sys.stdout', new=StringIO()),
             patch('functions.get_datetime'),
@@ -88,10 +92,19 @@ class FunctionsTests(unittest.TestCase):
         ) as (stdout, get_dt, log_write):
             get_dt.return_value = {'date': '42', 'time': '42'}
 
-            sigint_handler(42, Mock())
+
+            frame = Mock()
+            frame.f_globals = MagicMock(spec_set=dict)
+            frame.f_globals.keys.return_value = 'irc'
+            frame.f_globals.__getitem__.side_effect = getitem
+
+            sigint_handler(42, frame)
 
             self.assertEqual(stdout.getvalue(),
                 '\nClosing: CTRL-c pressed!\n')
+
+            frame.f_globals.__getitem__.side_effect = Exception()
+            sigint_handler(42, frame)
 
     def test_send_to(self):
         from functions import send_to
