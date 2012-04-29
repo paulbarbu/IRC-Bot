@@ -398,5 +398,7 @@ class CmdsTests(unittest.TestCase):
             BeautifulSoup.return_value.find.return_value.p = paragraph
             self.assertEqual(get_para(search_term), 'foobar' + ' '*454)
 
+suite = unittest.TestLoader().loadTestsFromTestCase(CmdsTests)
+
 if __name__ == '__main__':
     unittest.main()

@@ -39,5 +39,7 @@ class ParserTests(unittest.TestCase):
                 'arguments': 'server@foo.baz', 'action_args': [],
                 'sender': ''})
 
+suite = unittest.TestLoader().loadTestsFromTestCase(ParserTests)
+
 if __name__ == '__main__':
     unittest.main()

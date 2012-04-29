@@ -1,6 +1,8 @@
 #!/bin/sh
 
-python2.7 -m unittest cmds_tests
-
-#coverage run --source=../src --omit='../src/lib/*' cmds_tests.py
-#coverage report -m
+if [ "-c" = $1 ]
+then
+    coverage run --source=../src --omit='../src/lib/*' --branch tests.py && coverage report -m
+else
+    python2.7 -m unittest discover -p '*_tests.py'
+fi

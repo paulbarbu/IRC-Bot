@@ -190,5 +190,7 @@ class FunctionsTests(unittest.TestCase):
 
             self.assertFalse(is_registered(checked_nick))
 
+suite = unittest.TestLoader().loadTestsFromTestCase(FunctionsTests)
+
 if __name__ == '__main__':
     unittest.main()
