@@ -83,7 +83,7 @@ def is_registered(user_nick):
 
     try:
         mini_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    except socket.socket:
+    except:
         log_write(logfile, get_datetime()['time'], ' <miniclient> ',
                 err.NO_SOCKET + '\n')
     else:
@@ -115,7 +115,7 @@ def is_registered(user_nick):
                         pass
                     else:
                         return False
-    finally:
+
         mini_client.close()
 
     return None
