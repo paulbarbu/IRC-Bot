@@ -112,7 +112,7 @@ else:
                 if 'PING' == components['action']:
                     response = []
                     response.append('PONG')
-                    response.append(components['arguments'])
+                    response.append(':' + components['arguments'])
 
                 elif 'PRIVMSG' == components['action'] and \
                         '!' == components['arguments'][0]:
@@ -146,8 +146,8 @@ else:
                                     break
 
                 elif 'KICK' == components['action']:
-                    if config.current_nick == components['optional_args'][1]:
-                        config.channels.remove(components['optional_args'][0])
+                    if config.current_nick == components['action_args'][1]:
+                        config.channels.remove(components['action_args'][0])
 
                 elif 'QUIT' == components['action'] and \
                         -1 != components['arguments'].find('Ping timeout: '):
