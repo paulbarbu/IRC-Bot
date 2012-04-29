@@ -18,6 +18,8 @@ def twitter(components):
     elif 2 == len(screenName):
         apiURL = apiURL + screenName[1]
         screenName = screenName[1]
+    else:
+        return 'Usage: !twitter screen_name'
 
     status = getStatus(apiURL)
 
