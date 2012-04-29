@@ -127,6 +127,12 @@ def get_nick():
 def sigint_handler(signalnum, frame):
     'This function handles the CTRL-c KeyboardInterrupt'
 
+    if 'irc' in frame.f_globals.keys():
+        try:
+            frame.f_globals['irc'].close()
+        except:
+            pass
+
     dt = get_datetime()
     content = 'Closing: CTRL-c pressed!'
 
