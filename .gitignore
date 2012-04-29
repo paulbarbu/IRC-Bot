@@ -3,3 +3,4 @@ logs/
 *.pyc
 *.log
 .coverage
+htmlcov/
