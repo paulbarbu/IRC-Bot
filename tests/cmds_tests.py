@@ -250,6 +250,10 @@ class CmdsTests(unittest.TestCase):
                 'sender': 'foo'}),
                 "foo's latest tweet was made on: 42\r\nfoobar")
 
+            self.assertEqual(twitter({'arguments': '!twitter !twitter ',
+                'sender': 'foo'}),
+                'Usage: !twitter <screen name>')
+
             self.assertEqual(twitter({'arguments': '!twitter baz',
                 'sender': 'foo'}),
                 "baz's latest tweet was made on: 42\r\nfoobar")

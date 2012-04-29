@@ -19,7 +19,7 @@ def twitter(components):
         apiURL = apiURL + screenName[1]
         screenName = screenName[1]
     else:
-        return 'Usage: !twitter screen_name'
+        return 'Usage: !twitter <screen name>'
 
     status = getStatus(apiURL)
 
