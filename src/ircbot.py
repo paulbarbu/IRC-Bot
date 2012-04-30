@@ -9,8 +9,12 @@ from functions import *
 
 #TODO: change is_registered to use the newly created functions (same as run)
 #TODO: change is_registered to use the exactly the same socket as the "main" one
+
 #TODO: join and quit can send themselves the commands using the "main" socket
 #TODO: if doing the above then a message is possible on the channel
+#TODO: if the "main" socket is not reliable (pass it to all cmds or doens't work
+#TODO: I can try to send the message manually near the JOIN or PART
+
 #TODO: test the __name__ part of this file
 
 def run(socket, channels, cmds, nick, logfile):
