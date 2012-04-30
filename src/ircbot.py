@@ -128,10 +128,7 @@ if __name__ == '__main__':
         if joined:
             run(socket, config.channels, logfile)
 
-            # quit the server
-            socket.send('QUIT\r\n')
-            log_write(logfile, get_datetime()['time'], ' <> ', 'QUIT\r\n')
-
+            quit_bot(socket, logfile)
             socket.close()
 
             content = 'Disconnected from {0}:{1}'.format(config.server, config.port)

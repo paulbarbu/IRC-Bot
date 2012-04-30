@@ -234,3 +234,24 @@ def join_channels(channels, s, logfile):
     print content
 
     return True
+
+def quit_bot(s, logfile):
+    '''Send the QUIT commmand through the socket s
+    The errors (if they occur) or the quit command is logged in the file
+    specified by logfile
+
+    Return True if the command was sent, else False
+    '''
+
+    try:
+        s.send('QUIT\r\n')
+    except IOError as e:
+        content = 'Unexpected error while quitting: {0}'.format(e)
+        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        print content
+
+        return False
+
+    log_write(logfile, get_datetime()['time'], ' <> ', 'QUIT\r\n')
+
+    return True

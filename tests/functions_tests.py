@@ -275,6 +275,35 @@ class FunctionsTests(unittest.TestCase):
 
             s.send.assert_called_with('JOIN ' + clist + '\r\n')
 
+    def test_quit_bot(self):
+        from functions import quit_bot
+
+        with nested(
+            patch('functions.log_write'),
+            patch('sys.stdout', new=StringIO()),
+            patch('functions.get_datetime'),
+        ) as (log_write, stdout, get_dt):
+            get_dt.return_value = {'date': '42', 'time': '42'}
+
+            s = Mock()
+            s.send.side_effect = IOError()
+
+            message = 'Unexpected error while quitting: \n'
+
+            self.assertFalse(quit_bot(s, 'foo'))
+            self.assertEqual(stdout.getvalue(), message)
+
+            log_write.assert_called_with('foo', '42', ' <> ', message)
+
+
+            s.send.side_effect = None
+            s.send = Mock()
+
+            self.assertTrue(quit_bot(s, 'foo'))
+
+            log_write.assert_called_with('foo', '42', ' <> ', 'QUIT\r\n')
+            s.send.assert_called_with('QUIT\r\n')
+
     def test_name_bot(self):
         from functions import name_bot
 
