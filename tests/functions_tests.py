@@ -141,7 +141,7 @@ class FunctionsTests(unittest.TestCase):
             patch('config.port', new=42),
             patch('random.sample'),
             patch('config.current_nick', new='baz'),
-            patch('config.realName', new='bar'),
+            patch('config.real_name', new='bar'),
         ) as (get_dt, log, socket, log_write, server, port, sample, nick,
         real_name):
             get_dt.return_value = {'date': '42', 'time': '42'}
@@ -383,7 +383,7 @@ class FunctionsTests(unittest.TestCase):
             patch('functions.get_nick'),
             patch('functions.log_write'),
             patch('functions.get_datetime'),
-            patch('config.realName', new='foo'),
+            patch('config.real_name', new='foo'),
             patch('random.sample'),
         ) as (get_nick, log_write, get_dt, real_name, sample):
             get_dt.return_value = {'date': '42', 'time': '42'}
@@ -396,7 +396,7 @@ class FunctionsTests(unittest.TestCase):
                 nicks[1],
             ]
 
-            self.assertIsNone(name_bot(irc, logfile))
+            self.assertEqual(name_bot(irc, real_name, logfile), nicks[1])
             expected_log_write_calls = [
                 call(logfile, '42', ' <> ',
                     'Set nick to: {0}\n'.format(nicks[0])),
@@ -419,7 +419,7 @@ class FunctionsTests(unittest.TestCase):
             get_nick.return_value = iter(nicks)
             irc.recv.side_effect = ['Nickname is already in use', 'motd']
 
-            self.assertIsNone(name_bot(irc, logfile))
+            self.assertEqual(name_bot(irc, real_name, logfile), nicks[0] + 'baz')
             expected_log_write_calls = [
                 call(logfile, '42', ' <> ',
                     'Set nick to: {0}\n'.format(nicks[0])),

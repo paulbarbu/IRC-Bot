@@ -63,7 +63,7 @@ def run(socket, channels, cmds, logfile):
 
 if __name__ == '__main__':
     valid_cfg = check_cfg(config.owner, config.server, config.nicks,
-            config.realName, config.log, config.cmds_list)
+            config.real_name, config.log, config.cmds_list)
 
     if not valid_cfg:
         sys.exit(err.INVALID_CFG)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
         print content
 
-        name_bot(socket, logfile)
+        config.current_nick = name_bot(socket, config.real_name, logfile)
         joined = join_channels(config.channels, socket, logfile)
 
         if joined:

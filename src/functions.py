@@ -102,7 +102,7 @@ def is_registered(user_nick):
 
             mini_client.send('NICK ' + nick + '\r\n')
             mini_client.send('USER ' + nick + ' ' + nick + ' ' + nick + ' :' + \
-                    config.realName + sample + '\r\n')
+                    config.real_name + sample + '\r\n')
             mini_client.send('PRIVMSG nickserv :info ' + user_nick + '\r\n')
 
             while True:
@@ -141,42 +141,44 @@ def sigint_handler(signalnum, frame):
     log_write(logfile, dt['time'], ' <> ', content + '\n')
     print '\n' + content
 
-def name_bot(irc, logfile):
+def name_bot(irc, real_name, logfile):
     '''Try to name the bot in order to be recognised on IRC
 
     irc - an opened socket
+    real_name - bot's real name
     logfile - the name of the logfile to write to
+
+    Return the name of the bot
     '''
 
     import random
     import string
 
     nick_generator = get_nick()
-    config.current_nick = nick_generator.next()
+    nick = nick_generator.next()
     log_write(logfile, get_datetime()['time'], ' <> ',
-        'Set nick to: {0}\n'.format(config.current_nick))
+        'Set nick to: {0}\n'.format(nick))
 
-    irc.send('NICK ' + config.current_nick + '\r\n')
-    irc.send('USER ' + config.current_nick + ' ' + config.current_nick + \
-            ' ' + config.current_nick + ' :' + config.realName + '\r\n')
+    irc.send('NICK ' + nick + '\r\n')
+    irc.send('USER ' + nick + ' ' + nick + \
+            ' ' + nick + ' :' + real_name + '\r\n')
 
     while True:
         receive = irc.recv(4096)
 
         if 'Nickname is already in use' in receive: # try another nickname
             try:
-                config.current_nick = nick_generator.next()
+                nick = nick_generator.next()
             except StopIteration: # if no nick is available just make one up
-                config.current_nick = config.current_nick + \
-                        ''.join(random.sample(string.ascii_lowercase, 5))
+                nick = nick + ''.join(random.sample(string.ascii_lowercase, 5))
 
-            irc.send('NICK ' + config.current_nick + '\r\n')
+            irc.send('NICK ' + nick + '\r\n')
 
-            content = 'Changing nick to: {0}\n'.format(config.current_nick)
+            content = 'Changing nick to: {0}\n'.format(nick)
             log_write(logfile, get_datetime()['time'], ' <> ', content)
-        elif config.current_nick in receive or 'motd' in receive.lower():
+        elif nick in receive or 'motd' in receive.lower():
             # successfully connected
-            break
+            return nick
 
 def create_socket(logfile, family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
     '''Returns an unix socket
