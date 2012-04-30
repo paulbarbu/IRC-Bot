@@ -211,6 +211,13 @@ def connect_to(address, s, logfile):
     return True
 
 def join_channels(channels, s, logfile):
+    '''Send a JOIN command to the server through the s socket
+    The variable 'channels' is a list of strings that represend the channels to
+    be joined (including the # character)
+
+    Returns True if the command was sent, else False, either way the error or
+    the channels joined are logged into the file specified by logfile
+    '''
     clist = ','.join(channels)
 
     try:
