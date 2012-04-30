@@ -227,7 +227,7 @@ class FunctionsTests(unittest.TestCase):
 
             address = ('server', 'port')
 
-            self.assertFalse(connect_to('foo', address, s))
+            self.assertFalse(connect_to(address, s, 'foo'))
             self.assertEqual(stdout.getvalue(),
                 'Could not connect to {0}\n{1}'.format(address, '\n'))
             log_write.assert_called_with('foo', '42', ' <> ',
@@ -235,7 +235,7 @@ class FunctionsTests(unittest.TestCase):
 
             s.connect.side_effect = None
             s.connect = Mock()
-            self.assertTrue(connect_to('foo', address, s))
+            self.assertTrue(connect_to(address, s, 'foo'))
 
             s.connect.assert_called_with(address)
     def test_name_bot(self):

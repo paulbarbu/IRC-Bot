@@ -191,10 +191,10 @@ def create_socket(logfile, family=socket.AF_INET, type=socket.SOCK_STREAM, proto
     else:
         return irc
 
-def connect_to(logfile, address, s):
+def connect_to(address, s, logfile):
     '''Connect to the specified address through s (a socket object)
 
-    Returns True on success else False and it will log the error
+    Returns True on success else False and it will log the error in logfile
     '''
     try:
         s.connect(address)
