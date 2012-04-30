@@ -255,3 +255,81 @@ def quit_bot(s, logfile):
     log_write(logfile, get_datetime()['time'], ' <> ', 'QUIT\r\n')
 
     return True
+
+def run_cmd(cmd, args, cmds_list):
+    '''Search the command (cmd), eg. !twitter in the commands list (cmds_list)
+    and try to import its module and run it passing the args to the function
+    args will be mostly the irc command components (sender, action, etc.)
+
+    The return value of the imported function is returned from this function too
+    '''
+    response = None
+
+    if cmd in cmds_list:
+        try: # the needed module is imported from 'cmds/'
+
+            # module that needs to be loaded after finding a
+            # valid user command
+            mod = 'cmds.' + cmd
+            mod = __import__(mod, globals(), locals(), [cmd])
+        except ImportError: # inexistent module
+                response = err.C_INEXISTENT.format(cmd)
+        else:
+
+            try: # the module is 'executed'
+                # the name of the command is translated into
+                # a function's name, then called
+                get_response = getattr(mod, cmd)
+            except AttributeError:
+                # function not defined in module
+                response = err.C_INVALID.format(cmd)
+            else:
+                response = get_response(args)
+
+    return response
+
+def send_response(response, destination, s, logfile):
+    '''Attempt to send the response to destination through the s socket
+    The response can be either a list or a string, if it's a list then it
+    means that the module sent a command on its own (eg. PART)
+
+    The destination can be passed using the send_to function
+
+    The response is logged into the file specified by logfile
+
+    True is returned upon sending the response, None if the response was empty
+    or False if an error occurred while sending the response
+    '''
+    if len(response): # send the response and log it
+        if type(response) == type(str()):
+            # the module sent just a string so
+            # I have to compose the command
+
+            # a multi-line command must be split
+            crlf_pos = response[:-2].find('\r\n')
+            if -1 != crlf_pos:
+                crlf_pos = crlf_pos + 2 # jump over '\r\n'
+                response = response[:crlf_pos] + \
+                        destination + response[crlf_pos:]
+
+            response = destination + response
+        else: # the module sent a command like WHOIS or KICK
+            response = ' '.join(response)
+
+        # append CRLF if not already appended
+        if '\r\n' != response[-2:]:
+            response = response + '\r\n'
+
+        try:
+            s.send(response)
+        except IOError as e:
+            log_write(logfile, get_datetime()['time'], ' <> ',
+                'Unexpected error while sending the response: {0}\n'.format(e))
+
+            return False
+
+        log_write(logfile, get_datetime()['time'], ' <> ', response)
+
+        return True
+
+    return None

@@ -304,6 +304,72 @@ class FunctionsTests(unittest.TestCase):
             log_write.assert_called_with('foo', '42', ' <> ', 'QUIT\r\n')
             s.send.assert_called_with('QUIT\r\n')
 
+    def test_run_cmd(self):
+        from functions import run_cmd
+        import err
+
+        cmds_list = ['foo', 'bar']
+        args = {'sender': 'foobar', 'action': 'qux'}
+
+        with nested(
+            patch('functions.__import__', create=True),
+            patch('functions.getattr', create=True),
+        ) as (import_mock, getattr_mock):
+            foo = Mock()
+            foo.return_value = 'response'
+
+            getattr_mock.return_value = foo
+
+            self.assertEqual(run_cmd('foo', args, cmds_list), 'response')
+            self.assertIsNone(run_cmd('baz', args, cmds_list))
+
+            import_mock.side_effect = ImportError()
+            self.assertEqual(run_cmd('foo', args, cmds_list),
+                err.C_INEXISTENT.format('foo'))
+
+            getattr_mock.side_effect = AttributeError()
+            import_mock.side_effect = None
+
+            self.assertEqual(run_cmd('foo', args, cmds_list),
+                err.C_INVALID.format('foo'))
+
+    def test_send_response(self):
+        from functions import send_response
+
+        self.assertIsNone(send_response('', 'nick', 'bar', 'baz'))
+        self.assertIsNone(send_response([], '#chan', 'bar', 'baz'))
+
+        with nested(
+            patch('functions.log_write'),
+            patch('functions.get_datetime'),
+        ) as (log_write, get_dt):
+            get_dt.return_value = {'date': '42', 'time': '42'}
+
+            response = ['foo', 'bar']
+            s = Mock()
+            self.assertTrue(send_response(response, '#chan', s, 'foo'))
+            s.send.assert_called_with(' '.join(response) + '\r\n')
+            log_write.assert_called_with('foo', '42', ' <> ',
+                ' '.join(response) + '\r\n')
+
+            self.assertTrue(send_response('baz', '#chan', s, 'foo'))
+            s.send.assert_called_with('#chanbaz\r\n')
+            log_write.assert_called_with('foo', '42', ' <> ', '#chanbaz\r\n')
+
+            self.assertTrue(send_response('baz\r\n', '#chan', s, 'foo'))
+            s.send.assert_called_with('#chanbaz\r\n')
+            log_write.assert_called_with('foo', '42', ' <> ', '#chanbaz\r\n')
+
+            self.assertTrue(send_response('foo\r\nbaz\r\n', '#chan', s, 'foo'))
+            s.send.assert_called_with('#chanfoo\r\n#chanbaz\r\n')
+            log_write.assert_called_with('foo', '42', ' <> ',
+                '#chanfoo\r\n#chanbaz\r\n')
+
+            s.send.side_effect = IOError()
+            self.assertFalse(send_response('baz', '#chan', s, 'foo'))
+            log_write.assert_called_with('foo', '42', ' <> ',
+                'Unexpected error while sending the response: \n')
+
     def test_name_bot(self):
         from functions import name_bot
 
