@@ -11,7 +11,7 @@ from functions import *
 #TODO: join and quit can send themselves the commands using the "main" socket
 #TODO: if doing the above then a message is possible on the channel
 
-def run(socket, channels, logfile):
+def run(socket, channels, cmds, logfile):
     # buffer for some command received
     buff = ''
 
@@ -41,31 +41,13 @@ def run(socket, channels, logfile):
                 # search in commands list only if the message from the user
                 # starts with an exclamation mark
 
-                for k in config.cmds_list:
-                    if 0 == components['arguments'].find('!' + k):
-                        # commands are valid if they are the beginning of
-                        # the message
+                pos = components['arguments'].find(' ')
+                if -1 == pos:
+                    pos = len(components['arguments'])
 
-                        try: # the needed module is imported from 'cmds/'
-
-                            # module that needs to be loaded after finding a
-                            # valid user command
-                            mod = 'cmds.' + k
-                            mod = __import__(mod, globals(), locals(), [k])
-                        except ImportError: # inexistent module
-                                response = err.C_INEXISTENT.format(k)
-                        else:
-
-                            try: # the module is 'executed'
-                                # the name of the command is translated into
-                                # a function's name, then called
-                                get_response = getattr(mod, k)
-                            except AttributeError:
-                                # function not defined in module
-                                response = err.C_INVALID.format(k)
-                            else:
-                                response = get_response(components)
-                                break
+                #get the command issued to the bot without the exclamation mark
+                cmd = components['arguments'][1:pos]
+                response = run_cmd(cmd, components, cmds)
 
             elif 'KICK' == components['action']:
                 if config.current_nick == components['action_args'][1]:
@@ -75,29 +57,7 @@ def run(socket, channels, logfile):
                     -1 != components['arguments'].find('Ping timeout: '):
                 channels[:] = []
 
-            if len(response): # send the response and log it
-                if type(response) == type(str()):
-                    # the module sent just a string so
-                    # I have to compose the command
-
-                    # get the sender
-                    sendto = send_to(command)
-
-                    # a multi-line command must be split
-                    crlf_pos = response[:-2].find('\r\n')
-                    if -1 != crlf_pos:
-                        crlf_pos = crlf_pos + 2 # jump over '\r\n'
-                        response = response[:crlf_pos] + \
-                                sendto + response[crlf_pos:]
-
-                    response = sendto + response
-                else: # the module sent a command like WHOIS or KICK
-                    response = ' '.join(response)
-
-                response = response + '\r\n'
-                socket.send(response)
-
-                log_write(logfile, get_datetime()['time'], ' <> ', response)
+            send_response(response, send_to(command), socket, logfile)
 
             buff = ''
 
@@ -126,11 +86,12 @@ if __name__ == '__main__':
         joined = join_channels(config.channels, socket, logfile)
 
         if joined:
-            run(socket, config.channels, logfile)
+            run(socket, config.channels, config.cmds_list, logfile)
 
             quit_bot(socket, logfile)
             socket.close()
 
-            content = 'Disconnected from {0}:{1}'.format(config.server, config.port)
+            content = 'Disconnected from {0}:{1}'.format(
+                config.server, config.port)
             log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
             print content
