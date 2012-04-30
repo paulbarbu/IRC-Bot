@@ -338,6 +338,7 @@ class FunctionsTests(unittest.TestCase):
 
         self.assertIsNone(send_response('', 'nick', 'bar', 'baz'))
         self.assertIsNone(send_response([], '#chan', 'bar', 'baz'))
+        self.assertIsNone(send_response(None, '#chan', 'bar', 'baz'))
 
         with nested(
             patch('functions.log_write'),

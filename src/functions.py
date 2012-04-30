@@ -302,7 +302,7 @@ def send_response(response, destination, s, logfile):
     True is returned upon sending the response, None if the response was empty
     or False if an error occurred while sending the response
     '''
-    if len(response): # send the response and log it
+    if response is not None and len(response): # send the response and log it
         if type(response) == type(str()):
             # the module sent just a string so
             # I have to compose the command
