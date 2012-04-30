@@ -7,11 +7,12 @@ import parser
 import err
 from functions import *
 
+#TODO: change is_registered to use the newly created functions (same as run)
 #TODO: change is_registered to use the exactly the same socket as the "main" one
 #TODO: join and quit can send themselves the commands using the "main" socket
 #TODO: if doing the above then a message is possible on the channel
 
-def run(socket, channels, cmds, logfile):
+def run(socket, channels, cmds, nick, logfile):
     # buffer for some command received
     buff = ''
 
@@ -20,7 +21,8 @@ def run(socket, channels, cmds, logfile):
         buff = buff + receive
         response = ''
 
-        log_write(logfile, get_datetime()['time'], ' <> ', receive + \
+        if receive:
+            log_write(logfile, get_datetime()['time'], ' <> ', receive + \
                 ('' if '\n' == receive[len(receive)-1] else '\n'))
 
         if -1 != buff.find('\n'):
@@ -49,8 +51,8 @@ def run(socket, channels, cmds, logfile):
                 cmd = components['arguments'][1:pos]
                 response = run_cmd(cmd, components, cmds)
 
-            elif 'KICK' == components['action']:
-                if config.current_nick == components['action_args'][1]:
+            elif 'KICK' == components['action'] and \
+                nick == components['action_args'][1]:
                     channels.remove(components['action_args'][0])
 
             elif 'QUIT' == components['action'] and \
@@ -86,7 +88,8 @@ if __name__ == '__main__':
         joined = join_channels(config.channels, socket, logfile)
 
         if joined:
-            run(socket, config.channels, config.cmds_list, logfile)
+            run(socket, config.channels, config.cmds_list, config.current_nick,
+                logfile)
 
             quit_bot(socket, logfile)
             socket.close()
