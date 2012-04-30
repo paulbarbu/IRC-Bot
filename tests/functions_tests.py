@@ -212,6 +212,32 @@ class FunctionsTests(unittest.TestCase):
             socket.return_value = 42
             self.assertEqual(create_socket('foo'), 42)
 
+    def test_connect_to(self):
+        from functions import connect_to
+
+        with nested(
+            patch('functions.log_write'),
+            patch('sys.stdout', new=StringIO()),
+            patch('functions.get_datetime'),
+        ) as (log_write, stdout, get_dt):
+            get_dt.return_value = {'date': '42', 'time': '42'}
+
+            s = Mock()
+            s.connect.side_effect = IOError()
+
+            address = ('server', 'port')
+
+            self.assertFalse(connect_to('foo', address, s))
+            self.assertEqual(stdout.getvalue(),
+                'Could not connect to {0}\n{1}'.format(address, '\n'))
+            log_write.assert_called_with('foo', '42', ' <> ',
+                'Could not connect to {0}\n{1}'.format(address, '\n'))
+
+            s.connect.side_effect = None
+            s.connect = Mock()
+            self.assertTrue(connect_to('foo', address, s))
+
+            s.connect.assert_called_with(address)
     def test_name_bot(self):
         from functions import name_bot
 

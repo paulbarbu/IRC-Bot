@@ -190,3 +190,20 @@ def create_socket(logfile, family=socket.AF_INET, type=socket.SOCK_STREAM, proto
         print message
     else:
         return irc
+
+def connect_to(logfile, address, s):
+    '''Connect to the specified address through s (a socket object)
+
+    Returns True on success else False and it will log the error
+    '''
+    try:
+        s.connect(address)
+    except IOError as e:
+        content = 'Could not connect to {0}\n{1}'.format(address, e)
+
+        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        print content
+
+        return False
+    else:
+        return True
