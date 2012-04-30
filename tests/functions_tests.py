@@ -190,6 +190,28 @@ class FunctionsTests(unittest.TestCase):
 
             self.assertFalse(is_registered(checked_nick))
 
+    def test_create_socket(self):
+        from functions import create_socket
+        import err
+
+        with nested(
+            patch('socket.socket'),
+            patch('functions.log_write'),
+            patch('sys.stdout', new=StringIO()),
+            patch('functions.get_datetime'),
+        ) as (socket, log_write, stdout, get_dt):
+            socket.side_effect = IOError()
+            get_dt.return_value = {'date': '42', 'time': '42'}
+
+            self.assertIsNone(create_socket('foo'))
+            self.assertEqual(stdout.getvalue(), err.NO_SOCKET + '\n\n')
+            log_write.assert_called_with('foo', '42', ' <> ',
+                err.NO_SOCKET + '\n\n')
+
+            socket.side_effect = None
+            socket.return_value = 42
+            self.assertEqual(create_socket('foo'), 42)
+
     def test_name_bot(self):
         from functions import name_bot
 

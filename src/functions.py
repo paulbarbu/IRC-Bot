@@ -1,6 +1,7 @@
 import config
 import err
 import datetime
+import socket
 
 def get_sender(msg):
     "Returns the user's nick (string) that sent the message"
@@ -176,3 +177,16 @@ def name_bot(irc, logfile):
         elif config.current_nick in receive or 'motd' in receive.lower():
             # successfully connected
             break
+
+def create_socket(logfile, family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
+    '''Returns an unix socket
+    or logs the failure message otherwise and returns None
+    '''
+    try:
+        irc = socket.socket(family, type, proto)
+    except IOError as e:
+        message =  '{0}\n{1}'.format(err.NO_SOCKET, e)
+        log_write(logfile, get_datetime()['time'], ' <> ', message + '\n')
+        print message
+    else:
+        return irc
