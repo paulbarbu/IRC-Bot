@@ -15,8 +15,8 @@ def log_write(log, pre, separator, content):
     with open(log, 'a') as log_file:
         try:
             log_file.write(pre + separator + content)
-        except:
-            print err.LOG_FAILURE
+        except Exception as e:
+            print err.LOG_FAILURE + '\n' + str(e)
 
 def get_datetime():
     '''Returns a dictionary containing the date and time

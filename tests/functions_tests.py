@@ -34,7 +34,7 @@ class FunctionsTests(unittest.TestCase):
 
             log_write('foo_file', 'pre', 'sep', 'post')
 
-            self.assertEqual(stdout.getvalue(), err.LOG_FAILURE + '\n')
+            self.assertEqual(stdout.getvalue(), err.LOG_FAILURE + '\n\n')
 
     def test_get_datetime(self):
         from functions import get_datetime
