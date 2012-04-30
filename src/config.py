@@ -16,7 +16,7 @@ port = 6667
 # bot's nicknames
 nicks = list(set(['PPyBot']))
 # bot's real name
-realName = 'Paul Python Bot'
+real_name = 'Paul Python Bot'
 
 # channels to join on startup
 channels = list(set([
