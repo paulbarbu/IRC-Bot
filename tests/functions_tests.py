@@ -226,18 +226,55 @@ class FunctionsTests(unittest.TestCase):
             s.connect.side_effect = IOError()
 
             address = ('server', 'port')
+            message = 'Could not connect to {0}\n{1}'.format(address, '\n')
 
             self.assertFalse(connect_to(address, s, 'foo'))
-            self.assertEqual(stdout.getvalue(),
-                'Could not connect to {0}\n{1}'.format(address, '\n'))
-            log_write.assert_called_with('foo', '42', ' <> ',
-                'Could not connect to {0}\n{1}'.format(address, '\n'))
+            self.assertEqual(stdout.getvalue(), message)
+            log_write.assert_called_with('foo', '42', ' <> ', message)
 
             s.connect.side_effect = None
             s.connect = Mock()
             self.assertTrue(connect_to(address, s, 'foo'))
 
             s.connect.assert_called_with(address)
+
+    def test_join_channels(self):
+        from functions import join_channels
+
+        with nested(
+            patch('functions.log_write'),
+            patch('sys.stdout', new=StringIO()),
+            patch('functions.get_datetime'),
+        ) as (log_write, stdout, get_dt):
+            get_dt.return_value = {'date': '42', 'time': '42'}
+
+            s = Mock()
+            s.send.side_effect = IOError()
+
+            channels = ['#foo', '#bar']
+            clist = ','.join(channels)
+
+            message = 'Unexpected error while joining {0}: {1}'.format(
+                clist, '\n')
+
+            self.assertFalse(join_channels(channels, s, 'foo'))
+            self.assertEqual(stdout.getvalue(), message)
+
+            log_write.assert_called_with('foo', '42', ' <> ', message)
+
+
+            log_write.call_args_list = []
+            s.send.side_effect = None
+            s.send = Mock()
+            msg = 'Joined: {0}\n'.format(clist)
+
+            self.assertTrue(join_channels(channels, s, 'foo'))
+
+            log_write.assert_called_with('foo', '42', ' <> ', msg)
+            self.assertEqual(stdout.getvalue(), message + msg)
+
+            s.send.assert_called_with('JOIN ' + clist + '\r\n')
+
     def test_name_bot(self):
         from functions import name_bot
 
