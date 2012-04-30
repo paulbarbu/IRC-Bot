@@ -139,3 +139,40 @@ def sigint_handler(signalnum, frame):
     logfile = config.log + dt['date'] + '.log'
     log_write(logfile, dt['time'], ' <> ', content + '\n')
     print '\n' + content
+
+def name_bot(irc, logfile):
+    '''Try to name the bot in order to be recognised on IRC
+
+    irc - an opened socket
+    logfile - the name of the logfile to write to
+    '''
+
+    import random
+    import string
+
+    nick_generator = get_nick()
+    config.current_nick = nick_generator.next()
+    log_write(logfile, get_datetime()['time'], ' <> ',
+        'Set nick to: {0}\n'.format(config.current_nick))
+
+    irc.send('NICK ' + config.current_nick + '\r\n')
+    irc.send('USER ' + config.current_nick + ' ' + config.current_nick + \
+            ' ' + config.current_nick + ' :' + config.realName + '\r\n')
+
+    while True:
+        receive = irc.recv(4096)
+
+        if 'Nickname is already in use' in receive: # try another nickname
+            try:
+                config.current_nick = nick_generator.next()
+            except StopIteration: # if no nick is available just make one up
+                config.current_nick = config.current_nick + \
+                        ''.join(random.sample(string.ascii_lowercase, 5))
+
+            irc.send('NICK ' + config.current_nick + '\r\n')
+
+            content = 'Changing nick to: {0}\n'.format(config.current_nick)
+            log_write(logfile, get_datetime()['time'], ' <> ', content)
+        elif config.current_nick in receive or 'motd' in receive.lower():
+            # successfully connected
+            break

@@ -190,6 +190,69 @@ class FunctionsTests(unittest.TestCase):
 
             self.assertFalse(is_registered(checked_nick))
 
+    def test_name_bot(self):
+        from functions import name_bot
+
+        logfile = 'foo'
+        irc = Mock()
+        irc.send = Mock()
+
+        nicks = ['nick1', 'nick2']
+
+        with nested(
+            patch('functions.get_nick'),
+            patch('functions.log_write'),
+            patch('functions.get_datetime'),
+            patch('config.realName', new='foo'),
+            patch('random.sample'),
+        ) as (get_nick, log_write, get_dt, real_name, sample):
+            get_dt.return_value = {'date': '42', 'time': '42'}
+            get_nick.return_value = iter(nicks)
+            sample.return_value = 'baz'
+
+            irc.recv.side_effect = [
+                'foo',
+                'Nickname is already in use',
+                nicks[1],
+            ]
+
+            self.assertIsNone(name_bot(irc, logfile))
+            expected_log_write_calls = [
+                call(logfile, '42', ' <> ',
+                    'Set nick to: {0}\n'.format(nicks[0])),
+                call(logfile, '42', ' <> ',
+                    'Changing nick to: {0}\n'.format(nicks[1])),
+            ]
+
+            expected_send_calls = [
+                call('NICK ' + nicks[0] + '\r\n'),
+                call('USER {0} {0} {0} :{1}\r\n'.format(nicks[0], real_name)),
+                call('NICK ' + nicks[1] + '\r\n'),
+            ]
+
+            self.assertListEqual(expected_log_write_calls,
+                log_write.call_args_list)
+
+            self.assertListEqual(expected_send_calls, irc.send.call_args_list)
+
+            nicks = ['used_nick']
+            get_nick.return_value = iter(nicks)
+            irc.recv.side_effect = ['Nickname is already in use', 'motd']
+
+            self.assertIsNone(name_bot(irc, logfile))
+            expected_log_write_calls = [
+                call(logfile, '42', ' <> ',
+                    'Set nick to: {0}\n'.format(nicks[0])),
+                call(logfile, '42', ' <> ',
+                    'Changing nick to: {0}\n'.format(nicks[0] + 'baz')),
+            ]
+
+            expected_send_calls = [
+                call('NICK ' + nicks[0] + '\r\n'),
+                call('USER {0} {0} {0} :{1}\r\n'.format(nicks[0], real_name)),
+                call('NICK ' + nicks[0] + 'baz\r\n'),
+            ]
+
 suite = unittest.TestLoader().loadTestsFromTestCase(FunctionsTests)
 
 if __name__ == '__main__':
