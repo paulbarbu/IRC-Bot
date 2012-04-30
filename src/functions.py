@@ -188,8 +188,10 @@ def create_socket(logfile, family=socket.AF_INET, type=socket.SOCK_STREAM, proto
         message =  '{0}\n{1}'.format(err.NO_SOCKET, e)
         log_write(logfile, get_datetime()['time'], ' <> ', message + '\n')
         print message
-    else:
-        return irc
+
+        return None
+
+    return irc
 
 def connect_to(address, s, logfile):
     '''Connect to the specified address through s (a socket object)
@@ -205,5 +207,23 @@ def connect_to(address, s, logfile):
         print content
 
         return False
-    else:
-        return True
+
+    return True
+
+def join_channels(channels, s, logfile):
+    clist = ','.join(channels)
+
+    try:
+        s.send('JOIN ' + clist + '\r\n')
+    except IOError as e:
+        content = 'Unexpected error while joining {0}: {1}'.format(clist, e)
+        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        print content
+
+        return False
+
+    content = 'Joined: {0}'.format(clist)
+    log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+    print content
+
+    return True
