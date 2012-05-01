@@ -1,7 +1,7 @@
 import config
 from functions import is_registered
 
-def join(components): # !join <#channel>+
+def join(socket, components): # !join <#channel>+
     '''Returns a string for joining the given channel(s)
 
     Joins a list of channels, only if the sender is an owner
@@ -12,7 +12,8 @@ def join(components): # !join <#channel>+
 
     if 2 == len(join_command):
 
-        if components['sender'] in config.owner and is_registered(components['sender']):
+        if components['sender'] in config.owner and is_registered(socket,
+                                                        components['sender']):
             response = []
             join_chans = []
             response.append('JOIN ')
@@ -21,8 +22,9 @@ def join(components): # !join <#channel>+
 
             for channel in arg_channels:
                 channel = channel.strip('\r')
-                if channel not in config.channels and len(channel) and '#' == channel[0] \
-                        and -1 == channel.find(' '): # valid channel name
+                if channel not in config.channels and len(channel) and \
+                '#' == channel[0] \
+                and -1 == channel.find(' '): # valid channel name
                     join_chans.append(channel)
                     config.channels.append(channel)
 

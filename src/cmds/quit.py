@@ -1,7 +1,7 @@
 import config
 from functions import *
 
-def quit(components): # !quit [chan_name]+ -> PART #channel
+def quit(socket, components): # !quit [chan_name]+ -> PART #channel
     '''Returns a string for quitting the bot from a channel(or more) or from all
     channels if no arguments are supplied
 
@@ -12,7 +12,7 @@ def quit(components): # !quit [chan_name]+ -> PART #channel
     '''
     response = ''
     leave = []
-    registered = is_registered(components['sender'])
+    registered = is_registered(socket, components['sender'])
 
     if registered is None:
         response = 'An unexpected error occurred while fetching data!'

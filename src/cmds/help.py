@@ -1,6 +1,6 @@
 import config
 
-def help(components): # !help
+def help(socket, components): # !help
     'Returns a string containing all the available commands'
 
     response = ''

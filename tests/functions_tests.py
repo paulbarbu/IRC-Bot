@@ -310,6 +310,7 @@ class FunctionsTests(unittest.TestCase):
 
         cmds_list = ['foo', 'bar']
         args = {'sender': 'foobar', 'action': 'qux'}
+        s = Mock()
 
         with nested(
             patch('functions.__import__', create=True),
@@ -320,17 +321,17 @@ class FunctionsTests(unittest.TestCase):
 
             getattr_mock.return_value = foo
 
-            self.assertEqual(run_cmd('foo', args, cmds_list), 'response')
-            self.assertIsNone(run_cmd('baz', args, cmds_list))
+            self.assertEqual(run_cmd(s, 'foo', args, cmds_list), 'response')
+            self.assertIsNone(run_cmd(s, 'baz', args, cmds_list))
 
             import_mock.side_effect = ImportError()
-            self.assertEqual(run_cmd('foo', args, cmds_list),
+            self.assertEqual(run_cmd(s, 'foo', args, cmds_list),
                 err.C_INEXISTENT.format('foo'))
 
             getattr_mock.side_effect = AttributeError()
             import_mock.side_effect = None
 
-            self.assertEqual(run_cmd('foo', args, cmds_list),
+            self.assertEqual(run_cmd(s, 'foo', args, cmds_list),
                 err.C_INVALID.format('foo'))
 
     def test_send_response(self):

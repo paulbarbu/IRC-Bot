@@ -2,7 +2,7 @@
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
 
-def weather(components): # !weather <city> or !weather <city>, <state or country>
+def weather(socket, components): # !weather <city> or !weather <city>, <state or country>
     'Returns a string containing the weather conditions from a location'
 
     response = ''

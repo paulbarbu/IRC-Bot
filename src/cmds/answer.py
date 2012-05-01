@@ -1,4 +1,4 @@
-def answer(components): # !answer
+def answer(socket, components): # !answer
     'Returns the ultimate answer'
     response = ''
 

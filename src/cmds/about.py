@@ -1,4 +1,4 @@
-def about(components): # !about
+def about(socket, components): # !about
     'Returns a string containing info about the bot'
     response = ''
 

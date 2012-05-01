@@ -260,7 +260,7 @@ def quit_bot(s, logfile):
 
     return True
 
-def run_cmd(cmd, args, cmds_list):
+def run_cmd(socket, cmd, args, cmds_list):
     '''Search the command (cmd), eg. !twitter in the commands list (cmds_list)
     and try to import its module and run it passing the args to the function
     args will be mostly the irc command components (sender, action, etc.)
@@ -288,7 +288,7 @@ def run_cmd(cmd, args, cmds_list):
                 # function not defined in module
                 response = err.C_INVALID.format(cmd)
             else:
-                response = get_response(args)
+                response = get_response(socket, args)
 
     return response
 

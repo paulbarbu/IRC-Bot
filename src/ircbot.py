@@ -52,7 +52,7 @@ def run(socket, channels, cmds, nick, logfile):
 
                 #get the command issued to the bot without the exclamation mark
                 cmd = components['arguments'][1:pos]
-                response = run_cmd(cmd, components, cmds)
+                response = run_cmd(socket, cmd, components, cmds)
 
             elif 'KICK' == components['action'] and \
                 nick == components['action_args'][1]:

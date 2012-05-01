@@ -1,7 +1,7 @@
 from BeautifulSoup import BeautifulSoup
 import urllib2
 
-def wiki(components): # !wiki <search term>
+def wiki(socket, components): # !wiki <search term>
     'Returns a wiki link and the first paragraph of the page'
 
     main_page = 'http://en.wikipedia.org/wiki/Main_Page'

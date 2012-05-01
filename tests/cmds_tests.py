@@ -10,22 +10,25 @@ from contextlib import nested
 class CmdsTests(unittest.TestCase):
     def test_about(self):
         from cmds.about import about
+        s = Mock()
 
-        self.assertEqual(about({'arguments': '!about garbage'}), '')
-        self.assertEqual(about({'arguments': '!about'}),
+        self.assertEqual(about(s, {'arguments': '!about garbage'}), '')
+        self.assertEqual(about(s, {'arguments': '!about'}),
             'Author: Paullik @ http://github.com/paullik')
 
     def test_answer(self):
         from cmds.answer import answer
+        s = Mock()
 
-        self.assertEqual(answer({'arguments': '!answer garbage'}), '')
-        self.assertEqual(answer({'arguments': '!answer'}),
+        self.assertEqual(answer(s, {'arguments': '!answer garbage'}), '')
+        self.assertEqual(answer(s, {'arguments': '!answer'}),
             'The Answer to the Ultimate Question of Life, the Universe, and Everything is 42!')
 
     def test_channels(self):
         from cmds.channels import channels
+        s = Mock()
 
-        self.assertEqual(channels({'arguments': '!channels garbage'}), '')
+        self.assertEqual(channels(s, {'arguments': '!channels garbage'}), '')
 
         with nested(
             patch('cmds.channels.is_registered'),
@@ -38,24 +41,25 @@ class CmdsTests(unittest.TestCase):
             owner.append('foo')
 
             is_registered.return_value = False
-            self.assertEqual(channels({'arguments': '!channels',
+            self.assertEqual(channels(s, {'arguments': '!channels',
                 'sender': 'baz'}), 'This command can be run only by the owners!')
 
             is_registered.return_value = True
-            self.assertEqual(channels({'arguments': '!channels',
+            self.assertEqual(channels(s, {'arguments': '!channels',
                 'sender': 'baz'}), 'This command can be run only by the owners!')
 
             is_registered.return_value = False
-            self.assertEqual(channels({'arguments': '!channels',
+            self.assertEqual(channels(s, {'arguments': '!channels',
                 'sender': 'baz'}), 'This command can be run only by the owners!')
 
             is_registered.return_value = True
             owner.append('baz')
-            self.assertEqual(channels({'arguments': '!channels',
+            self.assertEqual(channels(s, {'arguments': '!channels',
                 'sender': 'baz'}), 'test is connected to: #foobar')
 
     def test_google(self):
         from cmds.google import google
+        s = Mock()
 
         result = {
             'queries': {
@@ -74,10 +78,10 @@ class CmdsTests(unittest.TestCase):
         def setitem(name, val):
             result[name] = val
 
-        self.assertEqual(google({'arguments': '!google'}),
+        self.assertEqual(google(s, {'arguments': '!google'}),
             'Usage: !google <search term>')
 
-        self.assertEqual(google({'arguments': '!google   '}),
+        self.assertEqual(google(s, {'arguments': '!google   '}),
             'Usage: !google <search term>')
 
         with patch('cmds.google.build') as build:
@@ -90,28 +94,30 @@ class CmdsTests(unittest.TestCase):
 
             build.return_value = service_mock
 
-            self.assertEqual(google({'arguments': '!google foo bar'}),
+            self.assertEqual(google(s, {'arguments': '!google foo bar'}),
                 'Not found: foo bar')
 
             result['queries']['request'][0]['totalResults'] = 42
-            self.assertEqual(google({'arguments': '!google foo bar'}),
+            self.assertEqual(google(s, {'arguments': '!google foo bar'}),
                 'http://foobar.baz\r\nDetails about foobar')
 
     def test_help(self):
         from cmds.help import help
+        s = Mock()
 
-        self.assertEqual(help({'arguments': '!help garbage'}), '')
+        self.assertEqual(help(s, {'arguments': '!help garbage'}), '')
 
         with patch('config.cmds_list', new=[]) as config:
             config.extend(['foo', 'bar'])
 
-            self.assertEqual(help({'arguments': '!help'}),
+            self.assertEqual(help(s, {'arguments': '!help'}),
                 '2 available commands: foo bar ') #notice the space
 
     def test_join(self):
         from cmds.join import join
+        s = Mock()
 
-        self.assertEqual(join({'arguments': '!join', 'sender': 'foo'}),
+        self.assertEqual(join(s, {'arguments': '!join', 'sender': 'foo'}),
             'Usage: !join <#channel >+')
 
         with nested(
@@ -122,33 +128,33 @@ class CmdsTests(unittest.TestCase):
 
             is_registered.return_value = False
             owner.extend(['baz', 'bar'])
-            self.assertEqual(join({'arguments': '!join #chan', 'sender': 'foo'}),
+            self.assertEqual(join(s, {'arguments': '!join #chan', 'sender': 'foo'}),
                 'This command can be run only by the owners!')
 
             is_registered.return_value = True
-            self.assertEqual(join({'arguments': '!join #chan', 'sender': 'foo'}),
+            self.assertEqual(join(s, {'arguments': '!join #chan', 'sender': 'foo'}),
                 'This command can be run only by the owners!')
 
             is_registered.return_value = False
             owner.append('foo')
-            self.assertEqual(join({'arguments': '!join #chan', 'sender': 'foo'}),
+            self.assertEqual(join(s, {'arguments': '!join #chan', 'sender': 'foo'}),
                 'This command can be run only by the owners!')
 
             is_registered.return_value = True
-            self.assertListEqual(join({'arguments': '!join #chan',
+            self.assertListEqual(join(s, {'arguments': '!join #chan',
                 'sender': 'foo'}), ['JOIN ', '#chan'])
 
-            self.assertEqual(join({'arguments': '!join chan chan2',
+            self.assertEqual(join(s, {'arguments': '!join chan chan2',
                 'sender': 'foo'}),
                 'Invalid channels names, usage: !join <#channel >+')
 
-            self.assertListEqual(join({'arguments': '!join #chan #c',
+            self.assertListEqual(join(s, {'arguments': '!join #chan #c',
                 'sender': 'foo'}), ['JOIN ', '#c'])
 
-            self.assertListEqual(join({'arguments': '!join foobar   #test',
+            self.assertListEqual(join(s, {'arguments': '!join foobar   #test',
                 'sender': 'foo'}), ['JOIN ', '#test'])
 
-            self.assertEqual(join({'arguments': '!join    ',
+            self.assertEqual(join(s, {'arguments': '!join    ',
                 'sender': 'foo'}),
                 'Invalid channels names, usage: !join <#channel >+')
 
@@ -156,14 +162,16 @@ class CmdsTests(unittest.TestCase):
 
     def test_mball(self):
         from cmds.mball import mball
+        s = Mock()
 
-        self.assertEqual(mball({'arguments': '!mball garbage'}), '')
+        self.assertEqual(mball(s, {'arguments': '!mball garbage'}), '')
 
-        self.assertRegexpMatches(mball({'arguments': '!mball'}),
+        self.assertRegexpMatches(mball(s, {'arguments': '!mball'}),
             'Magic Ball says: *')
 
     def test_quit(self):
         from cmds.quit import quit
+        s = Mock()
 
         with nested(
             patch('cmds.quit.is_registered'),
@@ -173,25 +181,26 @@ class CmdsTests(unittest.TestCase):
             chan.extend(['#foo', '#bar'])
 
             is_registered.return_value = None
-            self.assertEqual(quit({'arguments': '!quit', 'sender': 'foobaz'}),
+            self.assertEqual(quit(s, {'arguments': '!quit', 'sender': 'foobaz'}),
                 'An unexpected error occurred while fetching data!')
 
             is_registered.return_value = False
             owner.extend(['foo'])
-            self.assertEqual(quit({'arguments': '!quit', 'sender': 'foobaz'}),
+            self.assertEqual(quit(s, {'arguments': '!quit', 'sender': 'foobaz'}),
                 'This command can be run only by the owners!')
 
             is_registered.return_value = True
-            self.assertEqual(quit({'arguments': '!quit', 'sender': 'foobaz'}),
+            self.assertEqual(quit(s, {'arguments': '!quit', 'sender': 'foobaz'}),
                 'This command can be run only by the owners!')
 
-            self.assertEqual(quit({'arguments': '!quit baz qux',
+            self.assertEqual(quit(s, {'arguments': '!quit baz qux',
                 'sender': 'foo'}), 'Invalid channel names!')
 
-            self.assertListEqual(quit({'arguments': '!quit #foo #foobar',
+            self.assertListEqual(quit(s, {'arguments': '!quit #foo #foobar',
                 'sender': 'foo'}), ['PART', '#foo'])
 
-            self.assertListEqual(quit({'arguments': '!quit', 'sender': 'foo'}),
+            self.assertListEqual(quit(s,
+                {'arguments': '!quit', 'sender': 'foo'}),
                 ['PART', '#bar'])
 
             self.assertListEqual([], chan)
@@ -199,9 +208,12 @@ class CmdsTests(unittest.TestCase):
     def test_so(self):
         from cmds.so import so
         import urllib2
+        socket = Mock()
 
-        self.assertEqual(so({'arguments': '!so'}), 'Usage: !so <search term>')
-        self.assertEqual(so({'arguments': '!so  '}), 'Usage: !so <search term>')
+        self.assertEqual(so(socket, {'arguments': '!so'}),
+            'Usage: !so <search term>')
+        self.assertEqual(so(socket, {'arguments': '!so  '}),
+            'Usage: !so <search term>')
 
         with patch('stackexchange.Site') as s:
             api = Mock()
@@ -210,26 +222,27 @@ class CmdsTests(unittest.TestCase):
 
             s.return_value = api
 
-            self.assertEqual(so({'arguments': '!so foo'}),
+            self.assertEqual(so(socket, {'arguments': '!so foo'}),
                 "The server couldn't fulfill the request!" + \
                         "\r\nReason: FooError\r\nCode: 42")
 
             api.search.side_effect = None
             api.search.return_value = []
-            self.assertEqual(so({'arguments': '!so foo'}), 'Not found: foo')
+            self.assertEqual(so(socket, {'arguments': '!so foo'}), 'Not found: foo')
 
             result = Mock()
             result.title = 'foo_title'
             result.url = 'foo_url'
             api.search.return_value = [result]
-            self.assertEqual(so({'arguments': '!so foo'}),
+            self.assertEqual(so(socket, {'arguments': '!so foo'}),
                 'foo_title\r\nfoo_url')
 
     def test_uptime(self):
         from cmds.uptime import uptime
         from datetime import timedelta
+        s = Mock()
 
-        self.assertEqual(uptime({'arguments': '!uptime garbage'}), '')
+        self.assertEqual(uptime(s, {'arguments': '!uptime garbage'}), '')
 
         with nested(
             patch('time.time'),
@@ -237,29 +250,30 @@ class CmdsTests(unittest.TestCase):
         ) as (time, start_time):
             time.return_value = 42
 
-            self.assertEqual(uptime({'arguments': '!uptime'}), 'Uptime: ' + \
+            self.assertEqual(uptime(s, {'arguments': '!uptime'}), 'Uptime: ' + \
                 str(timedelta(seconds=time.return_value-start_time)))
 
     def test_twitter(self):
         from cmds.twitter import twitter
+        s = Mock()
 
         with patch('cmds.twitter.getStatus') as status:
             status.return_value = {'date': '42', 'text': 'foobar'}
 
-            self.assertEqual(twitter({'arguments': '!twitter',
+            self.assertEqual(twitter(s, {'arguments': '!twitter',
                 'sender': 'foo'}),
                 "foo's latest tweet was made on: 42\r\nfoobar")
 
-            self.assertEqual(twitter({'arguments': '!twitter !twitter ',
+            self.assertEqual(twitter(s, {'arguments': '!twitter !twitter ',
                 'sender': 'foo'}),
                 'Usage: !twitter <screen name>')
 
-            self.assertEqual(twitter({'arguments': '!twitter baz',
+            self.assertEqual(twitter(s, {'arguments': '!twitter baz',
                 'sender': 'foo'}),
                 "baz's latest tweet was made on: 42\r\nfoobar")
 
             status.return_value = 'FooError'
-            self.assertEqual(twitter({'arguments': '!twitter baz',
+            self.assertEqual(twitter(s, {'arguments': '!twitter baz',
                 'sender': 'foo'}), 'FooError')
 
     def test_twitter_getStatus(self):
@@ -299,6 +313,7 @@ class CmdsTests(unittest.TestCase):
 
     def test_weather(self):
         from cmds.weather import weather
+        s = Mock()
 
         conditions = {
             'location': 'foobar',
@@ -306,20 +321,20 @@ class CmdsTests(unittest.TestCase):
             'weather': 'baz',
         }
 
-        self.assertEqual(weather({'arguments': '!weather'}),
+        self.assertEqual(weather(s, {'arguments': '!weather'}),
             'Usage: !weather <city>, <state>')
 
-        self.assertEqual(weather({'arguments': '!weather  '}),
+        self.assertEqual(weather(s, {'arguments': '!weather  '}),
             'Usage: !weather <city>, <state>')
 
         with patch('cmds.weather.get_weather') as get_weather:
             get_weather.return_value = 'Inexistent location: foo'
 
-            self.assertEqual(weather({'arguments': '!weather foo'}),
+            self.assertEqual(weather(s, {'arguments': '!weather foo'}),
                 'Inexistent location: foo')
 
             get_weather.return_value = conditions
-            self.assertEqual(weather({'arguments': '!weather foo'}),
+            self.assertEqual(weather(s, {'arguments': '!weather foo'}),
                 conditions['location'] + ' - ' + conditions['temp'] + ' - ' + \
                 conditions['weather'] + ' - Provided by: ' + \
                 'Weather Underground, Inc.')
@@ -357,17 +372,18 @@ class CmdsTests(unittest.TestCase):
 
     def test_wiki(self):
         from cmds.wiki import wiki
+        s = Mock()
 
         with patch('cmds.wiki.get_para') as get_para:
             get_para.return_value = 'foobar'
 
-            self.assertEqual(wiki({'arguments': '!wiki'}),
+            self.assertEqual(wiki(s, {'arguments': '!wiki'}),
                 'http://en.wikipedia.org/wiki/Main_Page\r\nfoobar')
 
-            self.assertEqual(wiki({'arguments': '!wiki      '}),
+            self.assertEqual(wiki(s, {'arguments': '!wiki      '}),
                 'http://en.wikipedia.org/wiki/Main_Page\r\nfoobar')
 
-            self.assertEqual(wiki({'arguments': '!wiki foobar'}),
+            self.assertEqual(wiki(s, {'arguments': '!wiki foobar'}),
                 'http://en.wikipedia.org/wiki/foobar\r\nfoobar')
 
     def test_wiki_get_para(self):

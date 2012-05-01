@@ -1,6 +1,6 @@
 import random
 
-def mball(components):
+def mball(socket, components):
     'Return a random entry from the shuffled list'
 
     answers = ['It is certain', 'It is decidedly so', 'Without a doubt', \
