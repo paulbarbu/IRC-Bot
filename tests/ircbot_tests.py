@@ -105,7 +105,9 @@ class IrcBotTests(unittest.TestCase):
         owner, server, nicks, real_name, log, cmds_list, port, signal,
         sigint_handler, channels, connect_to, log_write, current_nick,
         name_bot, join_channels, run, quit_bot, stdout):
+            s= Mock()
             get_dt.return_value = {'date': '42', 'time': '42'}
+            logfile = log + get_dt.return_value['date'] + '.log'
             check_cfg.return_value = False
 
             self.assertRaises(SystemExit, main)
@@ -127,17 +129,18 @@ class IrcBotTests(unittest.TestCase):
             connect_to.return_value = True
             self.assertIsNone(main())
 
-            create_socket.return_value = Mock()
+            create_socket.return_value = s
             connect_to.return_value = True
+
             main()
 
             connect_msg = 'Connected to {0}:{1}\n'.format(server, port)
             disconnect_msg = 'Disconnected from {0}:{1}\n'.format(server, port)
 
             expected_log_write_calls = [
-                call(log + get_dt.return_value['date'] + '.log', '42', ' <> ',
+                call(logfile, '42', ' <> ',
                     connect_msg),
-                call(log + get_dt.return_value['date'] + '.log', '42', ' <> ',
+                call(logfile, '42', ' <> ',
                     disconnect_msg),
             ]
 
@@ -145,11 +148,32 @@ class IrcBotTests(unittest.TestCase):
                 log_write.call_args_list)
 
             self.assertEqual(stdout.getvalue(), connect_msg + disconnect_msg)
-            #check socket.close()
+            s.close.assert_called_with()
+            name_bot.assert_called_with(s, nicks, real_name, logfile)
+            join_channels.assert_called_with(channels, s, logfile)
+            run.assert_called_with(s, channels, cmds_list, name_bot(), logfile)
 
-            #quit the bot if not joined anyway
+            join_channels.return_value = False
+            log_write.call_args_list = []
+            main()
 
+            connect_msg = 'Connected to {0}:{1}\n'.format(server, port)
+            disconnect_msg = 'Disconnected from {0}:{1}\n'.format(server, port)
 
+            expected_log_write_calls = [
+                call(logfile, '42', ' <> ',
+                    connect_msg),
+                call(logfile, '42', ' <> ',
+                    disconnect_msg),
+            ]
+
+            self.assertListEqual(expected_log_write_calls,
+                log_write.call_args_list)
+
+            self.assertEqual(stdout.getvalue(), (connect_msg + disconnect_msg)*2)
+            s.close.assert_called_with()
+            name_bot.assert_called_with(s, nicks, real_name, logfile)
+            join_channels.assert_called_with(channels, s, logfile)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(IrcBotTests)
 

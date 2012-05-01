@@ -15,8 +15,6 @@ from functions import *
 #TODO: if the "main" socket is not reliable (pass it to all cmds or doens't work
 #TODO: I can try to send the message manually near the JOIN or PART
 
-#TODO: test the __name__ part of this file
-
 def run(socket, channels, cmds, nick, logfile):
     # buffer for some command received
     buff = ''
@@ -69,8 +67,7 @@ def run(socket, channels, cmds, nick, logfile):
             buff = ''
 def main():
     valid_cfg = check_cfg(config.owner, config.server, config.nicks,
-            config.real_name, config.log, config.cmds_list,
-            config.port)#TODO:check this port is it's correct to have it here
+            config.real_name, config.log, config.cmds_list)
 
     if not valid_cfg:
         sys.exit(err.INVALID_CFG)
@@ -89,7 +86,7 @@ def main():
         log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
         print content
 
-        config.current_nick = name_bot(socket, config.nicks,config.real_name,
+        config.current_nick = name_bot(socket, config.nicks, config.real_name,
             logfile)
         joined = join_channels(config.channels, socket, logfile)
 
@@ -97,16 +94,13 @@ def main():
             run(socket, config.channels, config.cmds_list, config.current_nick,
                 logfile)
 
-            quit_bot(socket, logfile)
-            socket.close()
+        quit_bot(socket, logfile)
+        socket.close()
 
-            content = 'Disconnected from {0}:{1}'.format(
-                config.server, config.port)
-            log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
-            print content
+        content = 'Disconnected from {0}:{1}'.format(
+            config.server, config.port)
+        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        print content
 
-if __name__ == '__main__': #pragma: no branch
+if __name__ == '__main__': #pragma: no cover
     main()
-    #TODO: don't test this
-    #TODO: run the bot live after properly modifying the closing sequence
-    #(even if not joined)
