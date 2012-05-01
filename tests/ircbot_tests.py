@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 import unittest
 from mock import patch, Mock, call
 from contextlib import nested
+from StringIO import StringIO
 
 class IrcBotTests(unittest.TestCase):
     def test_run(self):
@@ -73,6 +74,82 @@ class IrcBotTests(unittest.TestCase):
             self.assertListEqual(channels, [])
             self.assertListEqual(expected_send_response_calls,
                 send_response.call_args_list)
+
+    def test_main(self):
+        from ircbot import main
+
+        with nested(
+            patch('ircbot.check_cfg'),
+            patch('ircbot.check_channel'),
+            patch('ircbot.create_socket'),
+            patch('ircbot.get_datetime'),
+            patch('config.owner', new='owner'),
+            patch('config.server', new='server'),
+            patch('config.nicks', new=['foo', 'bar']),
+            patch('config.real_name', new='real name'),
+            patch('config.log', new='log_foo'),
+            patch('config.cmds_list', new=['baz', 'bar']),
+            patch('config.port', new=42),
+            patch('signal.signal'),
+            patch('ircbot.sigint_handler'),
+            patch('config.channels', new=['#chan1', '#chan2']),
+            patch('ircbot.connect_to'),
+            patch('ircbot.log_write'),
+            patch('config.current_nick', new='nick'),
+            patch('ircbot.name_bot'),
+            patch('ircbot.join_channels'),
+            patch('ircbot.run'),
+            patch('ircbot.quit_bot'),
+            patch('sys.stdout', new=StringIO()),
+        ) as (check_cfg, check_channel, create_socket, get_dt,
+        owner, server, nicks, real_name, log, cmds_list, port, signal,
+        sigint_handler, channels, connect_to, log_write, current_nick,
+        name_bot, join_channels, run, quit_bot, stdout):
+            get_dt.return_value = {'date': '42', 'time': '42'}
+            check_cfg.return_value = False
+
+            self.assertRaises(SystemExit, main)
+
+            check_cfg.return_value = True
+            check_channel.return_value = False
+            self.assertRaises(SystemExit, main)
+
+            check_channel.return_value = True
+            create_socket.return_value = False
+            connect_to.return_value = False
+            self.assertIsNone(main())
+
+            create_socket.return_value = True
+            connect_to.return_value = False
+            self.assertIsNone(main())
+
+            create_socket.return_value = False
+            connect_to.return_value = True
+            self.assertIsNone(main())
+
+            create_socket.return_value = Mock()
+            connect_to.return_value = True
+            main()
+
+            connect_msg = 'Connected to {0}:{1}\n'.format(server, port)
+            disconnect_msg = 'Disconnected from {0}:{1}\n'.format(server, port)
+
+            expected_log_write_calls = [
+                call(log + get_dt.return_value['date'] + '.log', '42', ' <> ',
+                    connect_msg),
+                call(log + get_dt.return_value['date'] + '.log', '42', ' <> ',
+                    disconnect_msg),
+            ]
+
+            self.assertListEqual(expected_log_write_calls,
+                log_write.call_args_list)
+
+            self.assertEqual(stdout.getvalue(), connect_msg + disconnect_msg)
+            #check socket.close()
+
+            #quit the bot if not joined anyway
+
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(IrcBotTests)
 

@@ -67,10 +67,10 @@ def run(socket, channels, cmds, nick, logfile):
             send_response(response, send_to(command), socket, logfile)
 
             buff = ''
-
-if __name__ == '__main__':
+def main():
     valid_cfg = check_cfg(config.owner, config.server, config.nicks,
-            config.real_name, config.log, config.cmds_list)
+            config.real_name, config.log, config.cmds_list,
+            config.port)#TODO:check this port is it's correct to have it here
 
     if not valid_cfg:
         sys.exit(err.INVALID_CFG)
@@ -89,7 +89,8 @@ if __name__ == '__main__':
         log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
         print content
 
-        config.current_nick = name_bot(socket, config.real_name, logfile)
+        config.current_nick = name_bot(socket, config.nicks,config.real_name,
+            logfile)
         joined = join_channels(config.channels, socket, logfile)
 
         if joined:
@@ -103,3 +104,9 @@ if __name__ == '__main__':
                 config.server, config.port)
             log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
             print content
+
+if __name__ == '__main__': #pragma: no branch
+    main()
+    #TODO: don't test this
+    #TODO: run the bot live after properly modifying the closing sequence
+    #(even if not joined)
