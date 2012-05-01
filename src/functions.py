@@ -121,8 +121,8 @@ def is_registered(user_nick):
 
     return None
 
-def get_nick():
-    for nick in config.nicks:
+def get_nick(nicks):
+    for nick in nicks:
         yield nick
 
 def sigint_handler(signalnum, frame):
@@ -141,12 +141,14 @@ def sigint_handler(signalnum, frame):
     log_write(logfile, dt['time'], ' <> ', content + '\n')
     print '\n' + content
 
-def name_bot(irc, real_name, logfile):
+def name_bot(irc, nicks, real_name, logfile):
     '''Try to name the bot in order to be recognised on IRC
 
     irc - an opened socket
+    nicks - a list of strings to choose the nick from
     real_name - bot's real name
     logfile - the name of the logfile to write to
+
 
     Return the name of the bot
     '''
@@ -154,7 +156,7 @@ def name_bot(irc, real_name, logfile):
     import random
     import string
 
-    nick_generator = get_nick()
+    nick_generator = get_nick(nicks)
     nick = nick_generator.next()
     log_write(logfile, get_datetime()['time'], ' <> ',
         'Set nick to: {0}\n'.format(nick))

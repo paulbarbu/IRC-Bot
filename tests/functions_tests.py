@@ -67,12 +67,12 @@ class FunctionsTests(unittest.TestCase):
         from functions import get_nick
 
         with patch('config.nicks', new=[]) as nicks:
-            nick = get_nick()
+            nick = get_nick(nicks)
 
             self.assertRaises(StopIteration, nick.next)
 
             nicks.extend(['foo', 'bar'])
-            nick = get_nick()
+            nick = get_nick(nicks)
 
             self.assertEqual(nick.next(), 'foo')
             self.assertEqual(nick.next(), 'bar')
@@ -397,7 +397,7 @@ class FunctionsTests(unittest.TestCase):
                 nicks[1],
             ]
 
-            self.assertEqual(name_bot(irc, real_name, logfile), nicks[1])
+            self.assertEqual(name_bot(irc, nicks, real_name, logfile), nicks[1])
             expected_log_write_calls = [
                 call(logfile, '42', ' <> ',
                     'Set nick to: {0}\n'.format(nicks[0])),
@@ -420,7 +420,7 @@ class FunctionsTests(unittest.TestCase):
             get_nick.return_value = iter(nicks)
             irc.recv.side_effect = ['Nickname is already in use', 'motd']
 
-            self.assertEqual(name_bot(irc, real_name, logfile), nicks[0] + 'baz')
+            self.assertEqual(name_bot(irc, nicks, real_name, logfile), nicks[0] + 'baz')
             expected_log_write_calls = [
                 call(logfile, '42', ' <> ',
                     'Set nick to: {0}\n'.format(nicks[0])),
