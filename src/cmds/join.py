@@ -30,6 +30,8 @@ def join(socket, components): # !join <#channel>+
 
             if len(join_chans):
                 response.append(','.join(join_chans))
+                response.append('\r\nPRIVMSG ' + components['action_args'][0] + \
+                    ' :Joined: {0}'.format(', '.join(join_chans)))
             else:
                 response = 'Invalid channels names, usage: !join <#channel >+'
 

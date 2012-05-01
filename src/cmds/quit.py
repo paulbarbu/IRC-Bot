@@ -34,6 +34,9 @@ def quit(socket, components): # !quit [chan_name]+ -> PART #channel
 
                 if len(leave):
                     response.append(','.join(leave))
+                    response.append('\r\nPRIVMSG ' +
+                        components['action_args'][0] + \
+                        ' :Left: {0}'.format(', '.join(leave)))
                 else:
                     response = 'Invalid channel names!'
 

@@ -128,31 +128,37 @@ class CmdsTests(unittest.TestCase):
 
             is_registered.return_value = False
             owner.extend(['baz', 'bar'])
-            self.assertEqual(join(s, {'arguments': '!join #chan', 'sender': 'foo'}),
+            self.assertEqual(join(s, {'arguments': '!join #chan',
+                'sender': 'foo'}),
                 'This command can be run only by the owners!')
 
             is_registered.return_value = True
-            self.assertEqual(join(s, {'arguments': '!join #chan', 'sender': 'foo'}),
+            self.assertEqual(join(s, {'arguments': '!join #chan',
+                'sender': 'foo'}),
                 'This command can be run only by the owners!')
 
             is_registered.return_value = False
             owner.append('foo')
-            self.assertEqual(join(s, {'arguments': '!join #chan', 'sender': 'foo'}),
+            self.assertEqual(join(s, {'arguments': '!join #chan',
+                'sender': 'foo'}),
                 'This command can be run only by the owners!')
 
             is_registered.return_value = True
             self.assertListEqual(join(s, {'arguments': '!join #chan',
-                'sender': 'foo'}), ['JOIN ', '#chan'])
+                'sender': 'foo', 'action_args': ['#foo']}),
+                ['JOIN ', '#chan', '\r\nPRIVMSG #foo :Joined: #chan'])
 
             self.assertEqual(join(s, {'arguments': '!join chan chan2',
                 'sender': 'foo'}),
                 'Invalid channels names, usage: !join <#channel >+')
 
             self.assertListEqual(join(s, {'arguments': '!join #chan #c',
-                'sender': 'foo'}), ['JOIN ', '#c'])
+                'sender': 'foo', 'action_args': ['#foo']}),
+                ['JOIN ', '#c', '\r\nPRIVMSG #foo :Joined: #c'])
 
             self.assertListEqual(join(s, {'arguments': '!join foobar   #test',
-                'sender': 'foo'}), ['JOIN ', '#test'])
+                'sender': 'foo', 'action_args': ['#foo']}),
+                ['JOIN ', '#test', '\r\nPRIVMSG #foo :Joined: #test'])
 
             self.assertEqual(join(s, {'arguments': '!join    ',
                 'sender': 'foo'}),
@@ -197,11 +203,11 @@ class CmdsTests(unittest.TestCase):
                 'sender': 'foo'}), 'Invalid channel names!')
 
             self.assertListEqual(quit(s, {'arguments': '!quit #foo #foobar',
-                'sender': 'foo'}), ['PART', '#foo'])
+                'sender': 'foo', 'action_args': ['#foo']}),
+                ['PART', '#foo', '\r\nPRIVMSG #foo :Left: #foo'])
 
             self.assertListEqual(quit(s,
-                {'arguments': '!quit', 'sender': 'foo'}),
-                ['PART', '#bar'])
+                {'arguments': '!quit', 'sender': 'foo'}), ['PART', '#bar'])
 
             self.assertListEqual([], chan)
 
