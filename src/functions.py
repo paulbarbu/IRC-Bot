@@ -73,53 +73,24 @@ def send_to(command):
 
     return 'PRIVMSG ' + sendto + ' :'
 
-def is_registered(user_nick):
-    'Creates a client to find if the user issuing the command is registered'
+def is_registered(s, user_nick):
+    '''Determines if the user_nick is online and registered to NickServ
 
-    import socket
-    import random
-    import string
+    Returns true if user_nick is registered and online, else False
+    '''
+    s.send('PRIVMSG nickserv :info ' + user_nick + '\r\n')
 
-    logfile = config.log + get_datetime()['date'] + '.log'
+    while True:
+        receive = s.recv(4096)
 
-    try:
-        mini_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    except:
-        log_write(logfile, get_datetime()['time'], ' <miniclient> ',
-                err.NO_SOCKET + '\n')
-    else:
-        try:
-            mini_client.connect((config.server, config.port))
-        except IOError:
-            content = 'Could not connect to {0}:{1}'.format(config.server,
-                    config.port)
-
-            log_write(logfile, get_datetime()['time'], ' <miniclient> ',
-                    content + '\n')
-        else:
-            sample = ''.join(random.sample(string.ascii_lowercase, 5))
-            nick = config.current_nick + sample
-
-            mini_client.send('NICK ' + nick + '\r\n')
-            mini_client.send('USER ' + nick + ' ' + nick + ' ' + nick + ' :' + \
-                    config.real_name + sample + '\r\n')
-            mini_client.send('PRIVMSG nickserv :info ' + user_nick + '\r\n')
-
-            while True:
-                receive = mini_client.recv(4096)
-
-                if 'NickServ' in receive: # this is the NickServ info response
-                    if 'Last seen  : now' in receive: # user registered and online
-                        return True
-                    elif 'Information on' in receive: # wait for the response
-                    # containing the information about the user
-                        pass
-                    else:
-                        return False
-
-        mini_client.close()
-
-    return None
+        if 'NickServ' in receive: # this is the NickServ info response
+            if 'Last seen  : now' in receive: # user registered and online
+                return True
+            elif 'Information on' in receive: # wait for the response
+            # containing the information about the user
+                pass
+            else:
+                return False
 
 def get_nick(nicks):
     for nick in nicks:
