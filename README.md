@@ -89,15 +89,17 @@ Config
 ======
 See `src/config.py`:
 
-* `search` - specifies the reply link for `!search <nick>`
-* `owner` - the user(s) who are allowed to send a specific command to the bot
-(e.g. `!quit`)
+* `owner` - the users who are allowed to send a specific command to the bot
+(for example the `!quit` command)
 * `log` - path to the logging directory, all logs are stored here
-* `server` - server to connect to(default: chat.freenode.net)
-* `port` - port number to use(default: 6667)
-* `channels` - a list of channel(s) to connect to
-* `nick` - bot's name
-* `realName` - bot's "real name"
+* `server` - server to connect to (default: chat.freenode.net)
+* `port` - port number to use (default: 6667)
+* `channels` - a list of channels to connect to
+* `nicks` - a list of strings, the bot's name will be the first unused nick from
+  this list or the first nick in the list and a random sequence appended if all
+  nicks are used
+* `real_name` - bot's "real name"
+* `cmds_list` - a list of strings that the bot knows to answer to
 
 Dependencies
 ============
