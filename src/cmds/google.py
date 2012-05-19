@@ -20,7 +20,7 @@ def google(socket, components): # !google <search term>
 
         if 1 <= res['queries']['request'][0]['totalResults']:
             result = res['items'][0]
-            response = result['link'] + '\r\n' + result['snippet'].encode('utf8')
+            response = result['link'] + '\r\n' + result['snippet']
 
         else:
             response = 'Not found: ' + terms[1]
@@ -28,4 +28,4 @@ def google(socket, components): # !google <search term>
     else:
         response = 'Usage: !google <search term>'
 
-    return str(response)
+    return str(response.encode('utf8'))
