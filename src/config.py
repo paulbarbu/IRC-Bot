@@ -6,6 +6,7 @@ import time
 owner = list(set([
     'paullik',
     'foobarfoo',
+    'paullik-test',
 ]))
 
 # server to connect to
@@ -26,6 +27,7 @@ channels = list(set([
 
 # commands list
 cmds_list = list(set([
+    'task',
     'wiki',
     'quit',
     'answer',
