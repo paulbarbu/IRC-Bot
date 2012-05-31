@@ -2,10 +2,10 @@ from functions import is_registered
 import config
 import sqlite3
 
-actions = {
-    'del': 'delete_task'
-}
 #TODO: properly close the conn
+
+#TODO: construct this path
+#TODO: if necessarily create the db file
 database_filename = 'task.db' #this should be in the src dir
 
 def task(socket, components):
@@ -31,8 +31,6 @@ def task(socket, components):
         conn = sqlite3.connect(database_filename)
         db = conn.cursor()
 
-        import pdb
-        pdb.set_trace()
         is_user = user_exists(db, components['sender'])
 
         if is_user is None:
@@ -40,7 +38,7 @@ def task(socket, components):
 
         if 'list' == action:
             if not is_user:
-                response = 'Could not retrieve any task list!'
+                return 'Could not retrieve any task list!'
 
             l = list_task(db, components['sender'])
 
@@ -77,6 +75,9 @@ def task(socket, components):
 
             response = 'Task with id {0} added!'.format(id)
         elif 'del' == action:
+            if not is_user:
+                return 'No tasks available!'
+
             try:
                 id = params.split(action)[1]
             except IndexError:
@@ -157,7 +158,7 @@ def del_task(db, nick, id):
     cmd = 'DELETE FROM `{0}` WHERE id=?'
 
     try:
-        db.execute(cmd.format(nick), (id,)).rowcount
+        return db.execute(cmd.format(nick), (id,)).rowcount
     except sqlite3.Error:
         return False
 
