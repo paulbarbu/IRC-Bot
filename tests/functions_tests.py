@@ -325,10 +325,18 @@ class FunctionsTests(unittest.TestCase):
             log_write.assert_called_with('foo', '42', ' <> ',
                 '#chanfoo\r\n#chanbaz\r\n')
 
+            self.assertTrue(send_response('foo\r\nbaz\r\nquo\r\nfoobar',
+                '#chan', s, 'foo'))
+            s.send.assert_called_with(
+                '#chanfoo\r\n#chanbaz\r\n#chanquo\r\n#chanfoobar\r\n')
+            log_write.assert_called_with('foo', '42', ' <> ',
+                '#chanfoo\r\n#chanbaz\r\n#chanquo\r\n#chanfoobar\r\n')
+
             s.send.side_effect = IOError()
             self.assertFalse(send_response('baz', '#chan', s, 'foo'))
             log_write.assert_called_with('foo', '42', ' <> ',
                 'Unexpected error while sending the response: \n')
+
 
     def test_name_bot(self):
         from functions import name_bot

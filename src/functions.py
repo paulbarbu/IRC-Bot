@@ -282,10 +282,16 @@ def send_response(response, destination, s, logfile):
 
             # a multi-line command must be split
             crlf_pos = response[:-2].find('\r\n')
-            if -1 != crlf_pos:
+            while -1 != crlf_pos:
                 crlf_pos = crlf_pos + 2 # jump over '\r\n'
                 response = response[:crlf_pos] + \
                         destination + response[crlf_pos:]
+
+                next_crlf_pos = response[crlf_pos:-2].find('\r\n')
+                if -1 != next_crlf_pos:
+                    crlf_pos = crlf_pos + next_crlf_pos
+                else:
+                    crlf_pos = -1
 
             response = destination + response
         else: # the module sent a command like WHOIS or KICK
