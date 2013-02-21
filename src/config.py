@@ -10,7 +10,7 @@ owner = list(set([
 ]))
 
 owner_email = {
-    'foobarfoo': 'foobar@gmail.com'
+    'foobarfoo': 'foobar@gmail.com',
 }
 
 # server to connect to
@@ -47,11 +47,17 @@ cmds_list = list(set([
     'twitter',
 ]))
 
-# smtp server
+# commands list that the bot will execute even if a human didn't request an
+# action
+auto_cmds_list = list(set([
+    'email_alert',
+]))
+
+# smtp server for email_alert
 smtp_server = 'smtp.gmail.com'
 smtp_port = 25
 from_email_address = 'changeme@gmail.com'
-from_email_password = 'p@s$w0rd' 
+from_email_password = 'p@s$w0rd'
 
 # users should NOT modify below!
 log = os.path.join(os.getcwd(), '..', 'logs', '')

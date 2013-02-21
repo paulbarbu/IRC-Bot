@@ -2,7 +2,6 @@ import config
 import err
 import datetime
 import socket
-import smtplib
 
 def get_sender(msg):
     "Returns the user's nick (string) that sent the message"
@@ -315,28 +314,3 @@ def send_response(response, destination, s, logfile):
         return True
 
     return None
-
-def email_alert(component, to_address):
-    status = False
-    sender = component['sender']
-    channel = component['action_args'][0]
-    ircmsg = component['arguments']
-    message = ircmsg[ircmsg.index(' ')+1:]
-    server = smtplib.SMTP(config.smtp_server, config.smtp_port)
-    server.ehlo()
-    server.starttls()
-    server.ehlo()
-    try:
-        server.login(config.from_email_address, config.from_email_password)
-    except smtplib.SMTPAuthenticationError:
-        server.quit()
-
-    msg = ("From: %s\r\nTo: %s\r\n\r\n%s (%s) said:\r\n\r\n%s") % (config.from_email_address, to_address, sender, channel, message)
-
-    try:
-        server.sendmail(config.from_email_address, to_address, msg)
-    except:
-        server.quit()
-
-    server.quit()
-    return status

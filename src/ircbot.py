@@ -7,7 +7,7 @@ import parser
 import err
 from functions import *
 
-def run(socket, channels, cmds, nick, logfile):
+def run(socket, channels, cmds, auto_cmds, nick, logfile):
     # buffer for some command received
     buff = ''
 
@@ -46,13 +46,8 @@ def run(socket, channels, cmds, nick, logfile):
                 cmd = components['arguments'][1:pos]
                 response = run_cmd(socket, cmd, components, cmds)
             elif 'PRIVMSG' == components['action']:
-                first_word = components['arguments'].split()[0]
-                if ':' in first_word:
-                    if first_word[:first_word.index(':')] in config.owner and first_word[:first_word.index(':')] in config.owner_email:
-                        email_alert(components, config.owner_email[first_word[:first_word.index(':')]])
-                else:
-                    if first_word in config.owner and first_word in config.owner_email:
-                        email_alert(components, config.owner_email[first_word])
+                for cmd in config.auto_cmds_list:
+                    run_cmd(socket, cmd, components, auto_cmds)
 
             elif 'KICK' == components['action'] and \
                 nick == components['action_args'][1]:
@@ -91,8 +86,8 @@ def main():
         joined = join_channels(config.channels, socket, logfile)
 
         if joined:
-            run(socket, config.channels, config.cmds_list, config.current_nick,
-                logfile)
+            run(socket, config.channels, config.cmds_list,
+                    config.auto_cmds_list, config.current_nick, logfile)
 
         quit_bot(socket, logfile)
         socket.close()
