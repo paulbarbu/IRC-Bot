@@ -9,6 +9,10 @@ owner = list(set([
     'paullik-test',
 ]))
 
+owner_email = {
+    'foobarfoo': 'foobar@gmail.com'
+}
+
 # server to connect to
 server = 'chat.freenode.net'
 # server's port
@@ -42,6 +46,12 @@ cmds_list = list(set([
     'so',
     'twitter',
 ]))
+
+# smtp server
+smtp_server = 'smtp.gmail.com'
+smtp_port = 25
+from_email_address = 'changeme@gmail.com'
+from_email_password = 'p@s$w0rd' 
 
 # users should NOT modify below!
 log = os.path.join(os.getcwd(), '..', 'logs', '')

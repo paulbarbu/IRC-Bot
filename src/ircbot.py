@@ -45,6 +45,14 @@ def run(socket, channels, cmds, nick, logfile):
                 #get the command issued to the bot without the exclamation mark
                 cmd = components['arguments'][1:pos]
                 response = run_cmd(socket, cmd, components, cmds)
+            elif 'PRIVMSG' == components['action']:
+                first_word = components['arguments'].split()[0]
+                if ':' in first_word:
+                    if first_word[:first_word.index(':')] in config.owner and first_word[:first_word.index(':')] in config.owner_email:
+                        email_alert(components, config.owner_email[first_word[:first_word.index(':')]])
+                else:
+                    if first_word in config.owner and first_word in config.owner_email:
+                        email_alert(components, config.owner_email[first_word])
 
             elif 'KICK' == components['action'] and \
                 nick == components['action_args'][1]:
