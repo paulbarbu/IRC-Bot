@@ -60,6 +60,12 @@ Commands
 
 Total: _13_ commands
 
+Auto-commands
+=============
+* `email_alert` - the bot sends an email to the owner when somebody talks to him
+
+Total: _1_ auto-command
+
 Adding commands
 ===============
 1. In `src/config.py` you must add the name of the command to the `cmds_list`'s
@@ -85,6 +91,10 @@ If you want to create a command `!ncmd`, you must follow these steps:
    `\r\n` at the end) or a list(eg. `return ['JOIN ', '#chan1,#chan2']`, in this
    case the list will be joined and `\r\n` added at the end)
 
+If you want to create a command that the bot should execute if something happens
+on the chat (not if the command is manually triggered) you should add the
+command name to the `auto_cmds_list` insead of `cmds_list`.
+
 Config
 ======
 See `src/config.py`:
@@ -100,6 +110,9 @@ See `src/config.py`:
   nicks are used
 * `real_name` - bot's "real name"
 * `cmds_list` - a list of strings that the bot knows to answer to
+* `auto_cmds_list` - a list of commands defined as regular commands with the
+  only difference that they cannot be invoked by users, the bot executes them as
+  result of an event
 
 Dependencies
 ============
