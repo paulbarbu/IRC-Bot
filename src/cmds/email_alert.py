@@ -1,24 +1,22 @@
 import smtplib
+import string
 import config
 
 def email_alert(s, components):
-    first_word = components['arguments'].split()[0]
+    first_word = components['arguments'].split()[0].strip(string.punctuation)
 
-    import pdb
-    #pdb.set_trace()
-    if ':' in first_word:
-        if first_word[:first_word.index(':')] in config.owner and first_word[:first_word.index(':')] in config.owner_email.keys():
-            send_alert(components, config.owner_email[first_word[:first_word.index(':')]])
-    else:
-        if first_word in config.owner and first_word in config.owner_email.keys():
-            send_alert(components, config.owner_email[first_word])
+    if first_word in config.owner and first_word in config.owner_email.keys():
+        send_alert(components, config.owner_email[first_word])
+
 
 def send_alert(component, to_address):
-    status = False
     sender = component['sender']
     channel = component['action_args'][0]
     ircmsg = component['arguments']
     message = ircmsg[ircmsg.index(' ')+1:]
+
+    msg = 'From: {0}\r\nTo: {1}\r\n\r\n{2}({3}) said:\r\n\r\n{4}'.format(
+            config.from_email_address, to_address, sender, channel, message)
 
     try:
         server = smtplib.SMTP(config.smtp_server, config.smtp_port, timeout=2)
@@ -29,13 +27,10 @@ def send_alert(component, to_address):
     except smtplib.SMTPException as e:
         print e
         server.quit()
-        return status
+        return False
     except IOError as e:
         print e
-        return status
-
-    msg = ("From: %s\r\nTo: %s\r\n\r\n%s (%s) said:\r\n\r\n%s") % (config.from_email_address, to_address, sender, channel, message)
-    print msg
+        return False
 
     try:
         server.sendmail(config.from_email_address, to_address, msg)
@@ -43,7 +38,7 @@ def send_alert(component, to_address):
         print e
         server.quit()
 
-        return status
+        return False
 
     server.quit()
-    return status
+    return True
