@@ -11,6 +11,7 @@ from functions import *
 def run(socket, channels, cmds, auto_cmds, nick, logfile):
     # buffer for some command received
     buff = ''
+    num_workers = len(cmds) + len(auto_cmds)
 
     #TODO: sometimes I don't get a reply anymore, I think because of !channels
     #being issued two times in a row too fast - this means that it's not a good
@@ -23,10 +24,12 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
     #two cmds finish working at the same time too), same goes for log_write
     # in other words it should be made threadsafe
     #nothing happens after I issue !channels to the bot
+    #TODO: create "elevated commands" that will run synchronously because they
+    #need direct access to the socket the bot uses
 
     #I cannot send socket to a ProcessPoolExecutor since it isn't
     #pickable, so for now I'm stuck with ThreadPoolExecutor
-    with futures.ThreadPoolExecutor(max_workers=len(cmds) + len(auto_cmds)) as executor:
+    with futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         while len(channels):
             receive = socket.recv(4096)
             buff = buff + receive

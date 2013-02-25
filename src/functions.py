@@ -97,7 +97,13 @@ def get_nick(nicks):
         yield nick
 
 def sigint_handler(signalnum, frame):
-    'This function handles the CTRL-c KeyboardInterrupt'
+    '''This function handles the CTRL-c KeyboardInterrupt
+
+    Getting the name of the logfile here could have been avoided, but it isn't
+    because avoiding it would increase the complexity of a code (a factory
+    should have been used to create a sigint_handler that uses the proper
+    logfile)
+    '''
 
     if 'irc' in frame.f_globals.keys():
         try:
@@ -154,9 +160,7 @@ def name_bot(irc, nicks, real_name, logfile):
             return nick
 
 def create_socket(logfile, family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
-    '''Returns an unix socket
-    or logs the failure message otherwise and returns None
-    '''
+    '''Returns an unix socket or logs the failure message and returns None'''
     try:
         irc = socket.socket(family, type, proto)
     except IOError as e:
