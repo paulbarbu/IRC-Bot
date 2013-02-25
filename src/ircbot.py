@@ -13,22 +13,29 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
     buff = ''
     num_workers = len(cmds) + len(auto_cmds)
 
+    #TODO: nothing happens after I issue !channels to the bot
+    #TODO: create "elevated commands" that will run synchronously because they
+    #need direct access to the socket the bot uses
     #TODO: sometimes I don't get a reply anymore, I think because of !channels
     #being issued two times in a row too fast - this means that it's not a good
     #idea to give access to socket to a command since it can block it
-    #TODO: what happens if I use all the workers?
+
     #TODO: check what happens on exceptions and when the commands do
     #something that might kill the bot
-    #TODO: as I use send_response noew from the callback I should lock it so I
-    #don't use the socket from two threads at the same time(this could happen if
-    #two cmds finish working at the same time too), same goes for log_write
-    # in other words it should be made threadsafe
-    #nothing happens after I issue !channels to the bot
-    #TODO: create "elevated commands" that will run synchronously because they
-    #need direct access to the socket the bot uses
+
+    #TODO: as I use send_response now from the callback I should lock it so I
+    #don't use the socket to send responses from two threads at the same time
+    #(this could happen if two cmds finish working at the same time),
+    #same goes for log_write in other words functions should be made threadsafe
+
+    #TODO: what happens if I use all the workers?
+
+    #TODO: don't let commands to run for more than one minute
 
     #I cannot send socket to a ProcessPoolExecutor since it isn't
     #pickable, so for now I'm stuck with ThreadPoolExecutor
+    #TODO: change this after implementing elevated commands and test if the bot
+    #crashes if a command crashes
     with futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         while len(channels):
             receive = socket.recv(4096)
@@ -125,8 +132,7 @@ def main():
         quit_bot(socket, logfile)
         socket.close()
 
-        content = 'Disconnected from {0}:{1}'.format(
-            config.server, config.port)
+        content = 'Disconnected from {0}:{1}'.format(config.server, config.port)
         log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
         print content
 
