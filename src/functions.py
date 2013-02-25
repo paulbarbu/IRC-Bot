@@ -239,22 +239,18 @@ def get_cmd(cmd, cmds_list):
     The return value is the function that represents the command or None if the
     command doesn't exist or it's not defined properly
     '''
-
     if cmd not in cmds_list:
         return None
 
-    try: # the needed module is imported from 'cmds/'
-
-        # module that needs to be loaded after finding a
-        # valid user command
+    try: # the command's module needs to be imported from 'cmds/'
         mod = 'cmds.' + cmd
         mod = __import__(mod, globals(), locals(), [cmd])
     except ImportError: # inexistent module
         return None
 
-    try: # the module is 'executed'
-        # the name of the command is translated into
-        # a function's name, then returned
+    try:
+        # the name of the command is translated into a function's name,
+        # then returned
         callable_cmd = getattr(mod, cmd)
     except AttributeError:
         # function not defined in module

@@ -18,6 +18,11 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
     #TODO: what happens if I use all the workers?
     #TODO: check what happens on exceptions and when the commands do
     #something that might kill the bot
+    #TODO: as I use send_response noew from the callback I should lock it so I
+    #don't use the socket from two threads at the same time(this could happen if
+    #two cmds finish working at the same time too), same goes for log_write
+    # in other words it should be made threadsafe
+    #nothing happens after I issue !channels to the bot
 
     #I cannot send socket to a ProcessPoolExecutor since it isn't
     #pickable, so for now I'm stuck with ThreadPoolExecutor
@@ -47,8 +52,8 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
 
                 elif 'PRIVMSG' == components['action']:
                     if '!' == components['arguments'][0]:
-                        # search in commands list only if the message from the
-                        # user starts with an exclamation mark
+                        # a command from a user only makes sense if it starts
+                        # with an exclamation mark
 
                         pos = components['arguments'].find(' ')
                         if -1 == pos:
