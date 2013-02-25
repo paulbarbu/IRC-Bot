@@ -44,19 +44,20 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
                     response.append('PONG')
                     response.append(':' + components['arguments'])
 
-                elif 'PRIVMSG' == components['action'] and \
-                        '!' == components['arguments'][0]:
-                    # search in commands list only if the message from the user
-                    # starts with an exclamation mark
-
-                    pos = components['arguments'].find(' ')
-                    if -1 == pos:
-                        pos = len(components['arguments'])
-
-                    #get the command issued to the bot without the exclamation mark
-                    cmd = components['arguments'][1:pos]
-                    run_cmd(socket, executor, jobs, to, cmd, components, cmds)
                 elif 'PRIVMSG' == components['action']:
+                    if '!' == components['arguments'][0]:
+                        # search in commands list only if the message from the
+                        # user starts with an exclamation mark
+
+                        pos = components['arguments'].find(' ')
+                        if -1 == pos:
+                            pos = len(components['arguments'])
+
+                        # get the command issued to the bot without the "!"
+                        cmd = components['arguments'][1:pos]
+                        run_cmd(socket, executor, jobs, to, cmd, components, cmds)
+
+                    # run auto commands
                     for cmd in config.auto_cmds_list:
                         run_cmd(socket, executor, jobs, to, cmd,
                                 components, auto_cmds)
