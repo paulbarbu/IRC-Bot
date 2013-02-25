@@ -231,7 +231,7 @@ def quit_bot(s, logfile):
 
     return True
 
-def run_cmd(socket, executor, jobs, to, cmd, arguments, cmds_list):
+def run_cmd(socket, executor, to, cmd, arguments, cmds_list):
     '''Search the command (cmd), eg. !twitter in the commands list (cmds_list)
     and try to import its module and run it passing the args to the function
     args will be mostly the irc command components (sender, action, etc.)
@@ -263,9 +263,15 @@ def run_cmd(socket, executor, jobs, to, cmd, arguments, cmds_list):
                 # function not defined in module
                 response = err.C_INVALID.format(cmd)
             else:
-                jobs[executor.submit(get_response, socket, arguments)]= to
+                logfile = config.log + get_datetime()['date'] + '.log'
 
-#TODO: think about this retval
+                def cb(f):
+                    send_response(f.result(), to, socket, logfile)
+
+                future = executor.submit(get_response, socket, arguments)
+                future.add_done_callback(cb)
+
+    #TODO: think about this retval
     return response
 
 def send_response(response, destination, s, logfile):

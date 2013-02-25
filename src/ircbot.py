@@ -11,10 +11,9 @@ from functions import *
 def run(socket, channels, cmds, auto_cmds, nick, logfile):
     # buffer for some command received
     buff = ''
-    jobs = {}
 
+    #TODO: sometimes I don;t get a reply anymore?!
     #TODO: what happens if I use all the workers?
-    #TODO: now the bot is VERY unresponsive
     #TODO: check what happens on exceptions and when the commands do
     #something that might kill the bot
 
@@ -55,12 +54,11 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
 
                         # get the command issued to the bot without the "!"
                         cmd = components['arguments'][1:pos]
-                        run_cmd(socket, executor, jobs, to, cmd, components, cmds)
+                        run_cmd(socket, executor, to, cmd, components, cmds)
 
                     # run auto commands
                     for cmd in config.auto_cmds_list:
-                        run_cmd(socket, executor, jobs, to, cmd,
-                                components, auto_cmds)
+                        run_cmd(socket, executor, to, cmd, components, auto_cmds)
 
                 elif 'KICK' == components['action'] and \
                     nick == components['action_args'][1]:
@@ -75,12 +73,6 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
                 send_response(response, to, socket, logfile)
 
                 buff = ''
-
-            for job in futures.wait(jobs, 0).done:
-                send_response(job.result(), jobs[job], socket,
-                        logfile)
-                del jobs[job]
-
 
 
 def main():
