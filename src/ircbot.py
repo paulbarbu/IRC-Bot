@@ -37,6 +37,7 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
 
                 # command's components after parsing
                 components = parser.parse_command(command)
+                to = send_to(command)
 
                 if 'PING' == components['action']:
                     response = []
@@ -54,10 +55,11 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
 
                     #get the command issued to the bot without the exclamation mark
                     cmd = components['arguments'][1:pos]
-                    run_cmd(socket, executor, jobs, send_to(command), cmd, components, cmds)
+                    run_cmd(socket, executor, jobs, to, cmd, components, cmds)
                 elif 'PRIVMSG' == components['action']:
                     for cmd in config.auto_cmds_list:
-                        run_cmd(socket, executor, jobs, send_to(command), cmd, components, auto_cmds)
+                        run_cmd(socket, executor, jobs, to, cmd,
+                                components, auto_cmds)
 
                 elif 'KICK' == components['action'] and \
                     nick == components['action_args'][1]:
@@ -67,11 +69,9 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
                         -1 != components['arguments'].find('Ping timeout: '):
                     channels[:] = []
 
-                #TODO: call send_to only once
-
                 # this call is still necessary in case that a PONG response
                 # should be sent and a job has finished working
-                send_response(response, send_to(command), socket, logfile)
+                send_response(response, to, socket, logfile)
 
                 buff = ''
 
