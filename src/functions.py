@@ -231,7 +231,7 @@ def quit_bot(s, logfile):
 
     return True
 
-def run_cmd(socket, cmd, args, cmds_list):
+def run_cmd(socket, executor, jobs, to, cmd, arguments, cmds_list):
     '''Search the command (cmd), eg. !twitter in the commands list (cmds_list)
     and try to import its module and run it passing the args to the function
     args will be mostly the irc command components (sender, action, etc.)
@@ -239,6 +239,10 @@ def run_cmd(socket, cmd, args, cmds_list):
     The return value of the imported function is returned from this function too
     '''
     response = None
+
+    #TODO: this function should only return the function to call (the cmd) the
+    # rest should be made elsewhere, as for example the
+    # jobs[executor.submit(...)] = to should be made in the run function
 
     if cmd in cmds_list:
         try: # the needed module is imported from 'cmds/'
@@ -259,8 +263,9 @@ def run_cmd(socket, cmd, args, cmds_list):
                 # function not defined in module
                 response = err.C_INVALID.format(cmd)
             else:
-                response = get_response(socket, args)
+                jobs[executor.submit(get_response, socket, arguments)]= to
 
+#TODO: think about this retval
     return response
 
 def send_response(response, destination, s, logfile):

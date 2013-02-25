@@ -1,6 +1,7 @@
 #! /usr/bin/env python2.7
 import sys
 import signal
+import futures
 
 import config
 import parser
@@ -10,56 +11,77 @@ from functions import *
 def run(socket, channels, cmds, auto_cmds, nick, logfile):
     # buffer for some command received
     buff = ''
+    jobs = {}
 
-    while len(channels):
-        receive = socket.recv(4096)
-        buff = buff + receive
-        response = ''
+    #TODO: what happens if I use all the workers?
+    #TODO: now the bot is VERY unresponsive
+    #TODO: check what happens on exceptions and when the commands do
+    #something that might kill the bot
 
-        if receive:
-            log_write(logfile, get_datetime()['time'], ' <> ', receive + \
-                ('' if '\n' == receive[len(receive)-1] else '\n'))
+    #I cannot send socket to a ProcessPoolExecutor since it isn't
+    #pickable, so for now I'm stuck with ThreadPoolExecutor
+    with futures.ThreadPoolExecutor(max_workers=len(cmds) + len(auto_cmds)) as executor:
+        while len(channels):
+            receive = socket.recv(4096)
+            buff = buff + receive
+            response = ''
 
-        if -1 != buff.find('\n'):
-            # get a full command from the buffer
-            command = buff[0 : buff.find('\n')]
-            buff = buff[buff.find('\n')+1 : ]
+            if receive:
+                log_write(logfile, get_datetime()['time'], ' <> ', receive + \
+                    ('' if '\n' == receive[len(receive)-1] else '\n'))
 
-            # command's components after parsing
-            components = parser.parse_command(command)
+            if -1 != buff.find('\n'):
+                # get a full command from the buffer
+                command = buff[0 : buff.find('\n')]
+                buff = buff[buff.find('\n')+1 : ]
 
-            if 'PING' == components['action']:
-                response = []
-                response.append('PONG')
-                response.append(':' + components['arguments'])
+                # command's components after parsing
+                components = parser.parse_command(command)
 
-            elif 'PRIVMSG' == components['action'] and \
-                    '!' == components['arguments'][0]:
-                # search in commands list only if the message from the user
-                # starts with an exclamation mark
+                if 'PING' == components['action']:
+                    response = []
+                    response.append('PONG')
+                    response.append(':' + components['arguments'])
 
-                pos = components['arguments'].find(' ')
-                if -1 == pos:
-                    pos = len(components['arguments'])
+                elif 'PRIVMSG' == components['action'] and \
+                        '!' == components['arguments'][0]:
+                    # search in commands list only if the message from the user
+                    # starts with an exclamation mark
 
-                #get the command issued to the bot without the exclamation mark
-                cmd = components['arguments'][1:pos]
-                response = run_cmd(socket, cmd, components, cmds)
-            elif 'PRIVMSG' == components['action']:
-                for cmd in config.auto_cmds_list:
-                    run_cmd(socket, cmd, components, auto_cmds)
+                    pos = components['arguments'].find(' ')
+                    if -1 == pos:
+                        pos = len(components['arguments'])
 
-            elif 'KICK' == components['action'] and \
-                nick == components['action_args'][1]:
-                    channels.remove(components['action_args'][0])
+                    #get the command issued to the bot without the exclamation mark
+                    cmd = components['arguments'][1:pos]
+                    run_cmd(socket, executor, jobs, send_to(command), cmd, components, cmds)
+                elif 'PRIVMSG' == components['action']:
+                    for cmd in config.auto_cmds_list:
+                        run_cmd(socket, executor, jobs, send_to(command), cmd, components, auto_cmds)
 
-            elif 'QUIT' == components['action'] and \
-                    -1 != components['arguments'].find('Ping timeout: '):
-                channels[:] = []
+                elif 'KICK' == components['action'] and \
+                    nick == components['action_args'][1]:
+                        channels.remove(components['action_args'][0])
 
-            send_response(response, send_to(command), socket, logfile)
+                elif 'QUIT' == components['action'] and \
+                        -1 != components['arguments'].find('Ping timeout: '):
+                    channels[:] = []
 
-            buff = ''
+                #TODO: call send_to only once
+
+                # this call is still necessary in case that a PONG response
+                # should be sent and a job has finished working
+                send_response(response, send_to(command), socket, logfile)
+
+                buff = ''
+
+            for job in futures.wait(jobs, 0).done:
+                send_response(job.result(), jobs[job], socket,
+                        logfile)
+                del jobs[job]
+
+
+
 def main():
     valid_cfg = check_cfg(config.owner, config.server, config.nicks,
             config.real_name, config.log, config.cmds_list)
