@@ -12,7 +12,9 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
     # buffer for some command received
     buff = ''
 
-    #TODO: sometimes I don;t get a reply anymore?!
+    #TODO: sometimes I don't get a reply anymore, I think because of !channels
+    #being issued two times in a row too fast - this means that it's not a good
+    #idea to give access to socket to a command since it can block it
     #TODO: what happens if I use all the workers?
     #TODO: check what happens on exceptions and when the commands do
     #something that might kill the bot
@@ -54,11 +56,17 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
 
                         # get the command issued to the bot without the "!"
                         cmd = components['arguments'][1:pos]
-                        run_cmd(socket, executor, to, cmd, components, cmds)
+                        callable_cmd = get_cmd(cmd, cmds)
+                        if callable_cmd:
+                            run_cmd(socket, executor, to, callable_cmd,
+                                    components)
 
                     # run auto commands
                     for cmd in config.auto_cmds_list:
-                        run_cmd(socket, executor, to, cmd, components, auto_cmds)
+                        callable_cmd = get_cmd(cmd, auto_cmds)
+                        if callable_cmd:
+                            run_cmd(socket, executor, to, callable_cmd,
+                                    components)
 
                 elif 'KICK' == components['action'] and \
                     nick == components['action_args'][1]:
@@ -69,7 +77,8 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
                     channels[:] = []
 
                 # this call is still necessary in case that a PONG response
-                # should be sent and a job has finished working
+                # should be sent altough every other response is sent when the
+                # futures finish working
                 send_response(response, to, socket, logfile)
 
                 buff = ''

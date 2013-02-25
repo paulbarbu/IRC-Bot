@@ -231,48 +231,50 @@ def quit_bot(s, logfile):
 
     return True
 
-def run_cmd(socket, executor, to, cmd, arguments, cmds_list):
+
+def get_cmd(cmd, cmds_list):
     '''Search the command (cmd), eg. !twitter in the commands list (cmds_list)
-    and try to import its module and run it passing the args to the function
-    args will be mostly the irc command components (sender, action, etc.)
+    and try to import its module
 
-    The return value of the imported function is returned from this function too
+    The return value is the function that represents the command or None if the
+    command doesn't exist or it's not defined properly
     '''
-    response = None
 
-    #TODO: this function should only return the function to call (the cmd) the
-    # rest should be made elsewhere, as for example the
-    # jobs[executor.submit(...)] = to should be made in the run function
+    if cmd not in cmds_list:
+        return None
 
-    if cmd in cmds_list:
-        try: # the needed module is imported from 'cmds/'
+    try: # the needed module is imported from 'cmds/'
 
-            # module that needs to be loaded after finding a
-            # valid user command
-            mod = 'cmds.' + cmd
-            mod = __import__(mod, globals(), locals(), [cmd])
-        except ImportError: # inexistent module
-                response = err.C_INEXISTENT.format(cmd)
-        else:
+        # module that needs to be loaded after finding a
+        # valid user command
+        mod = 'cmds.' + cmd
+        mod = __import__(mod, globals(), locals(), [cmd])
+    except ImportError: # inexistent module
+        return None
 
-            try: # the module is 'executed'
-                # the name of the command is translated into
-                # a function's name, then called
-                get_response = getattr(mod, cmd)
-            except AttributeError:
-                # function not defined in module
-                response = err.C_INVALID.format(cmd)
-            else:
-                logfile = config.log + get_datetime()['date'] + '.log'
+    try: # the module is 'executed'
+        # the name of the command is translated into
+        # a function's name, then returned
+        callable_cmd = getattr(mod, cmd)
+    except AttributeError:
+        # function not defined in module
+        return None
 
-                def cb(f):
-                    send_response(f.result(), to, socket, logfile)
+    return callable_cmd
 
-                future = executor.submit(get_response, socket, arguments)
-                future.add_done_callback(cb)
 
-    #TODO: think about this retval
-    return response
+def run_cmd(socket, executor, to, cmd, arguments):
+    '''Create a future object for running a command asynchronously and add a
+    callback to send the response of the command back to irc
+    '''
+    logfile = config.log + get_datetime()['date'] + '.log'
+
+    def cb(f):
+        send_response(f.result(), to, socket, logfile)
+
+    future = executor.submit(cmd, socket, arguments)
+    future.add_done_callback(cb)
+
 
 def send_response(response, destination, s, logfile):
     '''Attempt to send the response to destination through the s socket
