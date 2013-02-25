@@ -259,12 +259,10 @@ def get_cmd(cmd, cmds_list):
     return callable_cmd
 
 
-def run_cmd(socket, executor, to, cmd, arguments):
+def run_cmd(socket, executor, to, cmd, arguments, logfile):
     '''Create a future object for running a command asynchronously and add a
     callback to send the response of the command back to irc
     '''
-    logfile = config.log + get_datetime()['date'] + '.log'
-
     def cb(f):
         send_response(f.result(), to, socket, logfile)
 

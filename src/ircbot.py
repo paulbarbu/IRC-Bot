@@ -61,17 +61,18 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
 
                         # get the command issued to the bot without the "!"
                         cmd = components['arguments'][1:pos]
+
                         callable_cmd = get_cmd(cmd, cmds)
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
-                                    components)
+                                    components, logfile)
 
                     # run auto commands
                     for cmd in config.auto_cmds_list:
                         callable_cmd = get_cmd(cmd, auto_cmds)
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
-                                    components)
+                                    components, logfile)
 
                 elif 'KICK' == components['action'] and \
                     nick == components['action_args'][1]:
