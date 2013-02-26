@@ -2,7 +2,7 @@ import config
 import time
 import datetime
 
-def uptime(socket, components):
+def uptime(components):
     '''Computes the uptime of the bot
 
     The function uses config.start_time as the time the bot was started

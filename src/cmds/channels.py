@@ -2,7 +2,7 @@ import config
 from functions import is_registered
 
 def channels(socket, components): # !channels
-    'Returns a string containing the channels the bot is connected to'
+    '''Returns a string containing the channels the bot is connected to'''
     response = ''
 
     if components['arguments'] == '!channels':

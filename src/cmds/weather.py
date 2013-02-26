@@ -2,8 +2,8 @@
 from BeautifulSoup import BeautifulStoneSoup
 import urllib
 
-def weather(socket, components): # !weather <city> or !weather <city>, <state or country>
-    'Returns a string containing the weather conditions from a location'
+def weather(components): # !weather <city> or !weather <city>, <state or country>
+    '''Returns a string containing the weather conditions from a location'''
 
     response = ''
     conditions = ''

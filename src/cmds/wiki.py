@@ -1,8 +1,8 @@
 from BeautifulSoup import BeautifulSoup
 import urllib2
 
-def wiki(socket, components): # !wiki <search term>
-    'Returns a wiki link and the first paragraph of the page'
+def wiki(components): # !wiki <search term>
+    '''Returns a wiki link and the first paragraph of the page'''
 
     main_page = 'http://en.wikipedia.org/wiki/Main_Page'
 
@@ -17,12 +17,12 @@ def wiki(socket, components): # !wiki <search term>
         else:
             response = 'http://en.wikipedia.org/wiki/' + search_term
 
-    response = response + '\r\n' + get_para(response)
+    response = response + '\r\n' + get_paragraph(response)
 
     return response.encode('utf8')
 
-def get_para(wlink):
-    'Gets the first paragraph from a wiki link'
+def get_paragraph(wlink):
+    '''Gets the first paragraph from a wiki link'''
 
     msg = ''
     try:

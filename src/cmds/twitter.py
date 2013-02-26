@@ -2,8 +2,8 @@ from BeautifulSoup import BeautifulStoneSoup
 import urllib
 from datetime import datetime
 
-def twitter(socket, components):
-    'Gets latest tweet from a specified user (via his nickname)'
+def twitter(components):
+    '''Gets latest tweet from a specified user (via his nickname)'''
 
     apiURL = 'http://api.twitter.com/1/users/show.xml?screen_name='
     response = ''

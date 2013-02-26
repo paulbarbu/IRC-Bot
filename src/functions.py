@@ -270,7 +270,7 @@ def run_cmd(socket, executor, to, cmd, arguments, logfile):
     def cb(f):
         send_response(f.result(), to, socket, logfile)
 
-    future = executor.submit(cmd, socket, arguments)
+    future = executor.submit(cmd, arguments)
     future.add_done_callback(cb)
 
 

@@ -8,10 +8,10 @@ import parser
 import err
 from functions import *
 
-def run(socket, channels, cmds, auto_cmds, nick, logfile):
+def run(socket, channels, cmds, nick, logfile):
     # buffer for some command received
     buff = ''
-    num_workers = len(cmds) + len(auto_cmds)
+    num_workers = sum(len(v) for k, v in cmds.iteritems())
 
     #TODO: nothing happens after I issue !channels to the bot
     #TODO: create "elevated commands" that will run synchronously because they
@@ -72,14 +72,19 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
                         # get the command issued to the bot without the "!"
                         cmd = components['arguments'][1:pos]
 
-                        callable_cmd = get_cmd(cmd, cmds)
+                        callable_cmd = get_cmd(cmd, cmds['user'])
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
                                     components, logfile)
+                        else:
+                            callable_cmd = get_cmd(cmd, cmds['core'])
+
+                            if callable_cmd:
+                                response = callable_cmd(socket, components)
 
                     # run auto commands
-                    for cmd in config.auto_cmds_list:
-                        callable_cmd = get_cmd(cmd, auto_cmds)
+                    for cmd in config.cmds['auto']:
+                        callable_cmd = get_cmd(cmd, cmds['auto'])
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
                                     components, logfile)
@@ -92,9 +97,10 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
                         -1 != components['arguments'].find('Ping timeout: '):
                     channels[:] = []
 
-                # this call is still necessary in case that a PONG response
-                # should be sent altough every other response is sent when the
-                # futures finish working
+                # this call is still necessary in case that a PONG response or a
+                # core command response should be sent, every other response is
+                # sent when the futures finish working from their respective
+                # thread
                 send_response(response, to, socket, logfile)
 
                 buff = ''
@@ -102,7 +108,7 @@ def run(socket, channels, cmds, auto_cmds, nick, logfile):
 
 def main():
     valid_cfg = check_cfg(config.owner, config.server, config.nicks,
-            config.real_name, config.log, config.cmds_list)
+            config.real_name, config.log, config.cmds)
 
     if not valid_cfg:
         sys.exit(err.INVALID_CFG)
@@ -126,8 +132,7 @@ def main():
         joined = join_channels(config.channels, socket, logfile)
 
         if joined:
-            run(socket, config.channels, config.cmds_list,
-                    config.auto_cmds_list, config.current_nick, logfile)
+            run(socket, config.channels, config.cmds, config.current_nick, logfile)
 
         quit_bot(socket, logfile)
         socket.close()

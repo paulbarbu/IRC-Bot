@@ -1,6 +1,6 @@
 from apiclient.discovery import build
 
-def google(socket, components): # !google <search term>
+def google(components): # !google <search term>
     '''Returns the link and the description of the first result from a google
     search
     '''

@@ -2,7 +2,7 @@ import smtplib
 import string
 import config
 
-def email_alert(s, components):
+def email_alert(components):
     first_word = components['arguments'].split()[0].strip(string.punctuation)
 
     if first_word in config.owner and first_word in config.owner_email.keys():

@@ -1,5 +1,5 @@
-def answer(socket, components): # !answer
-    'Returns the ultimate answer'
+def answer(components): # !answer
+    '''Returns the ultimate answer'''
     response = ''
 
     if components['arguments'] == '!answer':

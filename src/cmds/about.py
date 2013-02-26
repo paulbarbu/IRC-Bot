@@ -1,5 +1,5 @@
-def about(socket, components): # !about
-    'Returns a string containing info about the bot'
+def about(components): # !about
+    '''Returns a string containing info about the bot'''
     response = ''
 
     if components['arguments'] == '!about':

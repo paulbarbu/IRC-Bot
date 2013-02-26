@@ -29,29 +29,36 @@ channels = list(set([
     '#test-chan',
 ]))
 
-# commands list
-cmds_list = list(set([
-    'task',
-    'wiki',
-    'quit',
-    'answer',
-    'about',
-    'help',
-    'weather',
-    'join',
-    'channels',
-    'google',
-    'mball',
-    'uptime',
-    'so',
-    'twitter',
-]))
+cmds = {
+    # core commands list, these commands will be run in the same thread as the bot
+    # and will have acces to the socket that the bot uses
+    'core': list(set([
+        'quit',
+        'join',
+        'channels',
+    ])),
 
-# commands list that the bot will execute even if a human didn't request an
-# action
-auto_cmds_list = list(set([
-    'email_alert',
-]))
+    # normal commands list, the ones that are accessible to any user
+    'user': list(set([
+        'task',
+        'wiki',
+        'answer',
+        'about',
+        'help',
+        'weather',
+        'google',
+        'mball',
+        'uptime',
+        'so',
+        'twitter',
+    ])),
+
+    # commands list that the bot will execute even if a human didn't request an
+    # action
+    'auto': list(set([
+        'email_alert',
+    ])),
+}
 
 # smtp server for email_alert
 smtp_server = 'smtp.gmail.com'
