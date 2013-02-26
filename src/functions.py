@@ -268,7 +268,13 @@ def run_cmd(socket, executor, to, cmd, arguments, logfile):
     callback to send the response of the command back to irc
     '''
     def cb(f):
-        send_response(f.result(), to, socket, logfile)
+        try:
+            response = f.result()
+        except Exception as e:
+            response = err.CMD_EXCEPTION.format(cmd.__name__)
+            log_write(logfile, response, ' <> ', str(e) + '\n')
+
+        send_response(response, to, socket, logfile)
 
     future = executor.submit(cmd, arguments)
     future.add_done_callback(cb)

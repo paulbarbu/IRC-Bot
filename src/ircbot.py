@@ -13,16 +13,6 @@ def run(socket, channels, cmds, nick, logfile):
     buff = ''
     num_workers = sum(len(v) for k, v in cmds.iteritems())
 
-    #TODO: nothing happens after I issue !channels to the bot
-    #TODO: create "elevated commands" that will run synchronously because they
-    #need direct access to the socket the bot uses
-    #TODO: sometimes I don't get a reply anymore, I think because of !channels
-    #being issued two times in a row too fast - this means that it's not a good
-    #idea to give access to socket to a command since it can block it
-
-    #TODO: check what happens on exceptions and when the commands do
-    #something that might kill the bot
-
     #TODO: as I use send_response now from the callback I should lock it so I
     #don't use the socket to send responses from two threads at the same time
     #(this could happen if two cmds finish working at the same time),
@@ -32,11 +22,7 @@ def run(socket, channels, cmds, nick, logfile):
 
     #TODO: don't let commands to run for more than one minute
 
-    #I cannot send socket to a ProcessPoolExecutor since it isn't
-    #pickable, so for now I'm stuck with ThreadPoolExecutor
-    #TODO: change this after implementing elevated commands and test if the bot
-    #crashes if a command crashes
-    with futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+    with futures.ProcessPoolExecutor(max_workers=num_workers) as executor:
         while len(channels):
             receive = socket.recv(4096)
             buff = buff + receive
@@ -80,7 +66,14 @@ def run(socket, channels, cmds, nick, logfile):
                             callable_cmd = get_cmd(cmd, cmds['core'])
 
                             if callable_cmd:
-                                response = callable_cmd(socket, components)
+                                try:
+                                    response = callable_cmd(socket, components)
+                                except Exception as e:
+                                    response = err.CMD_EXCEPTION.format(
+                                    callable_cmd.__name__)
+
+                                    log_write(logfile, response, ' <> ',
+                                            str(e) + '\n')
 
                     # run auto commands
                     for cmd in config.cmds['auto']:
