@@ -2,17 +2,19 @@ import config
 import err
 import datetime
 import socket
+import threading
 
 def get_sender(msg):
     "Returns the user's nick (string) that sent the message"
     return msg.split(":")[1].split('!')[0]
 
+log_lock = threading.Lock()
 def log_write(log, pre, separator, content):
     '''Writes a log line into the logs
 
     Opens file 'log' and appends the 'content' preceded by 'pre' and 'separator'
     '''
-    with open(log, 'a') as log_file:
+    with open(log, 'a') as log_file, log_lock:
         try:
             log_file.write(pre + separator + content)
         except Exception as e:
@@ -282,6 +284,7 @@ def run_cmd(socket, executor, to, cmd, arguments, logfile):
     future.add_done_callback(cb)
 
 
+send_response_lock = threading.Lock()
 def send_response(response, destination, s, logfile):
     '''Attempt to send the response to destination through the s socket
     The response can be either a list or a string, if it's a list then it
@@ -321,7 +324,8 @@ def send_response(response, destination, s, logfile):
             response = response + '\r\n'
 
         try:
-            s.send(response)
+            with send_response_lock:
+                s.send(response)
         except IOError as e:
             log_write(logfile, get_datetime()['time'], ' <> ',
                 'Unexpected error while sending the response: {0}\n'.format(e))

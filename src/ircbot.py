@@ -13,11 +13,6 @@ def run(socket, channels, cmds, nick, logfile):
     buff = ''
     num_workers = sum(len(v) for k, v in cmds.iteritems())
 
-    #TODO: as I use send_response now from the callback I should lock it so I
-    #don't use the socket to send responses from two threads at the same time
-    #(this could happen if two cmds finish working at the same time),
-    #same goes for log_write in other words functions should be made threadsafe
-
     #TODO: what happens if I use all the workers?
 
     #TODO: don't let commands to run for more than one minute
