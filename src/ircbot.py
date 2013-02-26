@@ -58,18 +58,18 @@ def run(socket, channels, cmds, nick, logfile):
                         # get the command issued to the bot without the "!"
                         cmd = components['arguments'][1:pos]
 
-                        callable_cmd = get_cmd(cmd, cmds['user'])
+                        callable_cmd = get_cmd(cmd, cmds['user'], logfile)
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
                                     components, logfile)
                         else:
-                            callable_cmd = get_cmd(cmd, cmds['core'])
+                            callable_cmd = get_cmd(cmd, cmds['core'], logfile)
 
                             if callable_cmd:
                                 try:
                                     response = callable_cmd(socket, components)
                                 except Exception as e:
-                                    response = err.CMD_EXCEPTION.format(
+                                    response = err.C_EXCEPTION.format(
                                     callable_cmd.__name__)
 
                                     log_write(logfile, response, ' <> ',
@@ -77,7 +77,7 @@ def run(socket, channels, cmds, nick, logfile):
 
                     # run auto commands
                     for cmd in config.cmds['auto']:
-                        callable_cmd = get_cmd(cmd, cmds['auto'])
+                        callable_cmd = get_cmd(cmd, cmds['auto'], logfile)
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
                                     components, logfile)

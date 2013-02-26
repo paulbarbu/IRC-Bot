@@ -236,7 +236,7 @@ def quit_bot(s, logfile):
     return True
 
 
-def get_cmd(cmd, cmds_list):
+def get_cmd(cmd, cmds_list, logfile):
     '''Search the command (cmd), eg. !twitter in the commands list (cmds_list)
     and try to import its module
 
@@ -249,15 +249,17 @@ def get_cmd(cmd, cmds_list):
     try: # the command's module needs to be imported from 'cmds/'
         mod = 'cmds.' + cmd
         mod = __import__(mod, globals(), locals(), [cmd])
-    except ImportError: # inexistent module
+    except ImportError as e: # inexistent module
+        log_write(logfile, err.C_INEXISTENT.format(cmd), ' <> ', str(e) + '\n')
         return None
 
     try:
         # the name of the command is translated into a function's name,
         # then returned
         callable_cmd = getattr(mod, cmd)
-    except AttributeError:
+    except AttributeError as e:
         # function not defined in module
+        log_write(logfile, err.C_INVALID.format(cmd), ' <> ', str(e) + '\n')
         return None
 
     return callable_cmd
@@ -271,7 +273,7 @@ def run_cmd(socket, executor, to, cmd, arguments, logfile):
         try:
             response = f.result()
         except Exception as e:
-            response = err.CMD_EXCEPTION.format(cmd.__name__)
+            response = err.C_EXCEPTION.format(cmd.__name__)
             log_write(logfile, response, ' <> ', str(e) + '\n')
 
         send_response(response, to, socket, logfile)
