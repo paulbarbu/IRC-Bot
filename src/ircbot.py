@@ -2,13 +2,15 @@
 import sys
 import signal
 import futures
+import logging
+import os
 
 import config
 import parser
 import err
 from functions import *
 
-def run(socket, channels, cmds, nick, logfile):
+def run(socket, channels, cmds, nick):
     # buffer for some command received
     buff = ''
     num_workers = sum(len(v) for k, v in cmds.iteritems())
@@ -24,7 +26,7 @@ def run(socket, channels, cmds, nick, logfile):
             response = ''
 
             if receive:
-                log_write(logfile, get_datetime()['time'], ' <> ', receive + \
+                logging.debug(receive + \
                     ('' if '\n' == receive[len(receive)-1] else '\n'))
 
             if -1 != buff.find('\n'):
@@ -53,12 +55,12 @@ def run(socket, channels, cmds, nick, logfile):
                         # get the command issued to the bot without the "!"
                         cmd = components['arguments'][1:pos]
 
-                        callable_cmd = get_cmd(cmd, cmds['user'], logfile)
+                        callable_cmd = get_cmd(cmd, cmds['user'])
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
-                                    components, logfile)
+                                    components)
                         else:
-                            callable_cmd = get_cmd(cmd, cmds['core'], logfile)
+                            callable_cmd = get_cmd(cmd, cmds['core'])
 
                             if callable_cmd:
                                 try:
@@ -67,15 +69,14 @@ def run(socket, channels, cmds, nick, logfile):
                                     response = err.C_EXCEPTION.format(
                                     callable_cmd.__name__)
 
-                                    log_write(logfile, response, ' <> ',
-                                            str(e) + '\n')
+                                    logging.error(str(e))
 
                     # run auto commands
                     for cmd in config.cmds['auto']:
-                        callable_cmd = get_cmd(cmd, cmds['auto'], logfile)
+                        callable_cmd = get_cmd(cmd, cmds['auto'])
                         if callable_cmd:
                             run_cmd(socket, executor, to, callable_cmd,
-                                    components, logfile)
+                                    components)
 
                 elif 'KICK' == components['action'] and \
                     nick == components['action_args'][1]:
@@ -89,7 +90,7 @@ def run(socket, channels, cmds, nick, logfile):
                 # core command response should be sent, every other response is
                 # sent when the futures finish working from their respective
                 # thread
-                send_response(response, to, socket, logfile)
+                send_response(response, to, socket)
 
                 buff = ''
 
@@ -101,33 +102,50 @@ def main():
     if not valid_cfg:
         sys.exit(err.INVALID_CFG)
 
+    if not os.path.isdir(config.log):
+        try:
+            os.makedirs(config.log)
+        except os.error as e:
+            print "Log directory creation failed: " + str(e)
+            sys.exit(1)
+        else:
+            print "Log directory created"
+
+    logfile = get_datetime()['date'] + '.log'
+
+    try:
+        logging.basicConfig(filename=os.path.join(config.log, logfile),
+            level=config.logging_level,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S')
+    except IOError as e:
+        print "Couldn't set up logging: " + str(e)
+        sys.exit(1)
+
     if not check_channel(config.channels):
         sys.exit(err.INVALID_CHANNELS)
 
     signal.signal(signal.SIGINT, sigint_handler)
 
-    logfile = config.log + get_datetime()['date'] + '.log'
+    socket = create_socket()
 
-    socket = create_socket(logfile)
-
-    if socket and connect_to((config.server, config.port), socket, logfile):
-        content = 'Connected to {0}:{1}'.format(config.server, config.port)
-        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+    if socket and connect_to((config.server, config.port), socket):
+        logging.info('Connected to {0}:{1}'
+            .format(config.server, config.port))
         print content
 
-        config.current_nick = name_bot(socket, config.nicks, config.real_name,
-            logfile)
-        joined = join_channels(config.channels, socket, logfile)
+        config.current_nick = name_bot(socket, config.nicks, config.real_name)
+        joined = join_channels(config.channels, socket)
 
         if joined:
-            run(socket, config.channels, config.cmds, config.current_nick, logfile)
+            run(socket, config.channels, config.cmds, config.current_nick)
 
-        quit_bot(socket, logfile)
+        quit_bot(socket)
         socket.close()
 
-        content = 'Disconnected from {0}:{1}'.format(config.server, config.port)
-        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        logging.info('Disconnected from {0}:{1}'
+            .format(config.server, config.port))
         print content
 
-if __name__ == '__main__': #pragma: no cover
+if '__main__' == __name__: #pragma: no cover
     main()

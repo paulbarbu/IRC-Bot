@@ -3,22 +3,12 @@ import err
 import datetime
 import socket
 import threading
+import os
 
 def get_sender(msg):
     "Returns the user's nick (string) that sent the message"
     return msg.split(":")[1].split('!')[0]
 
-log_lock = threading.Lock()
-def log_write(log, pre, separator, content):
-    '''Writes a log line into the logs
-
-    Opens file 'log' and appends the 'content' preceded by 'pre' and 'separator'
-    '''
-    with open(log, 'a') as log_file, log_lock:
-        try:
-            log_file.write(pre + separator + content)
-        except Exception as e:
-            print err.LOG_FAILURE + '\n' + str(e)
 
 def get_datetime():
     '''Returns a dictionary containing the date and time
@@ -34,6 +24,7 @@ def get_datetime():
 
     return dt
 
+
 def check_cfg(*items):
     '''Checks configuration directives to be non-empty
 
@@ -45,6 +36,7 @@ def check_cfg(*items):
 
     return True
 
+
 def check_channel(channels):
     '''Check the channels' name to start with a '#' and not to contain any spaces
 
@@ -55,6 +47,7 @@ def check_channel(channels):
             return False
 
     return True
+
 
 def send_to(command):
     '''Get the location where to send the message back
@@ -75,6 +68,7 @@ def send_to(command):
 
     return 'PRIVMSG ' + sendto + ' :'
 
+
 def is_registered(s, user_nick):
     '''Determines if the user_nick is online and registered to NickServ
 
@@ -94,17 +88,14 @@ def is_registered(s, user_nick):
             else:
                 return False
 
+
 def get_nick(nicks):
     for nick in nicks:
         yield nick
 
+
 def sigint_handler(signalnum, frame):
     '''This function handles the CTRL-c KeyboardInterrupt
-
-    Getting the name of the logfile here could have been avoided, but it isn't
-    because avoiding it would increase the complexity of a code (a factory
-    should have been used to create a sigint_handler that uses the proper
-    logfile)
     '''
 
     if 'irc' in frame.f_globals.keys():
@@ -116,18 +107,15 @@ def sigint_handler(signalnum, frame):
     dt = get_datetime()
     content = 'Closing: CTRL-c pressed!'
 
-    logfile = config.log + dt['date'] + '.log'
-    log_write(logfile, dt['time'], ' <> ', content + '\n')
+    logging.info(content)
     print '\n' + content
 
-def name_bot(irc, nicks, real_name, logfile):
+def name_bot(irc, nicks, real_name):
     '''Try to name the bot in order to be recognised on IRC
 
     irc - an opened socket
     nicks - a list of strings to choose the nick from
     real_name - bot's real name
-    logfile - the name of the logfile to write to
-
 
     Return the name of the bot
     '''
@@ -137,8 +125,7 @@ def name_bot(irc, nicks, real_name, logfile):
 
     nick_generator = get_nick(nicks)
     nick = nick_generator.next()
-    log_write(logfile, get_datetime()['time'], ' <> ',
-        'Set nick to: {0}\n'.format(nick))
+    logging.info('Set nick to: {0}\n'.format(nick))
 
     irc.send('NICK ' + nick + '\r\n')
     irc.send('USER ' + nick + ' ' + nick + \
@@ -156,48 +143,50 @@ def name_bot(irc, nicks, real_name, logfile):
             irc.send('NICK ' + nick + '\r\n')
 
             content = 'Changing nick to: {0}\n'.format(nick)
-            log_write(logfile, get_datetime()['time'], ' <> ', content)
+            logging.info(content)
         elif nick in receive or 'motd' in receive.lower():
             # successfully connected
             return nick
 
-def create_socket(logfile, family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
+
+def create_socket(family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
     '''Returns an unix socket or logs the failure message and returns None'''
     try:
         irc = socket.socket(family, type, proto)
     except IOError as e:
         message =  '{0}\n{1}'.format(err.NO_SOCKET, e)
-        log_write(logfile, get_datetime()['time'], ' <> ', message + '\n')
+        logging.error(message)
         print message
 
         return None
 
     return irc
 
-def connect_to(address, s, logfile):
+
+def connect_to(address, s):
     '''Connect to the specified address through s (a socket object)
 
-    Returns True on success else False and it will log the error in logfile
+    Returns True on success else False
     '''
     try:
         s.connect(address)
     except IOError as e:
         content = 'Could not connect to {0}\n{1}'.format(address, e)
 
-        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        logging.error(content)
         print content
 
         return False
 
     return True
 
-def join_channels(channels, s, logfile):
+
+def join_channels(channels, s):
     '''Send a JOIN command to the server through the s socket
     The variable 'channels' is a list of strings that represend the channels to
     be joined (including the # character)
 
-    Returns True if the command was sent, else False, either way the error or
-    the channels joined are logged into the file specified by logfile
+    Returns True if the command was sent, else False
     '''
     clist = ','.join(channels)
 
@@ -205,21 +194,20 @@ def join_channels(channels, s, logfile):
         s.send('JOIN ' + clist + '\r\n')
     except IOError as e:
         content = 'Unexpected error while joining {0}: {1}'.format(clist, e)
-        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        logging.error(content)
         print content
 
         return False
 
     content = 'Joined: {0}'.format(clist)
-    log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+    logging.info(content)
     print content
 
     return True
 
-def quit_bot(s, logfile):
+
+def quit_bot(s):
     '''Send the QUIT commmand through the socket s
-    The errors (if they occur) or the quit command is logged in the file
-    specified by logfile
 
     Return True if the command was sent, else False
     '''
@@ -228,17 +216,17 @@ def quit_bot(s, logfile):
         s.send('QUIT\r\n')
     except IOError as e:
         content = 'Unexpected error while quitting: {0}'.format(e)
-        log_write(logfile, get_datetime()['time'], ' <> ', content + '\n')
+        logging.error(content)
         print content
 
         return False
 
-    log_write(logfile, get_datetime()['time'], ' <> ', 'QUIT\r\n')
+    logging.info('QUIT')
 
     return True
 
 
-def get_cmd(cmd, cmds_list, logfile):
+def get_cmd(cmd, cmds_list):
     '''Search the command (cmd), eg. !twitter in the commands list (cmds_list)
     and try to import its module
 
@@ -252,7 +240,7 @@ def get_cmd(cmd, cmds_list, logfile):
         mod = 'cmds.' + cmd
         mod = __import__(mod, globals(), locals(), [cmd])
     except ImportError as e: # inexistent module
-        log_write(logfile, err.C_INEXISTENT.format(cmd), ' <> ', str(e) + '\n')
+        logging.error(err.C_INEXISTENT.format(cmd) + str(e))
         return None
 
     try:
@@ -261,13 +249,13 @@ def get_cmd(cmd, cmds_list, logfile):
         callable_cmd = getattr(mod, cmd)
     except AttributeError as e:
         # function not defined in module
-        log_write(logfile, err.C_INVALID.format(cmd), ' <> ', str(e) + '\n')
+        logging.error(err.C_INVALID.format(cmd) + str(e))
         return None
 
     return callable_cmd
 
 
-def run_cmd(socket, executor, to, cmd, arguments, logfile):
+def run_cmd(socket, executor, to, cmd, arguments):
     '''Create a future object for running a command asynchronously and add a
     callback to send the response of the command back to irc
     '''
@@ -276,23 +264,21 @@ def run_cmd(socket, executor, to, cmd, arguments, logfile):
             response = f.result()
         except Exception as e:
             response = err.C_EXCEPTION.format(cmd.__name__)
-            log_write(logfile, response, ' <> ', str(e) + '\n')
+            logging.error(e)
 
-        send_response(response, to, socket, logfile)
+        send_response(response, to, socket)
 
     future = executor.submit(cmd, arguments)
     future.add_done_callback(cb)
 
 
 send_response_lock = threading.Lock()
-def send_response(response, destination, s, logfile):
+def send_response(response, destination, s):
     '''Attempt to send the response to destination through the s socket
     The response can be either a list or a string, if it's a list then it
     means that the module sent a command on its own (eg. PART)
 
     The destination can be passed using the send_to function
-
-    The response is logged into the file specified by logfile
 
     True is returned upon sending the response, None if the response was empty
     or False if an error occurred while sending the response
@@ -327,12 +313,12 @@ def send_response(response, destination, s, logfile):
             with send_response_lock:
                 s.send(response)
         except IOError as e:
-            log_write(logfile, get_datetime()['time'], ' <> ',
-                'Unexpected error while sending the response: {0}\n'.format(e))
+            logging.error('Unexpected error while sending the response: {0}\n'
+                .format(e))
 
             return False
 
-        log_write(logfile, get_datetime()['time'], ' <> ', response)
+        logging.debug(response)
 
         return True
 

@@ -1,6 +1,7 @@
 import os
 import os.path
 import time
+import logging
 
 # some commands can be executed only if the user's nick is found in this list
 owner = list(set([
@@ -68,5 +69,6 @@ from_email_password = 'p@s$w0rd'
 
 # users should NOT modify below!
 log = os.path.join(os.getcwd(), '..', 'logs', '')
+logging_level = logging.DEBUG
 start_time = time.time()
 current_nick = ''
