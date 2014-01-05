@@ -4,6 +4,7 @@ import datetime
 import socket
 import threading
 import os
+import logging
 
 def get_sender(msg):
     "Returns the user's nick (string) that sent the message"
@@ -104,7 +105,6 @@ def sigint_handler(signalnum, frame):
         except:
             pass
 
-    dt = get_datetime()
     content = 'Closing: CTRL-c pressed!'
 
     logging.info(content)
@@ -149,10 +149,10 @@ def name_bot(irc, nicks, real_name):
             return nick
 
 
-def create_socket(family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
+def create_socket(family=socket.AF_INET, t=socket.SOCK_STREAM, proto=0):
     '''Returns an unix socket or logs the failure message and returns None'''
     try:
-        irc = socket.socket(family, type, proto)
+        irc = socket.socket(family, t, proto)
     except IOError as e:
         message =  '{0}\n{1}'.format(err.NO_SOCKET, e)
         logging.error(message)
@@ -255,18 +255,18 @@ def get_cmd(cmd, cmds_list):
     return callable_cmd
 
 
-def run_cmd(socket, executor, to, cmd, arguments):
+def run_cmd(sock, executor, to, cmd, arguments):
     '''Create a future object for running a command asynchronously and add a
     callback to send the response of the command back to irc
     '''
     def cb(f):
         try:
             response = f.result()
-        except Exception as e:
+        except Exception as e: # TODO: raise a specific exception form the cmds
             response = err.C_EXCEPTION.format(cmd.__name__)
             logging.error(e)
 
-        send_response(response, to, socket)
+        send_response(response, to, sock)
 
     future = executor.submit(cmd, arguments)
     future.add_done_callback(cb)

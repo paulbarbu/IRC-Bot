@@ -4,3 +4,5 @@ logs/
 *.log
 .coverage
 htmlcov/
+*.db
+venv/

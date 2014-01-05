@@ -15,9 +15,9 @@ def run(socket, channels, cmds, nick):
     buff = ''
     num_workers = sum(len(v) for k, v in cmds.iteritems())
 
-    #TODO: what happens if I use all the workers?
+    # TODO: what happens if I use all the workers?
 
-    #TODO: don't let commands to run for more than one minute
+    # TODO: don't let commands to run for more than one minute
 
     with futures.ProcessPoolExecutor(max_workers=num_workers) as executor:
         while len(channels):
@@ -130,8 +130,8 @@ def main():
     socket = create_socket()
 
     if socket and connect_to((config.server, config.port), socket):
-        logging.info('Connected to {0}:{1}'
-            .format(config.server, config.port))
+        content = 'Connected to {0}:{1}'.format(config.server, config.port)
+        logging.info(content)
         print content
 
         config.current_nick = name_bot(socket, config.nicks, config.real_name)
@@ -143,8 +143,8 @@ def main():
         quit_bot(socket)
         socket.close()
 
-        logging.info('Disconnected from {0}:{1}'
-            .format(config.server, config.port))
+        content = 'Disconnected from {0}:{1}'.format(config.server, config.port)
+        logging.info(content)
         print content
 
 if '__main__' == __name__: #pragma: no cover
