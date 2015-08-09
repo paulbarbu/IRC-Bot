@@ -1,7 +1,7 @@
 #! /usr/bin/env python2.7
 import sys
 import signal
-import futures
+import concurrent.futures
 import logging
 import os
 
@@ -19,7 +19,7 @@ def run(socket, channels, cmds, nick):
 
     # TODO: don't let commands to run for more than one minute
 
-    with futures.ProcessPoolExecutor(max_workers=num_workers) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=num_workers) as executor:
         while len(channels):
             receive = socket.recv(4096)
             buff = buff + receive
