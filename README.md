@@ -126,6 +126,7 @@ Dependencies
 [installation page](http://code.google.com/p/google-api-python-client/wiki/Installation "Custom Search API Installation")
 * `!so` module depends on 
 [StackExchange API](http://stackapps.com/questions/198/py-stackexchange-an-api-wrapper-for-python "Py-StackExchange")
+    * you're going to have to generate an API key and populate the `api_key` variable in `src/cmds/so.py`
 
 License
 =======
