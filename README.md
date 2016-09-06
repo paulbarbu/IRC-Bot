@@ -10,6 +10,8 @@ _private_ discussion it can be queried (`/query PPyBot`).
 IRC Protocol reference: [RFC 1459](http://www.irchelp.org/irchelp/rfc/rfc.html
 "IRC Protocol")
 
+*Disclaimer:* This project is no longer maintained, it was just a learning project and it was coded close to the data that the freenode servers send when taking actions such as changing the nickname, hence it is possible that the bot doesn't work on other servers. (For details please see [issue #42](https://github.com/paulbarbu/IRC-Bot/issues/42))
+
 Documentation
 =============
 Sphinx docs to come
